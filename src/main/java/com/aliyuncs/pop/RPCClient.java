@@ -105,7 +105,6 @@ public class RPCClient {
         stringToSign.append(SEPARATOR);
         stringToSign.append(this.percentEncode(
                 canonicalizedQueryString.toString().substring(1)));
-        System.out.println(stringToSign);
         Mac mac = Mac.getInstance(ALGORITHM_NAME);
         mac.init(new SecretKeySpec((secret + SEPARATOR).getBytes(URL_ENCODING), ALGORITHM_NAME));
         byte[] signData = mac.doFinal(stringToSign.toString().getBytes(URL_ENCODING));
