@@ -2,6 +2,7 @@ package com.aliyuncs.pop;
 
 import com.aliyun.tea.TeaRequest;
 import com.aliyun.tea.TeaResponse;
+import com.aliyun.tea.utils.StringUtils;
 import com.google.gson.Gson;
 
 import javax.crypto.Mac;
@@ -19,22 +20,41 @@ public class RPCClient {
     private final static String SEPARATOR = "&";
     public final static String URL_ENCODING = "UTF-8";
     private static final String ALGORITHM_NAME = "HmacSHA1";
-    protected String _domain;
+    protected String _endpoint;
     protected String _authToken;
     protected String _regionId;
     protected String _protocol;
     private String accessKeyId;
     private String accessKeySecret;
+    protected String _userAgent;
+    protected static final String _defaultUserAgent;
+
+    static {
+        Properties sysProps = System.getProperties();
+        String coreVersion = "";
+        Properties props = new Properties();
+        try {
+            props.load(RPCClient.class.getClassLoader().getResourceAsStream("project.properties"));
+            coreVersion = props.getProperty("sdk.project.version");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        _defaultUserAgent = String.format("AlibabaCloud (%s; %s) Java/%s %s/%s", sysProps.getProperty("os.name"), sysProps
+                .getProperty("os.arch"), sysProps.getProperty("java.runtime.version"), "rpc-baseClient", coreVersion);
+    }
 
     public RPCClient() {
 
     }
 
-    public RPCClient(Map<String, String> config) {
-        this._domain = config.get("domain");
-        this._authToken = config.get("authToken");
-        this.accessKeyId = config.get("accessKeyId");
-        this.accessKeySecret = config.get("accessKeySecret");
+    public RPCClient(Map<String, Object> config) {
+        this._endpoint = (String) config.get("endpoint");
+        this._authToken = (String) config.get("authToken");
+        this.accessKeyId = (String) config.get("accessKeyId");
+        this.accessKeySecret = (String) config.get("accessKeySecret");
+        this._userAgent = (String) config.get("userAgent");
+        this._protocol = config.get("protocol") == null ? "http" : (String) config.get("protocol");
+        this._regionId = (String) config.get("regionId");
     }
 
 
@@ -102,11 +122,11 @@ public class RPCClient {
     }
 
     public String _getEndpoint(String str, String regionId) {
-        if (null == _domain) {
+        if (null == _endpoint) {
             String serviceCode = str.split("_")[0].toLowerCase();
             return String.format("%s.%s.aliyuncs.com", serviceCode, regionId);
         } else {
-            return _domain;
+            return _endpoint;
         }
     }
 
@@ -119,15 +139,23 @@ public class RPCClient {
         if (null == body) {
             return true;
         }
-        if (null == body.get("code")) {
-            return false;
-        }
-        return true;
+        return null != body.get("Code");
     }
 
     public Map<String, Object> _json(TeaResponse response) throws IOException {
         Gson gson = new Gson();
         Map<String, Object> map = gson.fromJson(response.getResponseBody(), Map.class);
         return map;
+    }
+
+    protected String _getUserAgent() {
+        return this._getUserAgent(null);
+    }
+
+    protected String _getUserAgent(String a) {
+        if (StringUtils.isEmpty(a)) {
+            return _defaultUserAgent;
+        }
+        return _defaultUserAgent + " " + a;
     }
 }
