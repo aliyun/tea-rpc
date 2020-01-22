@@ -29,6 +29,14 @@ public class RPCClient {
     protected String _userAgent;
     protected static final String _defaultUserAgent;
 
+    protected long _readTimeout;
+    protected long _connectTimeout;
+    protected long _maxIdleConns;
+    protected String _noProxy;
+    protected String _httpsProxy;
+    protected String _httpProxy;
+    protected String _endpointType;
+
     static {
         Properties sysProps = System.getProperties();
         String coreVersion = "";
@@ -55,6 +63,14 @@ public class RPCClient {
         this._userAgent = (String) config.get("userAgent");
         this._protocol = config.get("protocol") == null ? "http" : (String) config.get("protocol");
         this._regionId = (String) config.get("regionId");
+
+        this._maxIdleConns = config.get("maxIdleConns") == null ? 10 : Long.parseLong((String) config.get("maxIdleConns"));
+        this._connectTimeout = config.get("connectTimeout") == null ? 5000L : Long.parseLong((String) config.get("connectTimeout"));
+        this._readTimeout = config.get("readTimeout") == null ? 10000L : Long.parseLong((String) config.get("readTimeout"));
+        this._noProxy = (String) config.get("noProxy");
+        this._httpsProxy = (String) config.get("httpsProxy");
+        this._httpProxy = (String) config.get("httpProxy");
+        this._endpointType = (String) config.get("endpointType");
     }
 
 
