@@ -3,6 +3,12 @@
   "name": "RPC",
   "version": "0.2.1",
   "main": "./rpc.tea",
+  "maintainers": [
+    {
+      "name": "Alibaba Cloud SDK",
+      "email": "sdk-team@alibabacloud.com"
+    }
+  ],
   "libraries": {
     "Util": "alibabacloud:Util:*",
     "RPCUtil": "alibabacloud:RPCUtil:*",
@@ -15,9 +21,18 @@
     "java": "com.aliyun:tea-rpc:0.0.1"
   },
   "csharp": {
-    "namespace":"AlibabaCloud.RPCClient"
+    "namespace": "AlibabaCloud.RPCClient"
   },
   "java": {
     "package": "com.aliyun.tearpc"
+  },
+  "php": {
+    "package": "AlibabaCloud.Tea.Rpc",
+    "clientName": "Rpc",
+    "packageInfo": {
+      "name": "alibabacloud/tea-rpc",
+      "desc": "Alibaba Cloud RPC Client",
+      "github": "https://github.com/aliyun/tea-rpc"
+    }
   }
 }
