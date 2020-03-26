@@ -1,7 +1,7 @@
 English | [简体中文](README-CN.md)
 ![](https://aliyunsdk-pages.alicdn.com/icons/AlibabaCloud.svg)
 
-## Alibaba Cloud ROA Util for Java
+## Alibaba Cloud RPC Client for Java
 [![Latest Stable Version](https://img.shields.io/maven-central/v/com.aliyun/tea-rpc.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22com.aliyun%22%20AND%20a:%22tea-rpc%22)
 ## Installation
 

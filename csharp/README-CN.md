@@ -2,7 +2,7 @@
 
 ![](https://aliyunsdk-pages.alicdn.com/icons/AlibabaCloud.svg)
 
-## Alibaba Cloud Tea Rpc for .Net
+## Alibaba Cloud RPC Client for .Net
 
 
 ## 安装

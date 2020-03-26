@@ -2,7 +2,7 @@
 
 ![](https://aliyunsdk-pages.alicdn.com/icons/AlibabaCloud.svg)
 
-# Alibaba Cloud Tea RPC
+# Alibaba Cloud RPC Client
 
 ## 要求
 - 您需要确保本地安装的 go 环境版本大于 1.12.0.
