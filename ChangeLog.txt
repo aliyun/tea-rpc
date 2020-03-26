@@ -1,5 +1,0 @@
-2020-01-08 Version: 0.0.2
-1. update client
-
-2020-01-08 Version: 0.0.1
-1. Release version 0.0.1

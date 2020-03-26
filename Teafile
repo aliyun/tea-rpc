@@ -1,0 +1,23 @@
+{
+  "scope": "alibabacloud",
+  "name": "RPC",
+  "version": "0.2.1",
+  "main": "./rpc.tea",
+  "libraries": {
+    "Util": "alibabacloud:Util:*",
+    "RPCUtil": "alibabacloud:RPCUtil:*",
+    "Credential": "alibabacloud:Credential:*"
+  },
+  "releases": {
+    "ts": "@ali/rpc-client:^0.0.2",
+    "go": "gitlab.alibaba-inc.com/alicloud-sdk/tea-rpc/golang/client:v0.0.1",
+    "csharp": "AlibabaCloud.RPCClient:0.0.1",
+    "java": "com.aliyun:tea-rpc:0.0.1"
+  },
+  "csharp": {
+    "namespace":"AlibabaCloud.RPCClient"
+  },
+  "java": {
+    "package": "com.aliyun.tearpc"
+  }
+}
