@@ -11,6 +11,7 @@ import (
 type Config struct {
 	AccessKeyId          *string `json:"accessKeyId" xml:"accessKeyId"`
 	AccessKeySecret      *string `json:"accessKeySecret" xml:"accessKeySecret"`
+	NetWork              *string `json:"netWork" xml:"netWork"`
 	Type                 *string `json:"type" xml:"type"`
 	SecurityToken        *string `json:"securityToken" xml:"securityToken"`
 	Endpoint             *string `json:"endpoint" xml:"endpoint" require:"true"`
@@ -44,6 +45,11 @@ func (s *Config) SetAccessKeyId(v string) *Config {
 
 func (s *Config) SetAccessKeySecret(v string) *Config {
 	s.AccessKeySecret = &v
+	return s
+}
+
+func (s *Config) SetNetWork(v string) *Config {
+	s.NetWork = &v
 	return s
 }
 
@@ -140,6 +146,7 @@ type Client struct {
 	Socks5Proxy          string
 	Socks5NetWork        string
 	NoProxy              string
+	NetWork              string
 	MaxIdleConns         int
 	OpenPlatformEndpoint string
 	Credential           credential.Credential
@@ -191,6 +198,11 @@ func (client *Client) Init(config *Config) (_err error) {
 		return _err
 	}
 
+	if util.Empty(tea.StringValue(config.NetWork)) {
+		config.NetWork = tea.String("Public")
+	}
+
+	client.NetWork = tea.StringValue(config.NetWork)
 	client.Endpoint = tea.StringValue(config.Endpoint)
 	client.Protocol = tea.StringValue(config.Protocol)
 	client.RegionId = tea.StringValue(config.RegionId)
@@ -208,7 +220,7 @@ func (client *Client) Init(config *Config) (_err error) {
 	return nil
 }
 
-func (client *Client) DoRequest(action string, protocol string, method string, authType string, query map[string]interface{}, body map[string]interface{}, runtime *util.RuntimeOptions) (_result map[string]interface{}, _err error) {
+func (client *Client) DoRequest(action string, protocol string, method string, endpoint string, authType string, query map[string]interface{}, body map[string]interface{}, runtime *util.RuntimeOptions) (_result map[string]interface{}, _err error) {
 	_err = tea.Validate(runtime)
 	if _err != nil {
 		return nil, _err
@@ -260,7 +272,7 @@ func (client *Client) DoRequest(action string, protocol string, method string, a
 			}
 
 			request_.Headers = map[string]string{
-				"host":       rpcutil.GetHost("facebody", client.RegionId, client.Endpoint),
+				"host":       endpoint,
 				"user-agent": client.GetUserAgent(),
 			}
 			if !util.EqualString(authType, "Anonymous") {
