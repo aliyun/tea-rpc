@@ -14,6 +14,7 @@ type @httpsProxy = string
 type @socks5Proxy = string
 type @socks5NetWork = string
 type @noProxy = string
+type @netWork = string
 type @maxIdleConns = number
 type @openPlatformEndpoint = string
 type @credential = Credential
@@ -21,6 +22,7 @@ type @credential = Credential
 model Config {
   accessKeyId?: string,
   accessKeySecret?: string,
+  netWork?: string,
   type?: string,
   securityToken?: string,
   endpoint: string,
@@ -71,6 +73,11 @@ init(config: Config){
     securityToken = config.securityToken,
   };
   @credential = new Credential(credentialConfig);
+
+  if (Util.empty(config.netWork)) {
+    config.netWork = 'Public';
+  }
+  @netWork = config.netWork;
   @endpoint = config.endpoint;
   @protocol = config.protocol;
   @regionId = config.regionId;
@@ -87,7 +94,7 @@ init(config: Config){
   @openPlatformEndpoint = config.openPlatformEndpoint;
 }
 
-api doRequest(action: string, protocol: string, method: string, authType: string, query: object, body: object, runtime: Util.RuntimeOptions): object {
+api doRequest(action: string, protocol: string, method: string, endpoint: string, authType: string, query: object, body: object, runtime: Util.RuntimeOptions): object {
   __request.protocol = Util.defaultString(@protocol, protocol);
   __request.method = method;
   __request.pathname = '/';
@@ -105,7 +112,7 @@ api doRequest(action: string, protocol: string, method: string, authType: string
     __request.body = Util.toFormString(tmp);
   }
   __request.headers = {
-    host = RPCUtil.getHost('facebody', @regionId, @endpoint),
+    host = endpoint,
     user-agent = getUserAgent(),
   };
   if (!Util.equalString(authType, 'Anonymous')) {
