@@ -6,7 +6,9 @@ type @endpoint = string
 type @regionId = string
 type @protocol = string
 type @userAgent = string
-type @endpointType = string
+type @endpointRule = string
+type @endpointMap = map[string]string
+type @suffix = string
 type @readTimeout = number
 type @connectTimeout = number
 type @httpProxy = string
@@ -14,20 +16,24 @@ type @httpsProxy = string
 type @socks5Proxy = string
 type @socks5NetWork = string
 type @noProxy = string
-type @netWork = string
+type @network = string
+type @productId = string
 type @maxIdleConns = number
+type @endpointType = string
 type @openPlatformEndpoint = string
 type @credential = Credential
 
 model Config {
   accessKeyId?: string,
   accessKeySecret?: string,
-  netWork?: string,
+  network?: string,
+  suffix?: string,
   type?: string,
   securityToken?: string,
   endpoint: string,
   protocol?: string,
   regionId: string,
+  productId: string,
   userAgent?: string,
   readTimeout?: number,
   connectTimeout?: number,
@@ -49,20 +55,6 @@ init(config: Config){
     };
   }
 
-  if (Util.empty(config.regionId)) {
-    throw {
-      name = "ParameterMissing",
-      message = "'config.regionId' can not be empty"
-    };
-  }
-
-  if (Util.empty(config.endpoint)) {
-    throw {
-      name = "ParameterMissing",
-      message = "'config.endpoint' can not be empty"
-    };
-  }
-
   if (Util.empty(config.type)) {
     config.type = 'access_key';
   }
@@ -73,11 +65,8 @@ init(config: Config){
     securityToken = config.securityToken,
   };
   @credential = new Credential(credentialConfig);
-
-  if (Util.empty(config.netWork)) {
-    config.netWork = 'Public';
-  }
-  @netWork = config.netWork;
+  @network = config.network;
+  @suffix = config.suffix;
   @endpoint = config.endpoint;
   @protocol = config.protocol;
   @regionId = config.regionId;
@@ -94,7 +83,7 @@ init(config: Config){
   @openPlatformEndpoint = config.openPlatformEndpoint;
 }
 
-api doRequest(action: string, protocol: string, method: string, endpoint: string, authType: string, query: object, body: object, runtime: Util.RuntimeOptions): object {
+api doRequest(action: string, protocol: string, method: string, authType: string, query: object, body: object, runtime: Util.RuntimeOptions): object {
   __request.protocol = Util.defaultString(@protocol, protocol);
   __request.method = method;
   __request.pathname = '/';
@@ -111,8 +100,10 @@ api doRequest(action: string, protocol: string, method: string, endpoint: string
     var tmp = Util.anyifyMapValue(RPCUtil.query(body));
     __request.body = Util.toFormString(tmp);
   }
+  
+  // endpoint is setted in product client
   __request.headers = {
-    host = endpoint,
+    host = @endpoint,
     user-agent = getUserAgent(),
   };
   if (!Util.equalString(authType, 'Anonymous')) {
@@ -184,4 +175,20 @@ async function getSecurityToken(): string{
   }
   var token = @credential.getSecurityToken();
   return token;
+}
+
+function checkConfig(config: Config)throws : void {
+  if (Util.empty(config.regionId)) {
+    throw {
+      name = "ParameterMissing",
+      message = "'config.regionId' can not be empty"
+    };
+  }
+
+  if (Util.empty(@endpointRule) && Util.empty(config.endpoint)) {
+    throw {
+      name = "ParameterMissing",
+      message = "'config.endpoint' can not be empty"
+    };
+  }
 }
