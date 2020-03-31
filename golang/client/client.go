@@ -11,12 +11,14 @@ import (
 type Config struct {
 	AccessKeyId          *string `json:"accessKeyId" xml:"accessKeyId"`
 	AccessKeySecret      *string `json:"accessKeySecret" xml:"accessKeySecret"`
-	NetWork              *string `json:"netWork" xml:"netWork"`
+	Network              *string `json:"network" xml:"network"`
+	Suffix               *string `json:"suffix" xml:"suffix"`
 	Type                 *string `json:"type" xml:"type"`
 	SecurityToken        *string `json:"securityToken" xml:"securityToken"`
 	Endpoint             *string `json:"endpoint" xml:"endpoint" require:"true"`
 	Protocol             *string `json:"protocol" xml:"protocol"`
 	RegionId             *string `json:"regionId" xml:"regionId" require:"true"`
+	ProductId            *string `json:"productId" xml:"productId" require:"true"`
 	UserAgent            *string `json:"userAgent" xml:"userAgent"`
 	ReadTimeout          *int    `json:"readTimeout" xml:"readTimeout"`
 	ConnectTimeout       *int    `json:"connectTimeout" xml:"connectTimeout"`
@@ -48,8 +50,13 @@ func (s *Config) SetAccessKeySecret(v string) *Config {
 	return s
 }
 
-func (s *Config) SetNetWork(v string) *Config {
-	s.NetWork = &v
+func (s *Config) SetNetwork(v string) *Config {
+	s.Network = &v
+	return s
+}
+
+func (s *Config) SetSuffix(v string) *Config {
+	s.Suffix = &v
 	return s
 }
 
@@ -75,6 +82,11 @@ func (s *Config) SetProtocol(v string) *Config {
 
 func (s *Config) SetRegionId(v string) *Config {
 	s.RegionId = &v
+	return s
+}
+
+func (s *Config) SetProductId(v string) *Config {
+	s.ProductId = &v
 	return s
 }
 
@@ -138,7 +150,9 @@ type Client struct {
 	RegionId             string
 	Protocol             string
 	UserAgent            string
-	EndpointType         string
+	EndpointRule         string
+	EndpointMap          map[string]string
+	Suffix               string
 	ReadTimeout          int
 	ConnectTimeout       int
 	HttpProxy            string
@@ -146,8 +160,10 @@ type Client struct {
 	Socks5Proxy          string
 	Socks5NetWork        string
 	NoProxy              string
-	NetWork              string
+	Network              string
+	ProductId            string
 	MaxIdleConns         int
+	EndpointType         string
 	OpenPlatformEndpoint string
 	Credential           credential.Credential
 }
@@ -167,22 +183,6 @@ func (client *Client) Init(config *Config) (_err error) {
 		return _err
 	}
 
-	if util.Empty(tea.StringValue(config.RegionId)) {
-		_err = tea.NewSDKError(map[string]interface{}{
-			"name":    "ParameterMissing",
-			"message": "'config.regionId' can not be empty",
-		})
-		return _err
-	}
-
-	if util.Empty(tea.StringValue(config.Endpoint)) {
-		_err = tea.NewSDKError(map[string]interface{}{
-			"name":    "ParameterMissing",
-			"message": "'config.endpoint' can not be empty",
-		})
-		return _err
-	}
-
 	if util.Empty(tea.StringValue(config.Type)) {
 		config.Type = tea.String("access_key")
 	}
@@ -198,11 +198,8 @@ func (client *Client) Init(config *Config) (_err error) {
 		return _err
 	}
 
-	if util.Empty(tea.StringValue(config.NetWork)) {
-		config.NetWork = tea.String("Public")
-	}
-
-	client.NetWork = tea.StringValue(config.NetWork)
+	client.Network = tea.StringValue(config.Network)
+	client.Suffix = tea.StringValue(config.Suffix)
 	client.Endpoint = tea.StringValue(config.Endpoint)
 	client.Protocol = tea.StringValue(config.Protocol)
 	client.RegionId = tea.StringValue(config.RegionId)
@@ -220,7 +217,7 @@ func (client *Client) Init(config *Config) (_err error) {
 	return nil
 }
 
-func (client *Client) DoRequest(action string, protocol string, method string, endpoint string, authType string, query map[string]interface{}, body map[string]interface{}, runtime *util.RuntimeOptions) (_result map[string]interface{}, _err error) {
+func (client *Client) DoRequest(action string, protocol string, method string, authType string, query map[string]interface{}, body map[string]interface{}, runtime *util.RuntimeOptions) (_result map[string]interface{}, _err error) {
 	_err = tea.Validate(runtime)
 	if _err != nil {
 		return nil, _err
@@ -271,8 +268,9 @@ func (client *Client) DoRequest(action string, protocol string, method string, e
 				request_.Body = tea.ToReader(util.ToFormString(tmp))
 			}
 
+			// endpoint is setted in product client
 			request_.Headers = map[string]string{
-				"host":       endpoint,
+				"host":       client.Endpoint,
 				"user-agent": client.GetUserAgent(),
 			}
 			if !util.EqualString(authType, "Anonymous") {
@@ -339,7 +337,6 @@ func (client *Client) GetUserAgent() (_result string) {
 
 func (client *Client) GetAccessKeyId() (_result string, _err error) {
 	if util.IsUnset(client.Credential) {
-		_result = ""
 		return _result, _err
 	}
 
@@ -354,7 +351,6 @@ func (client *Client) GetAccessKeyId() (_result string, _err error) {
 
 func (client *Client) GetAccessKeySecret() (_result string, _err error) {
 	if util.IsUnset(client.Credential) {
-		_result = ""
 		return _result, _err
 	}
 
@@ -369,7 +365,6 @@ func (client *Client) GetAccessKeySecret() (_result string, _err error) {
 
 func (client *Client) GetSecurityToken() (_result string, _err error) {
 	if util.IsUnset(client.Credential) {
-		_result = ""
 		return _result, _err
 	}
 
@@ -380,4 +375,24 @@ func (client *Client) GetSecurityToken() (_result string, _err error) {
 
 	_result = token
 	return _result, _err
+}
+
+func (client *Client) CheckConfig(config *Config) (_err error) {
+	if util.Empty(tea.StringValue(config.RegionId)) {
+		_err = tea.NewSDKError(map[string]interface{}{
+			"name":    "ParameterMissing",
+			"message": "'config.regionId' can not be empty",
+		})
+		return _err
+	}
+
+	if util.Empty(client.EndpointRule) && util.Empty(tea.StringValue(config.Endpoint)) {
+		_err = tea.NewSDKError(map[string]interface{}{
+			"name":    "ParameterMissing",
+			"message": "'config.endpoint' can not be empty",
+		})
+		return _err
+	}
+
+	return _err
 }
