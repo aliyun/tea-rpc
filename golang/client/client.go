@@ -15,10 +15,10 @@ type Config struct {
 	Suffix               *string `json:"suffix" xml:"suffix"`
 	Type                 *string `json:"type" xml:"type"`
 	SecurityToken        *string `json:"securityToken" xml:"securityToken"`
-	Endpoint             *string `json:"endpoint" xml:"endpoint" require:"true"`
+	Endpoint             *string `json:"endpoint" xml:"endpoint"`
 	Protocol             *string `json:"protocol" xml:"protocol"`
-	RegionId             *string `json:"regionId" xml:"regionId" require:"true"`
-	ProductId            *string `json:"productId" xml:"productId" require:"true"`
+	RegionId             *string `json:"regionId" xml:"regionId"`
+	ProductId            *string `json:"productId" xml:"productId"`
 	UserAgent            *string `json:"userAgent" xml:"userAgent"`
 	ReadTimeout          *int    `json:"readTimeout" xml:"readTimeout"`
 	ConnectTimeout       *int    `json:"connectTimeout" xml:"connectTimeout"`
@@ -258,7 +258,6 @@ func (client *Client) DoRequest(action string, protocol string, method string, a
 			request_.Query = rpcutil.Query(tea.ToMap(map[string]interface{}{
 				"Action":         action,
 				"Format":         "json",
-				"RegionId":       client.RegionId,
 				"Timestamp":      rpcutil.GetTimestamp(),
 				"Version":        "2019-12-30",
 				"SignatureNonce": util.GetNonce(),
@@ -378,14 +377,6 @@ func (client *Client) GetSecurityToken() (_result string, _err error) {
 }
 
 func (client *Client) CheckConfig(config *Config) (_err error) {
-	if util.Empty(tea.StringValue(config.RegionId)) {
-		_err = tea.NewSDKError(map[string]interface{}{
-			"name":    "ParameterMissing",
-			"message": "'config.regionId' can not be empty",
-		})
-		return _err
-	}
-
 	if util.Empty(client.EndpointRule) && util.Empty(tea.StringValue(config.Endpoint)) {
 		_err = tea.NewSDKError(map[string]interface{}{
 			"name":    "ParameterMissing",
