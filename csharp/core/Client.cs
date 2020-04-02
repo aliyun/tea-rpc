@@ -7,6 +7,7 @@ using System.IO;
 using System.Threading.Tasks;
 
 using Tea;
+using Tea.Utils;
 
 using AlibabaCloud.RPCClient.Models;
 
@@ -18,7 +19,9 @@ namespace AlibabaCloud.RPCClient
         private string _regionId;
         private string _protocol;
         private string _userAgent;
-        private string _endpointType;
+        private string _endpointRule;
+        private Dictionary<string, string> _endpointMap;
+        private string _suffix;
         private int? _readTimeout;
         private int? _connectTimeout;
         private string _httpProxy;
@@ -26,7 +29,10 @@ namespace AlibabaCloud.RPCClient
         private string _socks5Proxy;
         private string _socks5NetWork;
         private string _noProxy;
+        private string _network;
+        private string _productId;
         private int? _maxIdleConns;
+        private string _endpointType;
         private string _openPlatformEndpoint;
         private Aliyun.Credentials.Client _credential;
 
@@ -38,22 +44,6 @@ namespace AlibabaCloud.RPCClient
                 {
                     {"name", "ParameterMissing"},
                     {"message", "'config' can not be unset"},
-                });
-            }
-            if (AlibabaCloud.TeaUtil.Common.Empty(config.RegionId))
-            {
-                throw new TeaException(new Dictionary<string, string>
-                {
-                    {"name", "ParameterMissing"},
-                    {"message", "'config.regionId' can not be empty"},
-                });
-            }
-            if (AlibabaCloud.TeaUtil.Common.Empty(config.Endpoint))
-            {
-                throw new TeaException(new Dictionary<string, string>
-                {
-                    {"name", "ParameterMissing"},
-                    {"message", "'config.endpoint' can not be empty"},
                 });
             }
             if (AlibabaCloud.TeaUtil.Common.Empty(config.Type))
@@ -68,6 +58,8 @@ namespace AlibabaCloud.RPCClient
                 SecurityToken = config.SecurityToken,
             };
             this._credential = new Aliyun.Credentials.Client(credentialConfig);
+            this._network = config.Network;
+            this._suffix = config.Suffix;
             this._endpoint = config.Endpoint;
             this._protocol = config.Protocol;
             this._regionId = config.RegionId;
@@ -135,7 +127,6 @@ namespace AlibabaCloud.RPCClient
                         {
                             {"Action", action},
                             {"Format", "json"},
-                            {"RegionId", _regionId},
                             {"Timestamp", AlibabaCloud.Commons.Common.GetTimestamp()},
                             {"Version", "2019-12-30"},
                             {"SignatureNonce", AlibabaCloud.TeaUtil.Common.GetNonce()},
@@ -147,9 +138,10 @@ namespace AlibabaCloud.RPCClient
                         Dictionary<string, object> tmp = AlibabaCloud.TeaUtil.Common.AnyifyMapValue(AlibabaCloud.Commons.Common.Query(body));
                         request_.Body = TeaCore.BytesReadable(AlibabaCloud.TeaUtil.Common.ToFormString(tmp));
                     }
+                    // endpoint is setted in product client
                     request_.Headers = new Dictionary<string, string>
                     {
-                        {"host", AlibabaCloud.Commons.Common.GetHost("facebody", _regionId, _endpoint)},
+                        {"host", _endpoint},
                         {"user-agent", GetUserAgent()},
                     };
                     if (!AlibabaCloud.TeaUtil.Common.EqualString(authType, "Anonymous"))
@@ -175,9 +167,9 @@ namespace AlibabaCloud.RPCClient
                     {
                         throw new TeaException(new Dictionary<string, object>
                         {
-                            {"message", res["Message"]},
+                            {"message", res.Get("Message")},
                             {"data", res},
-                            {"code", res["Code"]},
+                            {"code", res.Get("Code")},
                         });
                     }
                     return res;
@@ -247,7 +239,6 @@ namespace AlibabaCloud.RPCClient
                         {
                             {"Action", action},
                             {"Format", "json"},
-                            {"RegionId", _regionId},
                             {"Timestamp", AlibabaCloud.Commons.Common.GetTimestamp()},
                             {"Version", "2019-12-30"},
                             {"SignatureNonce", AlibabaCloud.TeaUtil.Common.GetNonce()},
@@ -259,9 +250,10 @@ namespace AlibabaCloud.RPCClient
                         Dictionary<string, object> tmp = AlibabaCloud.TeaUtil.Common.AnyifyMapValue(AlibabaCloud.Commons.Common.Query(body));
                         request_.Body = TeaCore.BytesReadable(AlibabaCloud.TeaUtil.Common.ToFormString(tmp));
                     }
+                    // endpoint is setted in product client
                     request_.Headers = new Dictionary<string, string>
                     {
-                        {"host", AlibabaCloud.Commons.Common.GetHost("facebody", _regionId, _endpoint)},
+                        {"host", _endpoint},
                         {"user-agent", GetUserAgent()},
                     };
                     if (!AlibabaCloud.TeaUtil.Common.EqualString(authType, "Anonymous"))
@@ -287,9 +279,9 @@ namespace AlibabaCloud.RPCClient
                     {
                         throw new TeaException(new Dictionary<string, object>
                         {
-                            {"message", res["Message"]},
+                            {"message", res.Get("Message")},
                             {"data", res},
-                            {"code", res["Code"]},
+                            {"code", res.Get("Code")},
                         });
                     }
                     return res;
@@ -372,6 +364,18 @@ namespace AlibabaCloud.RPCClient
             }
             string token = await this._credential.GetSecurityTokenAsync();
             return token;
+        }
+
+        public void CheckConfig(Config config)
+        {
+            if (AlibabaCloud.TeaUtil.Common.Empty(_endpointRule) && AlibabaCloud.TeaUtil.Common.Empty(config.Endpoint))
+            {
+                throw new TeaException(new Dictionary<string, string>
+                {
+                    {"name", "ParameterMissing"},
+                    {"message", "'config.endpoint' can not be empty"},
+                });
+            }
         }
 
     }

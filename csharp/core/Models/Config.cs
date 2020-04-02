@@ -17,6 +17,14 @@ namespace AlibabaCloud.RPCClient.Models
         [Validation(Required=false)]
         public string AccessKeySecret { get; set; }
 
+        [NameInMap("network")]
+        [Validation(Required=false)]
+        public string Network { get; set; }
+
+        [NameInMap("suffix")]
+        [Validation(Required=false)]
+        public string Suffix { get; set; }
+
         [NameInMap("type")]
         [Validation(Required=false)]
         public string Type { get; set; }
@@ -26,7 +34,7 @@ namespace AlibabaCloud.RPCClient.Models
         public string SecurityToken { get; set; }
 
         [NameInMap("endpoint")]
-        [Validation(Required=true)]
+        [Validation(Required=false)]
         public string Endpoint { get; set; }
 
         [NameInMap("protocol")]
@@ -34,8 +42,12 @@ namespace AlibabaCloud.RPCClient.Models
         public string Protocol { get; set; }
 
         [NameInMap("regionId")]
-        [Validation(Required=true)]
+        [Validation(Required=false)]
         public string RegionId { get; set; }
+
+        [NameInMap("productId")]
+        [Validation(Required=false)]
+        public string ProductId { get; set; }
 
         [NameInMap("userAgent")]
         [Validation(Required=false)]
