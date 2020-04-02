@@ -30,10 +30,10 @@ model Config {
   suffix?: string,
   type?: string,
   securityToken?: string,
-  endpoint: string,
+  endpoint?: string,
   protocol?: string,
-  regionId: string,
-  productId: string,
+  regionId?: string,
+  productId?: string,
   userAgent?: string,
   readTimeout?: number,
   connectTimeout?: number,
@@ -90,7 +90,6 @@ api doRequest(action: string, protocol: string, method: string, authType: string
   __request.query = RPCUtil.query({
     Action = action,
     Format = 'json',
-    RegionId = @regionId,
     Timestamp = RPCUtil.getTimestamp(),
     Version = '2019-12-30',
     SignatureNonce = Util.getNonce(),
@@ -100,7 +99,7 @@ api doRequest(action: string, protocol: string, method: string, authType: string
     var tmp = Util.anyifyMapValue(RPCUtil.query(body));
     __request.body = Util.toFormString(tmp);
   }
-  
+
   // endpoint is setted in product client
   __request.headers = {
     host = @endpoint,
@@ -178,13 +177,6 @@ async function getSecurityToken(): string{
 }
 
 function checkConfig(config: Config)throws : void {
-  if (Util.empty(config.regionId)) {
-    throw {
-      name = "ParameterMissing",
-      message = "'config.regionId' can not be empty"
-    };
-  }
-
   if (Util.empty(@endpointRule) && Util.empty(config.endpoint)) {
     throw {
       name = "ParameterMissing",
