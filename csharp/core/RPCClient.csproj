@@ -2,7 +2,7 @@
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net45</TargetFrameworks>
     <RootNamespace>AlibabaCloud.RPCClient</RootNamespace>
-    <Version>0.0.1</Version>
+    <Version>0.0.2</Version>
     <Authors>Alibaba Cloud</Authors>
     <PackageTags>Alibaba Aliyun RPCClient SDK</PackageTags>
     <Copyright>©2009-2019 Alibaba Cloud</Copyright>
@@ -47,7 +47,7 @@
 
   
   <ItemGroup>
-    <PackageReference Include="AlibabaCloud.TeaUtil" Version="0.0.5" />
+    <PackageReference Include="AlibabaCloud.TeaUtil" Version="0.1.1" />
     <PackageReference Include="Aliyun.Credentials" Version="1.2.1" />
     <PackageReference Include="AlibabaCloud.SDK.Common" Version="0.2.3" />
   </ItemGroup>
