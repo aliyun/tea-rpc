@@ -44,14 +44,14 @@ model Config {
   socks5NetWork?: string,
   maxIdleConns?: number,
   endpointType?: string,
-  openPlatformEndpoint?: string,
+  openPlatformEndpoint?: string
 }
 
-init(config: Config){
+init(config: Config) {
   if (Util.isUnset(config)) {
     throw {
-      name = "ParameterMissing",
-      message = "'config' can not be unset"
+      name = 'ParameterMissing',
+      message = '\'config\' can not be unset'
     };
   }
 
@@ -59,10 +59,10 @@ init(config: Config){
     config.type = 'access_key';
   }
   var credentialConfig = new Credential.Config{
-    accessKeyId =  config.accessKeyId,
+    accessKeyId = config.accessKeyId,
     type = config.type,
-    accessKeySecret =  config.accessKeySecret,
-    securityToken = config.securityToken,
+    accessKeySecret = config.accessKeySecret,
+    securityToken = config.securityToken
   };
   @credential = new Credential(credentialConfig);
   @network = config.network;
@@ -93,22 +93,24 @@ api doRequest(action: string, protocol: string, method: string, authType: string
     Timestamp = RPCUtil.getTimestamp(),
     Version = '2019-12-30',
     SignatureNonce = Util.getNonce(),
-    ...query,
+    ...query
   });
+
   if (!Util.isUnset(body)) {
     var tmp = Util.anyifyMapValue(RPCUtil.query(body));
     __request.body = Util.toFormString(tmp);
   }
-
   // endpoint is setted in product client
   __request.headers = {
     host = @endpoint,
-    user-agent = getUserAgent(),
+    user-agent = getUserAgent()
   };
+
   if (!Util.equalString(authType, 'Anonymous')) {
     var accessKeyId = getAccessKeyId();
     var accessKeySecret = getAccessKeySecret();
     var securityToken = getSecurityToken();
+
     if (!Util.empty(securityToken)) {
       __request.query.SecurityToken = securityToken;
     }
@@ -120,12 +122,13 @@ api doRequest(action: string, protocol: string, method: string, authType: string
 } returns {
   var obj = Util.readAsJSON(__response.body);
   var res = Util.assertAsMap(obj);
+
   if (Util.is4xx(__response.statusCode) || Util.is5xx(__response.statusCode)) {
-  throw {
+    throw {
       message = res.Message,
       data = res,
-      code = res.Code,
-    }
+      code = res.Code
+    };
   }
   return res;
 } runtime {
@@ -152,7 +155,7 @@ function getUserAgent(): string {
   return userAgent;
 }
 
-async function getAccessKeyId(): string{
+async function getAccessKeyId(): string {
   if (Util.isUnset(@credential)) {
     return '';
   }
@@ -160,7 +163,7 @@ async function getAccessKeyId(): string{
   return accessKeyId;
 }
 
-async function getAccessKeySecret(): string{
+async function getAccessKeySecret(): string {
   if (Util.isUnset(@credential)) {
     return '';
   }
@@ -168,7 +171,7 @@ async function getAccessKeySecret(): string{
   return secret;
 }
 
-async function getSecurityToken(): string{
+async function getSecurityToken(): string {
   if (Util.isUnset(@credential)) {
     return '';
   }
@@ -179,8 +182,9 @@ async function getSecurityToken(): string{
 function checkConfig(config: Config)throws : void {
   if (Util.empty(@endpointRule) && Util.empty(config.endpoint)) {
     throw {
-      name = "ParameterMissing",
-      message = "'config.endpoint' can not be empty"
+      name = 'ParameterMissing',
+      message = '\'config.endpoint\' can not be empty'
     };
   }
 }
+
