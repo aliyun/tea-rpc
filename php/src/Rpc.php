@@ -16,67 +16,44 @@ use AlibabaCloud\Tea\Utils\Utils\RuntimeOptions;
 
 class Rpc
 {
-    protected $_name = [];
     private $_endpoint;
-
     private $_regionId;
-
     private $_protocol;
-
     private $_userAgent;
-
-    private $_endpointType;
-
+    private $_endpointRule;
+    private $_endpointMap;
+    private $_suffix;
     private $_readTimeout;
-
     private $_connectTimeout;
-
     private $_httpProxy;
-
     private $_httpsProxy;
-
     private $_socks5Proxy;
-
     private $_socks5NetWork;
-
     private $_noProxy;
-
+    private $_network;
+    private $_productId;
     private $_maxIdleConns;
-
+    private $_endpointType;
     private $_openPlatformEndpoint;
-
     private $_credential;
 
     public function __construct(Config $config)
     {
+        $credentialConfig = null;
         if (Utils::isUnset($config)) {
-            throw new TeaError([
-                'name'    => 'ParameterMissing',
-                'message' => "'config' can not be unset",
+            $config            = new Config([]);
+            $this->_credential = new Credential(null);
+        } else {
+            $credentialConfig = new \AlibabaCloud\Credentials\Credential\Config([
+                'accessKeyId'     => $config->accessKeyId,
+                'type'            => $config->type,
+                'accessKeySecret' => $config->accessKeySecret,
+                'securityToken'   => $config->securityToken,
             ]);
+            $this->_credential = new Credential($credentialConfig);
         }
-        if (Utils::_empty($config->regionId)) {
-            throw new TeaError([
-                'name'    => 'ParameterMissing',
-                'message' => "'config.regionId' can not be empty",
-            ]);
-        }
-        if (Utils::_empty($config->endpoint)) {
-            throw new TeaError([
-                'name'    => 'ParameterMissing',
-                'message' => "'config.endpoint' can not be empty",
-            ]);
-        }
-        if (Utils::_empty($config->type)) {
-            $config->type = 'access_key';
-        }
-        $credentialConfig = new \AlibabaCloud\Credentials\Credential\Config([
-            'accessKeyId'     => $config->accessKeyId,
-            'type'            => $config->type,
-            'accessKeySecret' => $config->accessKeySecret,
-            'securityToken'   => $config->securityToken,
-        ]);
-        $this->_credential           = new Credential($credentialConfig);
+        $this->_network              = $config->network;
+        $this->_suffix               = $config->suffix;
         $this->_endpoint             = $config->endpoint;
         $this->_protocol             = $config->protocol;
         $this->_regionId             = $config->regionId;
@@ -146,7 +123,6 @@ class Rpc
                 $_request->query    = RpcUtils::query(Tea::merge([
                     'Action'         => $action,
                     'Format'         => 'json',
-                    'RegionId'       => $this->_regionId,
                     'Timestamp'      => RpcUtils::getTimestamp(),
                     'Version'        => '2019-12-30',
                     'SignatureNonce' => Utils::getNonce(),
@@ -155,8 +131,9 @@ class Rpc
                     $tmp            = Utils::anyifyMapValue(RpcUtils::query($body));
                     $_request->body = Utils::toFormString($tmp);
                 }
+                // endpoint is setted in product client
                 $_request->headers = [
-                    'host'       => RpcUtils::getHost('facebody', $this->_regionId, $this->_endpoint),
+                    'host'       => $this->_endpoint,
                     'user-agent' => $this->getUserAgent(),
                 ];
                 if (!Utils::equalString($authType, 'Anonymous')) {
@@ -246,5 +223,18 @@ class Rpc
         }
 
         return $this->_credential->getSecurityToken();
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function checkConfig(Config $config)
+    {
+        if (Utils::_empty($this->_endpointRule) && Utils::_empty($config->endpoint)) {
+            throw new TeaError([
+                'name'    => 'ParameterMissing',
+                'message' => "'config.endpoint' can not be empty",
+            ]);
+        }
     }
 }
