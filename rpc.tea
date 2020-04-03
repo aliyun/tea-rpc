@@ -48,23 +48,19 @@ model Config {
 }
 
 init(config: Config) {
+  var credentialConfig : Credential.Config = null;
   if (Util.isUnset(config)) {
-    throw {
-      name = 'ParameterMissing',
-      message = '\'config\' can not be unset'
+    config = new Config{};
+    @credential = new Credential(null);
+  } else {
+    credentialConfig = new Credential.Config{
+      accessKeyId = config.accessKeyId,
+      type = config.type,
+      accessKeySecret = config.accessKeySecret,
+      securityToken = config.securityToken
     };
-  }
-
-  if (Util.empty(config.type)) {
-    config.type = 'access_key';
-  }
-  var credentialConfig = new Credential.Config{
-    accessKeyId = config.accessKeyId,
-    type = config.type,
-    accessKeySecret = config.accessKeySecret,
-    securityToken = config.securityToken
-  };
-  @credential = new Credential(credentialConfig);
+    @credential = new Credential(credentialConfig);
+  } 
   @network = config.network;
   @suffix = config.suffix;
   @endpoint = config.endpoint;
