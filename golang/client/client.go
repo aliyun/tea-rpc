@@ -175,27 +175,26 @@ func NewClient(config *Config) (*Client, error) {
 }
 
 func (client *Client) Init(config *Config) (_err error) {
+	credentialConfig := &credential.Config{}
 	if util.IsUnset(tea.ToMap(config)) {
-		_err = tea.NewSDKError(map[string]interface{}{
-			"name":    "ParameterMissing",
-			"message": "'config' can not be unset",
-		})
-		return _err
-	}
+		config = &Config{}
+		client.Credential, _err = credential.NewCredential(nil)
+		if _err != nil {
+			return _err
+		}
 
-	if util.Empty(tea.StringValue(config.Type)) {
-		config.Type = tea.String("access_key")
-	}
+	} else {
+		credentialConfig = &credential.Config{
+			AccessKeyId:     config.AccessKeyId,
+			Type:            config.Type,
+			AccessKeySecret: config.AccessKeySecret,
+			SecurityToken:   config.SecurityToken,
+		}
+		client.Credential, _err = credential.NewCredential(credentialConfig)
+		if _err != nil {
+			return _err
+		}
 
-	credentialConfig := &credential.Config{
-		AccessKeyId:     config.AccessKeyId,
-		Type:            config.Type,
-		AccessKeySecret: config.AccessKeySecret,
-		SecurityToken:   config.SecurityToken,
-	}
-	client.Credential, _err = credential.NewCredential(credentialConfig)
-	if _err != nil {
-		return _err
 	}
 
 	client.Network = tea.StringValue(config.Network)
