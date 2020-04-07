@@ -10,7 +10,9 @@ public class Client {
     public String _regionId;
     public String _protocol;
     public String _userAgent;
-    public String _endpointType;
+    public String _endpointRule;
+    public java.util.Map<String, String> _endpointMap;
+    public String _suffix;
     public Integer _readTimeout;
     public Integer _connectTimeout;
     public String _httpProxy;
@@ -18,42 +20,29 @@ public class Client {
     public String _socks5Proxy;
     public String _socks5NetWork;
     public String _noProxy;
+    public String _network;
+    public String _productId;
     public Integer _maxIdleConns;
+    public String _endpointType;
     public String _openPlatformEndpoint;
     public com.aliyun.credentials.Client _credential;
     public Client(Config config) throws Exception {
+        com.aliyun.credentials.models.Config credentialConfig = null;
         if (com.aliyun.teautil.Common.isUnset(TeaModel.buildMap(config))) {
-            throw new TeaException(TeaConverter.buildMap(
-                new TeaPair("name", "ParameterMissing"),
-                new TeaPair("message", "'config' can not be unset")
+            config = new Config();
+            this._credential = new com.aliyun.credentials.Client(null);
+        } else {
+            credentialConfig = com.aliyun.credentials.models.Config.build(TeaConverter.buildMap(
+                new TeaPair("accessKeyId", config.accessKeyId),
+                new TeaPair("type", config.type),
+                new TeaPair("accessKeySecret", config.accessKeySecret),
+                new TeaPair("securityToken", config.securityToken)
             ));
+            this._credential = new com.aliyun.credentials.Client(credentialConfig);
         }
 
-        if (com.aliyun.teautil.Common.empty(config.regionId)) {
-            throw new TeaException(TeaConverter.buildMap(
-                new TeaPair("name", "ParameterMissing"),
-                new TeaPair("message", "'config.regionId' can not be empty")
-            ));
-        }
-
-        if (com.aliyun.teautil.Common.empty(config.endpoint)) {
-            throw new TeaException(TeaConverter.buildMap(
-                new TeaPair("name", "ParameterMissing"),
-                new TeaPair("message", "'config.endpoint' can not be empty")
-            ));
-        }
-
-        if (com.aliyun.teautil.Common.empty(config.type)) {
-            config.type = "access_key";
-        }
-
-        com.aliyun.credentials.models.Config credentialConfig = com.aliyun.credentials.models.Config.build(TeaConverter.buildMap(
-            new TeaPair("accessKeyId", config.accessKeyId),
-            new TeaPair("type", config.type),
-            new TeaPair("accessKeySecret", config.accessKeySecret),
-            new TeaPair("securityToken", config.securityToken)
-        ));
-        this._credential = new com.aliyun.credentials.Client(credentialConfig);
+        this._network = config.network;
+        this._suffix = config.suffix;
         this._endpoint = config.endpoint;
         this._protocol = config.protocol;
         this._regionId = config.regionId;
@@ -110,7 +99,6 @@ public class Client {
                     TeaConverter.buildMap(
                         new TeaPair("Action", action),
                         new TeaPair("Format", "json"),
-                        new TeaPair("RegionId", _regionId),
                         new TeaPair("Timestamp", com.aliyun.common.Common.getTimestamp()),
                         new TeaPair("Version", "2019-12-30"),
                         new TeaPair("SignatureNonce", com.aliyun.teautil.Common.getNonce())
@@ -122,8 +110,9 @@ public class Client {
                     request_.body = Tea.toReadable(com.aliyun.teautil.Common.toFormString(tmp));
                 }
 
+                // endpoint is setted in product client
                 request_.headers = TeaConverter.buildMap(
-                    new TeaPair("host", com.aliyun.common.Common.getHost("facebody", _regionId, _endpoint)),
+                    new TeaPair("host", _endpoint),
                     new TeaPair("user-agent", this.getUserAgent())
                 );
                 if (!com.aliyun.teautil.Common.equalString(authType, "Anonymous")) {
@@ -195,5 +184,15 @@ public class Client {
 
         String token = _credential.getSecurityToken();
         return token;
+    }
+
+    public void checkConfig(Config config) throws Exception {
+        if (com.aliyun.teautil.Common.empty(_endpointRule) && com.aliyun.teautil.Common.empty(config.endpoint)) {
+            throw new TeaException(TeaConverter.buildMap(
+                new TeaPair("name", "ParameterMissing"),
+                new TeaPair("message", "'config.endpoint' can not be empty")
+            ));
+        }
+
     }
 }

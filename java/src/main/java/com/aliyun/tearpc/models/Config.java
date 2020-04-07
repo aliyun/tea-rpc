@@ -10,6 +10,12 @@ public class Config extends TeaModel {
     @NameInMap("accessKeySecret")
     public String accessKeySecret;
 
+    @NameInMap("network")
+    public String network;
+
+    @NameInMap("suffix")
+    public String suffix;
+
     @NameInMap("type")
     public String type;
 
@@ -17,15 +23,16 @@ public class Config extends TeaModel {
     public String securityToken;
 
     @NameInMap("endpoint")
-    @Validation(required = true)
     public String endpoint;
 
     @NameInMap("protocol")
     public String protocol;
 
     @NameInMap("regionId")
-    @Validation(required = true)
     public String regionId;
+
+    @NameInMap("productId")
+    public String productId;
 
     @NameInMap("userAgent")
     public String userAgent;
