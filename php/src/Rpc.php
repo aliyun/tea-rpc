@@ -74,6 +74,7 @@ class Rpc
      * @param string $action
      * @param string $protocol
      * @param string $method
+     * @param string $version
      * @param string $authType
      * @param object $query
      * @param object $body
@@ -82,7 +83,7 @@ class Rpc
      *
      * @return array|object
      */
-    public function doRequest($action, $protocol, $method, $authType, $query, $body, RuntimeOptions $runtime)
+    public function doRequest($action, $protocol, $method, $version, $authType, $query, $body, RuntimeOptions $runtime)
     {
         $runtime->validate();
         $_runtime = [
@@ -124,7 +125,7 @@ class Rpc
                     'Action'         => $action,
                     'Format'         => 'json',
                     'Timestamp'      => RpcUtils::getTimestamp(),
-                    'Version'        => '2019-12-30',
+                    'Version'        => $version,
                     'SignatureNonce' => Utils::getNonce(),
                 ], $query));
                 if (!Utils::isUnset($body)) {
@@ -140,7 +141,7 @@ class Rpc
                     $accessKeyId     = $this->getAccessKeyId();
                     $accessKeySecret = $this->getAccessKeySecret();
                     $securityToken   = $this->getSecurityToken();
-                    if (!Utils::_empty($securityToken)) {
+                    if (!Utils::emptySuffix($securityToken)) {
                         $_request->query['SecurityToken'] = $securityToken;
                     }
                     $_request->query['SignatureMethod']  = 'HMAC-SHA1';
@@ -230,7 +231,7 @@ class Rpc
      */
     public function checkConfig(Config $config)
     {
-        if (Utils::_empty($this->_endpointRule) && Utils::_empty($config->endpoint)) {
+        if (Utils::emptySuffix($this->_endpointRule) && Utils::emptySuffix($config->endpoint)) {
             throw new TeaError([
                 'name'    => 'ParameterMissing',
                 'message' => "'config.endpoint' can not be empty",
