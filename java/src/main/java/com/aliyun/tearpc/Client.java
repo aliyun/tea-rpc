@@ -59,7 +59,7 @@ public class Client {
         this._openPlatformEndpoint = config.openPlatformEndpoint;
     }
 
-    public java.util.Map<String, Object> doRequest(String action, String protocol, String method, String authType, java.util.Map<String, Object> query, java.util.Map<String, Object> body, com.aliyun.teautil.models.RuntimeOptions runtime) throws Exception {
+    public java.util.Map<String, Object> doRequest(String action, String protocol, String method, String version, String authType, java.util.Map<String, Object> query, java.util.Map<String, Object> body, com.aliyun.teautil.models.RuntimeOptions runtime) throws Exception {
         java.util.Map<String, Object> runtime_ = TeaConverter.buildMap(
             new TeaPair("timeouted", "retry"),
             new TeaPair("readTimeout", com.aliyun.teautil.Common.defaultNumber(runtime.readTimeout, _readTimeout)),
@@ -100,7 +100,7 @@ public class Client {
                         new TeaPair("Action", action),
                         new TeaPair("Format", "json"),
                         new TeaPair("Timestamp", com.aliyun.common.Common.getTimestamp()),
-                        new TeaPair("Version", "2019-12-30"),
+                        new TeaPair("Version", version),
                         new TeaPair("SignatureNonce", com.aliyun.teautil.Common.getNonce())
                     ),
                     query

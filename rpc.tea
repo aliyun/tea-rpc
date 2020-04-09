@@ -79,7 +79,7 @@ init(config: Config) {
   @openPlatformEndpoint = config.openPlatformEndpoint;
 }
 
-api doRequest(action: string, protocol: string, method: string, authType: string, query: object, body: object, runtime: Util.RuntimeOptions): object {
+api doRequest(action: string, protocol: string, method: string, version: string, authType: string, query: object, body: object, runtime: Util.RuntimeOptions): object {
   __request.protocol = Util.defaultString(@protocol, protocol);
   __request.method = method;
   __request.pathname = '/';
@@ -87,7 +87,7 @@ api doRequest(action: string, protocol: string, method: string, authType: string
     Action = action,
     Format = 'json',
     Timestamp = RPCUtil.getTimestamp(),
-    Version = '2019-12-30',
+    Version = version,
     SignatureNonce = Util.getNonce(),
     ...query
   });

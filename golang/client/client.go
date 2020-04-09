@@ -216,7 +216,7 @@ func (client *Client) Init(config *Config) (_err error) {
 	return nil
 }
 
-func (client *Client) DoRequest(action string, protocol string, method string, authType string, query map[string]interface{}, body map[string]interface{}, runtime *util.RuntimeOptions) (_result map[string]interface{}, _err error) {
+func (client *Client) DoRequest(action string, protocol string, method string, version string, authType string, query map[string]interface{}, body map[string]interface{}, runtime *util.RuntimeOptions) (_result map[string]interface{}, _err error) {
 	_err = tea.Validate(runtime)
 	if _err != nil {
 		return nil, _err
@@ -258,7 +258,7 @@ func (client *Client) DoRequest(action string, protocol string, method string, a
 				"Action":         action,
 				"Format":         "json",
 				"Timestamp":      rpcutil.GetTimestamp(),
-				"Version":        "2019-12-30",
+				"Version":        version,
 				"SignatureNonce": util.GetNonce(),
 			}, query))
 			if !util.IsUnset(body) {
