@@ -1,5 +1,8 @@
+### 2020-04-09 Version 0.0.4
+* Recodegen
+
 ### 2020-04-08 Version 0.0.3
-  * Fixed filed protected
+* Fixed filed protected
 
 ### 2020-04-02 Version 0.0.2
 * Recodegen
