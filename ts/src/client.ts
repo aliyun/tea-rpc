@@ -140,7 +140,7 @@ export default class Client {
     this._openPlatformEndpoint = config.openPlatformEndpoint;
   }
 
-  async doRequest(action: string, protocol: string, method: string, authType: string, query: {[key: string]: any}, body: {[key: string]: any}, runtime: $Util.RuntimeOptions): Promise<{[key: string]: any}> {
+  async doRequest(action: string, protocol: string, method: string, version: string, authType: string, query: {[key: string]: any}, body: {[key: string]: any}, runtime: $Util.RuntimeOptions): Promise<{[key: string]: any}> {
     let _runtime: { [key: string]: any } = {
       timeouted: "retry",
       readTimeout: Util.defaultNumber(runtime.readTimeout, this._readTimeout),
@@ -181,7 +181,7 @@ export default class Client {
           Action: action,
           Format: "json",
           Timestamp: RPCUtil.getTimestamp(),
-          Version: "2019-12-30",
+          Version: version,
           SignatureNonce: Util.getNonce(),
           ...query,
         });
