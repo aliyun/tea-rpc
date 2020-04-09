@@ -73,7 +73,7 @@ namespace AlibabaCloud.RPCClient
             this._openPlatformEndpoint = config.OpenPlatformEndpoint;
         }
 
-        public Dictionary<string, object> DoRequest(string action, string protocol, string method, string authType, Dictionary<string, object> query, Dictionary<string, object> body, AlibabaCloud.TeaUtil.Models.RuntimeOptions runtime)
+        public Dictionary<string, object> DoRequest(string action, string protocol, string method, string version, string authType, Dictionary<string, object> query, Dictionary<string, object> body, AlibabaCloud.TeaUtil.Models.RuntimeOptions runtime)
         {
             Dictionary<string, object> runtime_ = new Dictionary<string, object>
             {
@@ -125,7 +125,7 @@ namespace AlibabaCloud.RPCClient
                             {"Action", action},
                             {"Format", "json"},
                             {"Timestamp", AlibabaCloud.Commons.Common.GetTimestamp()},
-                            {"Version", "2019-12-30"},
+                            {"Version", version},
                             {"SignatureNonce", AlibabaCloud.TeaUtil.Common.GetNonce()},
                         },
                         query
@@ -185,7 +185,7 @@ namespace AlibabaCloud.RPCClient
             throw new TeaUnretryableException(_lastRequest, _lastException);
         }
 
-        public async Task<Dictionary<string, object>> DoRequestAsync(string action, string protocol, string method, string authType, Dictionary<string, object> query, Dictionary<string, object> body, AlibabaCloud.TeaUtil.Models.RuntimeOptions runtime)
+        public async Task<Dictionary<string, object>> DoRequestAsync(string action, string protocol, string method, string version, string authType, Dictionary<string, object> query, Dictionary<string, object> body, AlibabaCloud.TeaUtil.Models.RuntimeOptions runtime)
         {
             Dictionary<string, object> runtime_ = new Dictionary<string, object>
             {
@@ -237,7 +237,7 @@ namespace AlibabaCloud.RPCClient
                             {"Action", action},
                             {"Format", "json"},
                             {"Timestamp", AlibabaCloud.Commons.Common.GetTimestamp()},
-                            {"Version", "2019-12-30"},
+                            {"Version", version},
                             {"SignatureNonce", AlibabaCloud.TeaUtil.Common.GetNonce()},
                         },
                         query
