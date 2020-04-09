@@ -2,7 +2,7 @@
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net45</TargetFrameworks>
     <RootNamespace>AlibabaCloud.RPCClient</RootNamespace>
-    <Version>0.0.3</Version>
+    <Version>0.0.4</Version>
     <Authors>Alibaba Cloud</Authors>
     <PackageTags>Alibaba Aliyun RPCClient SDK</PackageTags>
     <Copyright>©2009-2019 Alibaba Cloud</Copyright>
