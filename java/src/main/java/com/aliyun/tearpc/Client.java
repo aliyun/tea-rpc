@@ -105,6 +105,10 @@ public class Client {
                     ),
                     query
                 ));
+                java.util.Map<String, String> signedParam = TeaConverter.merge(String.class,
+                    request_.query,
+                    com.aliyun.common.Common.query(body)
+                );
                 if (!com.aliyun.teautil.Common.isUnset(body)) {
                     java.util.Map<String, Object> tmp = com.aliyun.teautil.Common.anyifyMapValue(com.aliyun.common.Common.query(body));
                     request_.body = Tea.toReadable(com.aliyun.teautil.Common.toFormString(tmp));
@@ -126,7 +130,7 @@ public class Client {
                     request_.query.put("SignatureMethod", "HMAC-SHA1");
                     request_.query.put("SignatureVersion", "1.0");
                     request_.query.put("AccessKeyId", accessKeyId);
-                    request_.query.put("Signature", com.aliyun.common.Common.getSignature(request_, accessKeySecret));
+                    request_.query.put("Signature", com.aliyun.common.Common.getSignature(signedParam, request_.method, accessKeySecret));
                 }
 
                 _lastRequest = request_;
