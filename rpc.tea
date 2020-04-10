@@ -91,10 +91,6 @@ api doRequest(action: string, protocol: string, method: string, version: string,
     SignatureNonce = Util.getNonce(),
     ...query
   });
-  var signedParam = {
-    ...__request.query,
-    ...RPCUtil.query(body)
-  };
 
   if (!Util.isUnset(body)) {
     var tmp = Util.anyifyMapValue(RPCUtil.query(body));
@@ -117,7 +113,11 @@ api doRequest(action: string, protocol: string, method: string, version: string,
     __request.query.SignatureMethod = 'HMAC-SHA1';
     __request.query.SignatureVersion = '1.0';
     __request.query.AccessKeyId = accessKeyId;
-    __request.query.Signature = RPCUtil.getSignature(signedParam, __request.method, accessKeySecret);
+    var signedParam = {
+      ...__request.query,
+      ...RPCUtil.query(body)
+    };
+    __request.query.Signature = RPCUtil.getSignatureV1(signedParam, __request.method, accessKeySecret);
   }
 } returns {
   var obj = Util.readAsJSON(__response.body);
