@@ -11,3 +11,4 @@ go.sum
 .idea/
 target/
 *.iml
+*.sh

@@ -128,10 +128,6 @@ class Rpc
                     'Version'        => $version,
                     'SignatureNonce' => Utils::getNonce(),
                 ], $query));
-                $signedParam = Tea::merge(
-                    $_request->query,
-                    RpcUtils::query($body)
-                );
                 if (!Utils::isUnset($body)) {
                     $tmp            = Utils::anyifyMapValue(RpcUtils::query($body));
                     $_request->body = Utils::toFormString($tmp);
@@ -151,7 +147,11 @@ class Rpc
                     $_request->query['SignatureMethod']  = 'HMAC-SHA1';
                     $_request->query['SignatureVersion'] = '1.0';
                     $_request->query['AccessKeyId']      = $accessKeyId;
-                    $_request->query['Signature']        = RpcUtils::getSignature($signedParam, $_request->method, $accessKeySecret);
+                    $signedParam                         = Tea::merge(
+                        $_request->query,
+                        RpcUtils::query($body)
+                    );
+                    $_request->query['Signature'] = RpcUtils::getSignatureV1($signedParam, $_request->method, $accessKeySecret);
                 }
                 $_lastRequest = $_request;
                 $_response    = Tea::send($_request, $_runtime);
