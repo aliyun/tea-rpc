@@ -128,6 +128,10 @@ class Rpc
                     'Version'        => $version,
                     'SignatureNonce' => Utils::getNonce(),
                 ], $query));
+                $signedParam = Tea::merge(
+                    $_request->query,
+                    RpcUtils::query($body)
+                );
                 if (!Utils::isUnset($body)) {
                     $tmp            = Utils::anyifyMapValue(RpcUtils::query($body));
                     $_request->body = Utils::toFormString($tmp);
@@ -141,13 +145,13 @@ class Rpc
                     $accessKeyId     = $this->getAccessKeyId();
                     $accessKeySecret = $this->getAccessKeySecret();
                     $securityToken   = $this->getSecurityToken();
-                    if (!Utils::emptySuffix($securityToken)) {
+                    if (!Utils::emptyWithSuffix($securityToken)) {
                         $_request->query['SecurityToken'] = $securityToken;
                     }
                     $_request->query['SignatureMethod']  = 'HMAC-SHA1';
                     $_request->query['SignatureVersion'] = '1.0';
                     $_request->query['AccessKeyId']      = $accessKeyId;
-                    $_request->query['Signature']        = RpcUtils::getSignature($_request, $accessKeySecret);
+                    $_request->query['Signature']        = RpcUtils::getSignature($signedParam, $_request->method, $accessKeySecret);
                 }
                 $_lastRequest = $_request;
                 $_response    = Tea::send($_request, $_runtime);
@@ -231,7 +235,7 @@ class Rpc
      */
     public function checkConfig(Config $config)
     {
-        if (Utils::emptySuffix($this->_endpointRule) && Utils::emptySuffix($config->endpoint)) {
+        if (Utils::emptyWithSuffix($this->_endpointRule) && Utils::emptyWithSuffix($config->endpoint)) {
             throw new TeaError([
                 'name'    => 'ParameterMissing',
                 'message' => "'config.endpoint' can not be empty",
