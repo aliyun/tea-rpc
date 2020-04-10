@@ -261,8 +261,6 @@ func (client *Client) DoRequest(action string, protocol string, method string, v
 				"Version":        version,
 				"SignatureNonce": util.GetNonce(),
 			}, query))
-			signedParam := tea.Merge(request_.Query,
-				rpcutil.Query(body))
 			if !util.IsUnset(body) {
 				tmp := util.AnyifyMapValue(rpcutil.Query(body))
 				request_.Body = tea.ToReader(util.ToFormString(tmp))
@@ -296,7 +294,9 @@ func (client *Client) DoRequest(action string, protocol string, method string, v
 				request_.Query["SignatureMethod"] = "HMAC-SHA1"
 				request_.Query["SignatureVersion"] = "1.0"
 				request_.Query["AccessKeyId"] = accessKeyId
-				request_.Query["Signature"] = rpcutil.GetSignature(signedParam, request_.Method, accessKeySecret)
+				signedParam := tea.Merge(request_.Query,
+					rpcutil.Query(body))
+				request_.Query["Signature"] = rpcutil.GetSignatureV1(signedParam, request_.Method, accessKeySecret)
 			}
 
 			response_, _err := tea.DoRequest(request_, _runtime)
