@@ -1,7 +1,7 @@
 {
   "scope": "alibabacloud",
   "name": "RPC",
-  "version": "0.3.6",
+  "version": "0.3.7",
   "main": "./rpc.tea",
   "maintainers": [
     {
