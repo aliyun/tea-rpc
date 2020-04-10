@@ -4,7 +4,7 @@
 
     <groupId>com.aliyun</groupId>
     <artifactId>tea-rpc</artifactId>
-    <version>0.0.3</version>
+    <version>0.0.4</version>
     <packaging>jar</packaging>
     <name>tea-rpc</name>
     <description>Aliyun Tea Rpc for Java
@@ -59,7 +59,7 @@
         <dependency>
             <groupId>com.aliyun</groupId>
             <artifactId>tea-util</artifactId>
-            <version>0.1.6</version>
+            <version>RELEASE</version>
         </dependency>
         <dependency>
             <groupId>com.aliyun</groupId>
