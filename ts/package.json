@@ -1,6 +1,6 @@
 {
   "name": "@alicloud/rpc-client",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "",
   "main": "dist/client.js",
   "scripts": {
@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "@alicloud/credentials": "^2.0.1",
-    "@alicloud/rpc-util": "^0.0.3",
+    "@alicloud/rpc-util": "^0.0.4",
     "@alicloud/tea-typescript": "^1.5.1",
     "@alicloud/tea-util": "^1.2.2"
   },

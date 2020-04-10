@@ -206,7 +206,11 @@ export default class Client {
           request_.query["SignatureMethod"] = "HMAC-SHA1";
           request_.query["SignatureVersion"] = "1.0";
           request_.query["AccessKeyId"] = accessKeyId;
-          request_.query["Signature"] = RPCUtil.getSignature(request_, accessKeySecret);
+          let signedParam = {
+            ...request_.query,
+            ...RPCUtil.query(body),
+          };
+          request_.query["Signature"] = RPCUtil.getSignatureV1(signedParam, request_.method, accessKeySecret);
         }
 
         _lastRequest = request_;
