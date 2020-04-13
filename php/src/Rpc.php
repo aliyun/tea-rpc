@@ -104,9 +104,10 @@ class Rpc
             ],
             'ignoreSSL' => $runtime->ignoreSSL,
         ];
-        $_lastRequest = null;
-        $_now         = time();
-        $_retryTimes  = 0;
+        $_lastRequest   = null;
+        $_lastException = null;
+        $_now           = time();
+        $_retryTimes    = 0;
         while (Tea::allowRetry($_runtime['retry'], $_retryTimes, $_now)) {
             if ($_retryTimes > 0) {
                 $_backoffTime = Tea::getBackoffTime($_runtime['backoff'], $_retryTimes);
@@ -141,7 +142,7 @@ class Rpc
                     $accessKeyId     = $this->getAccessKeyId();
                     $accessKeySecret = $this->getAccessKeySecret();
                     $securityToken   = $this->getSecurityToken();
-                    if (!Utils::emptyWithSuffix($securityToken)) {
+                    if (!Utils::empty_($securityToken)) {
                         $_request->query['SecurityToken'] = $securityToken;
                     }
                     $_request->query['SignatureMethod']  = 'HMAC-SHA1';
@@ -167,7 +168,9 @@ class Rpc
 
                 return $res;
             } catch (\Exception $e) {
-                if (Tea::isRetryable($_runtime['retry'], $_retryTimes)) {
+                if (Tea::isRetryable($e)) {
+                    $_lastException = $e;
+
                     continue;
                 }
 
@@ -175,7 +178,7 @@ class Rpc
             }
         }
 
-        throw new TeaUnableRetryError($_lastRequest);
+        throw new TeaUnableRetryError($_lastRequest, $_lastException);
     }
 
     /**
@@ -235,7 +238,7 @@ class Rpc
      */
     public function checkConfig(Config $config)
     {
-        if (Utils::emptyWithSuffix($this->_endpointRule) && Utils::emptyWithSuffix($config->endpoint)) {
+        if (Utils::empty_($this->_endpointRule) && Utils::empty_($config->endpoint)) {
             throw new TeaError([
                 'name'    => 'ParameterMissing',
                 'message' => "'config.endpoint' can not be empty",
