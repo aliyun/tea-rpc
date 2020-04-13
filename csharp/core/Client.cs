@@ -153,7 +153,12 @@ namespace AlibabaCloud.RPCClient
                         request_.Query["SignatureMethod"] = "HMAC-SHA1";
                         request_.Query["SignatureVersion"] = "1.0";
                         request_.Query["AccessKeyId"] = accessKeyId;
-                        request_.Query["Signature"] = AlibabaCloud.Commons.Common.GetSignature(request_, accessKeySecret);
+                        Dictionary<string, string> signedParam = TeaConverter.merge<string>
+                        (
+                            request_.Query,
+                            AlibabaCloud.Commons.Common.Query(body)
+                        );
+                        request_.Query["Signature"] = AlibabaCloud.Commons.Common.GetSignatureV1(signedParam, request_.Method, accessKeySecret);
                     }
                     _lastRequest = request_;
                     TeaResponse response_ = TeaCore.DoAction(request_, runtime_);
@@ -265,7 +270,12 @@ namespace AlibabaCloud.RPCClient
                         request_.Query["SignatureMethod"] = "HMAC-SHA1";
                         request_.Query["SignatureVersion"] = "1.0";
                         request_.Query["AccessKeyId"] = accessKeyId;
-                        request_.Query["Signature"] = AlibabaCloud.Commons.Common.GetSignature(request_, accessKeySecret);
+                        Dictionary<string, string> signedParam = TeaConverter.merge<string>
+                        (
+                            request_.Query,
+                            AlibabaCloud.Commons.Common.Query(body)
+                        );
+                        request_.Query["Signature"] = AlibabaCloud.Commons.Common.GetSignatureV1(signedParam, request_.Method, accessKeySecret);
                     }
                     _lastRequest = request_;
                     TeaResponse response_ = await TeaCore.DoActionAsync(request_, runtime_);
