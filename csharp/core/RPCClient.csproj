@@ -49,6 +49,6 @@
   <ItemGroup>
     <PackageReference Include="AlibabaCloud.TeaUtil" Version="0.1.2" />
     <PackageReference Include="Aliyun.Credentials" Version="1.2.1" />
-    <PackageReference Include="AlibabaCloud.SDK.Common" Version="0.2.3" />
+    <PackageReference Include="AlibabaCloud.SDK.Common" Version="0.2.4" />
   </ItemGroup>
 </Project>
