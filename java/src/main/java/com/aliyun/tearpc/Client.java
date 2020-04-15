@@ -105,16 +105,17 @@ public class Client {
                     ),
                     query
                 ));
-                if (!com.aliyun.teautil.Common.isUnset(body)) {
-                    java.util.Map<String, Object> tmp = com.aliyun.teautil.Common.anyifyMapValue(com.aliyun.common.Common.query(body));
-                    request_.body = Tea.toReadable(com.aliyun.teautil.Common.toFormString(tmp));
-                }
-
                 // endpoint is setted in product client
                 request_.headers = TeaConverter.buildMap(
                     new TeaPair("host", _endpoint),
                     new TeaPair("user-agent", this.getUserAgent())
                 );
+                if (!com.aliyun.teautil.Common.isUnset(body)) {
+                    java.util.Map<String, Object> tmp = com.aliyun.teautil.Common.anyifyMapValue(com.aliyun.common.Common.query(body));
+                    request_.body = Tea.toReadable(com.aliyun.teautil.Common.toFormString(tmp));
+                    request_.headers.put("content-type", "application/x-www-form-urlencoded");
+                }
+
                 if (!com.aliyun.teautil.Common.equalString(authType, "Anonymous")) {
                     String accessKeyId = this.getAccessKeyId();
                     String accessKeySecret = this.getAccessKeySecret();

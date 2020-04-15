@@ -92,15 +92,18 @@ api doRequest(action: string, protocol: string, method: string, version: string,
     ...query
   });
 
-  if (!Util.isUnset(body)) {
-    var tmp = Util.anyifyMapValue(RPCUtil.query(body));
-    __request.body = Util.toFormString(tmp);
-  }
-  // endpoint is setted in product client
+// endpoint is setted in product client
   __request.headers = {
     host = @endpoint,
     user-agent = getUserAgent()
   };
+
+  if (!Util.isUnset(body)) {
+    var tmp = Util.anyifyMapValue(RPCUtil.query(body));
+    __request.body = Util.toFormString(tmp);
+    __request.headers.content-type = 'application/x-www-form-urlencoded';
+  }
+
 
   if (!Util.equalString(authType, 'Anonymous')) {
     var accessKeyId = getAccessKeyId();
