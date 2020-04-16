@@ -2,10 +2,10 @@
 package client
 
 import (
+	rpcutil "github.com/alibabacloud-go/tea-rpc-utils/service"
+	util "github.com/alibabacloud-go/tea-utils/service"
 	"github.com/alibabacloud-go/tea/tea"
-	rpcutil "github.com/aliyun/alibabacloud-rpc-util-sdk/golang/service"
 	credential "github.com/aliyun/credentials-go/credentials"
-	util "github.com/aliyun/tea-util/golang/service"
 )
 
 type Config struct {
@@ -261,16 +261,17 @@ func (client *Client) DoRequest(action string, protocol string, method string, v
 				"Version":        version,
 				"SignatureNonce": util.GetNonce(),
 			}, query))
-			if !util.IsUnset(body) {
-				tmp := util.AnyifyMapValue(rpcutil.Query(body))
-				request_.Body = tea.ToReader(util.ToFormString(tmp))
-			}
-
 			// endpoint is setted in product client
 			request_.Headers = map[string]string{
 				"host":       client.Endpoint,
 				"user-agent": client.GetUserAgent(),
 			}
+			if !util.IsUnset(body) {
+				tmp := util.AnyifyMapValue(rpcutil.Query(body))
+				request_.Body = tea.ToReader(util.ToFormString(tmp))
+				request_.Headers["content-type"] = "application/x-www-form-urlencoded"
+			}
+
 			if !util.EqualString(authType, "Anonymous") {
 				accessKeyId, _err := client.GetAccessKeyId()
 				if _err != nil {
