@@ -17,13 +17,8 @@
   "releases": {
     "ts": "@alicloud/rpc-client:^0.0.1",
     "go": "github.com/aliyun/tea-rpc/golang/client:v0.0.1",
-<<<<<<< HEAD
-    "csharp": "AlibabaCloud.RPCClient:0.0.5",
-    "java": "com.aliyun:tea-rpc:0.0.7"
-=======
     "csharp": "AlibabaCloud.RPCClient:0.0.4",
     "java": "com.aliyun:tea-rpc:0.0.8"
->>>>>>> add content type
   },
   "csharp": {
     "namespace": "AlibabaCloud.RPCClient"
