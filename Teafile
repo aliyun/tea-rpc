@@ -18,7 +18,7 @@
     "ts": "@alicloud/rpc-client:^0.0.1",
     "go": "github.com/aliyun/tea-rpc/golang/client:v0.0.1",
     "csharp": "AlibabaCloud.RPCClient:0.0.4",
-    "java": "com.aliyun:tea-rpc:0.0.8"
+    "java": "com.aliyun:tea-rpc:0.0.9"
   },
   "csharp": {
     "namespace": "AlibabaCloud.RPCClient"
