@@ -40,10 +40,13 @@ class Rpc
     public function __construct(Config $config)
     {
         $credentialConfig = null;
-        if (Utils::isUnset($config)) {
+        if (Utils::isUnset($config) || Utils::empty_($config->accessKeyId)) {
             $config            = new Config([]);
             $this->_credential = new Credential(null);
         } else {
+            if (Utils::empty_($config->type)) {
+                $config->type = 'access_key';
+            }
             $credentialConfig = new \AlibabaCloud\Credentials\Credential\Config([
                 'accessKeyId'     => $config->accessKeyId,
                 'type'            => $config->type,
@@ -129,15 +132,16 @@ class Rpc
                     'Version'        => $version,
                     'SignatureNonce' => Utils::getNonce(),
                 ], $query));
-                if (!Utils::isUnset($body)) {
-                    $tmp            = Utils::anyifyMapValue(RpcUtils::query($body));
-                    $_request->body = Utils::toFormString($tmp);
-                }
                 // endpoint is setted in product client
                 $_request->headers = [
                     'host'       => $this->_endpoint,
                     'user-agent' => $this->getUserAgent(),
                 ];
+                if (!Utils::isUnset($body)) {
+                    $tmp                               = Utils::anyifyMapValue(RpcUtils::query($body));
+                    $_request->body                    = Utils::toFormString($tmp);
+                    $_request->headers['content-type'] = 'application/x-www-form-urlencoded';
+                }
                 if (!Utils::equalString($authType, 'Anonymous')) {
                     $accessKeyId     = $this->getAccessKeyId();
                     $accessKeySecret = $this->getAccessKeySecret();
