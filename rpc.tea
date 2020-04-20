@@ -49,10 +49,13 @@ model Config {
 
 init(config: Config) {
   var credentialConfig : Credential.Config = null;
-  if (Util.isUnset(config)) {
+  if (Util.isUnset(config) || Util.empty(config.accessKeyId)) {
     config = new Config{};
     @credential = new Credential(null);
   } else {
+    if (Util.empty(config.type)) {
+      config.type = 'access_key';
+    }
     credentialConfig = new Credential.Config{
       accessKeyId = config.accessKeyId,
       type = config.type,

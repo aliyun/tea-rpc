@@ -176,7 +176,7 @@ func NewClient(config *Config) (*Client, error) {
 
 func (client *Client) Init(config *Config) (_err error) {
 	credentialConfig := &credential.Config{}
-	if util.IsUnset(tea.ToMap(config)) {
+	if util.IsUnset(tea.ToMap(config)) || util.Empty(tea.StringValue(config.AccessKeyId)) {
 		config = &Config{}
 		client.Credential, _err = credential.NewCredential(nil)
 		if _err != nil {
@@ -184,6 +184,10 @@ func (client *Client) Init(config *Config) (_err error) {
 		}
 
 	} else {
+		if util.Empty(tea.StringValue(config.Type)) {
+			config.Type = tea.String("access_key")
+		}
+
 		credentialConfig = &credential.Config{
 			AccessKeyId:     config.AccessKeyId,
 			Type:            config.Type,
