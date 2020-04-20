@@ -28,10 +28,14 @@ public class Client {
     public com.aliyun.credentials.Client _credential;
     public Client(Config config) throws Exception {
         com.aliyun.credentials.models.Config credentialConfig = null;
-        if (com.aliyun.teautil.Common.isUnset(TeaModel.buildMap(config))) {
+        if (com.aliyun.teautil.Common.isUnset(TeaModel.buildMap(config)) || com.aliyun.teautil.Common.empty(config.accessKeyId)) {
             config = new Config();
             this._credential = new com.aliyun.credentials.Client(null);
         } else {
+            if (com.aliyun.teautil.Common.empty(config.type)) {
+                config.type = "access_key";
+            }
+
             credentialConfig = com.aliyun.credentials.models.Config.build(TeaConverter.buildMap(
                 new TeaPair("accessKeyId", config.accessKeyId),
                 new TeaPair("type", config.type),
