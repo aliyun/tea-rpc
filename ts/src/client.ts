@@ -2,7 +2,6 @@
 import Util, * as $Util from '@alicloud/tea-util';
 import Credential, * as $Credential from '@alicloud/credentials';
 import RPCUtil from '@alicloud/rpc-util';
-import { Readable } from 'stream';
 import * as $tea from '@alicloud/tea-typescript';
 
 export class Config extends $tea.Model {
@@ -109,10 +108,14 @@ export default class Client {
 
   constructor(config: Config) {
     let credentialConfig : $Credential.Config = null;
-    if (Util.isUnset($tea.toMap(config))) {
+    if (Util.isUnset($tea.toMap(config)) || Util.empty(config.accessKeyId)) {
       config = new Config({ });
       this._credential = new Credential(null);
     } else {
+      if (Util.empty(config.type)) {
+        config.type = "access_key";
+      }
+
       credentialConfig = new $Credential.Config({
         accessKeyId: config.accessKeyId,
         type: config.type,
@@ -185,16 +188,17 @@ export default class Client {
           SignatureNonce: Util.getNonce(),
           ...query,
         });
-        if (!Util.isUnset(body)) {
-          let tmp = Util.anyifyMapValue(RPCUtil.query(body));
-          request_.body = new $tea.BytesReadable(Util.toFormString(tmp));
-        }
-
         // endpoint is setted in product client
         request_.headers = {
           host: this._endpoint,
           'user-agent': this.getUserAgent(),
         };
+        if (!Util.isUnset(body)) {
+          let tmp = Util.anyifyMapValue(RPCUtil.query(body));
+          request_.body = new $tea.BytesReadable(Util.toFormString(tmp));
+          request_.headers["content-type"] = "application/x-www-form-urlencoded";
+        }
+
         if (!Util.equalString(authType, "Anonymous")) {
           let accessKeyId = await this.getAccessKeyId();
           let accessKeySecret = await this.getAccessKeySecret();
