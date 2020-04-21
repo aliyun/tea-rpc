@@ -39,13 +39,17 @@ namespace AlibabaCloud.RPCClient
         public Client(Config config)
         {
             Aliyun.Credentials.Models.Config credentialConfig = null;
-            if (AlibabaCloud.TeaUtil.Common.IsUnset(config.ToMap()))
+            if (AlibabaCloud.TeaUtil.Common.IsUnset(config.ToMap()) || AlibabaCloud.TeaUtil.Common.Empty(config.AccessKeyId))
             {
                 config = new Config();
                 this._credential = new Aliyun.Credentials.Client(null);
             }
             else
             {
+                if (AlibabaCloud.TeaUtil.Common.Empty(config.Type))
+                {
+                    config.Type = "access_key";
+                }
                 credentialConfig = new Aliyun.Credentials.Models.Config
                 {
                     AccessKeyId = config.AccessKeyId,
@@ -130,17 +134,18 @@ namespace AlibabaCloud.RPCClient
                         },
                         query
                     ));
-                    if (!AlibabaCloud.TeaUtil.Common.IsUnset(body))
-                    {
-                        Dictionary<string, object> tmp = AlibabaCloud.TeaUtil.Common.AnyifyMapValue(AlibabaCloud.Commons.Common.Query(body));
-                        request_.Body = TeaCore.BytesReadable(AlibabaCloud.TeaUtil.Common.ToFormString(tmp));
-                    }
                     // endpoint is setted in product client
                     request_.Headers = new Dictionary<string, string>
                     {
                         {"host", _endpoint},
                         {"user-agent", GetUserAgent()},
                     };
+                    if (!AlibabaCloud.TeaUtil.Common.IsUnset(body))
+                    {
+                        Dictionary<string, object> tmp = AlibabaCloud.TeaUtil.Common.AnyifyMapValue(AlibabaCloud.Commons.Common.Query(body));
+                        request_.Body = TeaCore.BytesReadable(AlibabaCloud.TeaUtil.Common.ToFormString(tmp));
+                        request_.Headers["content-type"] = "application/x-www-form-urlencoded";
+                    }
                     if (!AlibabaCloud.TeaUtil.Common.EqualString(authType, "Anonymous"))
                     {
                         string accessKeyId = GetAccessKeyId();
@@ -247,17 +252,18 @@ namespace AlibabaCloud.RPCClient
                         },
                         query
                     ));
-                    if (!AlibabaCloud.TeaUtil.Common.IsUnset(body))
-                    {
-                        Dictionary<string, object> tmp = AlibabaCloud.TeaUtil.Common.AnyifyMapValue(AlibabaCloud.Commons.Common.Query(body));
-                        request_.Body = TeaCore.BytesReadable(AlibabaCloud.TeaUtil.Common.ToFormString(tmp));
-                    }
                     // endpoint is setted in product client
                     request_.Headers = new Dictionary<string, string>
                     {
                         {"host", _endpoint},
                         {"user-agent", GetUserAgent()},
                     };
+                    if (!AlibabaCloud.TeaUtil.Common.IsUnset(body))
+                    {
+                        Dictionary<string, object> tmp = AlibabaCloud.TeaUtil.Common.AnyifyMapValue(AlibabaCloud.Commons.Common.Query(body));
+                        request_.Body = TeaCore.BytesReadable(AlibabaCloud.TeaUtil.Common.ToFormString(tmp));
+                        request_.Headers["content-type"] = "application/x-www-form-urlencoded";
+                    }
                     if (!AlibabaCloud.TeaUtil.Common.EqualString(authType, "Anonymous"))
                     {
                         string accessKeyId = await GetAccessKeyIdAsync();
