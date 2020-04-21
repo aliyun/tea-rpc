@@ -49,10 +49,9 @@ model Config {
 
 init(config: Config) {
   var credentialConfig : Credential.Config = null;
-  if (Util.isUnset(config) || Util.empty(config.accessKeyId)) {
+  if (Util.isUnset(config)) {
     config = new Config{};
-    @credential = new Credential(null);
-  } else {
+  } else if(!Util.empty(config.accessKeyId)){
     if (Util.empty(config.type)) {
       config.type = 'access_key';
     }
@@ -64,6 +63,7 @@ init(config: Config) {
     };
     @credential = new Credential(credentialConfig);
   } 
+  @credential = new Credential(credentialConfig);
   @network = config.network;
   @suffix = config.suffix;
   @endpoint = config.endpoint;

@@ -108,10 +108,9 @@ export default class Client {
 
   constructor(config: Config) {
     let credentialConfig : $Credential.Config = null;
-    if (Util.isUnset($tea.toMap(config)) || Util.empty(config.accessKeyId)) {
+    if (Util.isUnset($tea.toMap(config))) {
       config = new Config({ });
-      this._credential = new Credential(null);
-    } else {
+    } else if (!Util.empty(config.accessKeyId)) {
       if (Util.empty(config.type)) {
         config.type = "access_key";
       }
@@ -125,6 +124,7 @@ export default class Client {
       this._credential = new Credential(credentialConfig);
     }
 
+    this._credential = new Credential(credentialConfig);
     this._network = config.network;
     this._suffix = config.suffix;
     this._endpoint = config.endpoint;
