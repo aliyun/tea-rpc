@@ -146,25 +146,25 @@ func (s *Config) SetOpenPlatformEndpoint(v string) *Config {
 }
 
 type Client struct {
-	Endpoint             string
-	RegionId             string
-	Protocol             string
-	UserAgent            string
-	EndpointRule         string
+	Endpoint             *string
+	RegionId             *string
+	Protocol             *string
+	UserAgent            *string
+	EndpointRule         *string
 	EndpointMap          map[string]string
-	Suffix               string
-	ReadTimeout          int
-	ConnectTimeout       int
-	HttpProxy            string
-	HttpsProxy           string
-	Socks5Proxy          string
-	Socks5NetWork        string
-	NoProxy              string
-	Network              string
-	ProductId            string
-	MaxIdleConns         int
-	EndpointType         string
-	OpenPlatformEndpoint string
+	Suffix               *string
+	ReadTimeout          *int
+	ConnectTimeout       *int
+	HttpProxy            *string
+	HttpsProxy           *string
+	Socks5Proxy          *string
+	Socks5NetWork        *string
+	NoProxy              *string
+	Network              *string
+	ProductId            *string
+	MaxIdleConns         *int
+	EndpointType         *string
+	OpenPlatformEndpoint *string
 	Credential           credential.Credential
 }
 
@@ -176,7 +176,7 @@ func NewClient(config *Config) (*Client, error) {
 
 func (client *Client) Init(config *Config) (_err error) {
 	credentialConfig := &credential.Config{}
-	if util.IsUnset(tea.ToMap(config)) || util.Empty(tea.StringValue(config.AccessKeyId)) {
+	if tea.BoolValue(util.IsUnset(tea.ToMap(config))) || tea.BoolValue(util.Empty(config.AccessKeyId)) {
 		config = &Config{}
 		client.Credential, _err = credential.NewCredential(nil)
 		if _err != nil {
@@ -184,7 +184,7 @@ func (client *Client) Init(config *Config) (_err error) {
 		}
 
 	} else {
-		if util.Empty(tea.StringValue(config.Type)) {
+		if tea.BoolValue(util.Empty(config.Type)) {
 			config.Type = tea.String("access_key")
 		}
 
@@ -201,45 +201,45 @@ func (client *Client) Init(config *Config) (_err error) {
 
 	}
 
-	client.Network = tea.StringValue(config.Network)
-	client.Suffix = tea.StringValue(config.Suffix)
-	client.Endpoint = tea.StringValue(config.Endpoint)
-	client.Protocol = tea.StringValue(config.Protocol)
-	client.RegionId = tea.StringValue(config.RegionId)
-	client.UserAgent = tea.StringValue(config.UserAgent)
-	client.ReadTimeout = tea.IntValue(config.ReadTimeout)
-	client.ConnectTimeout = tea.IntValue(config.ConnectTimeout)
-	client.HttpProxy = tea.StringValue(config.HttpProxy)
-	client.HttpsProxy = tea.StringValue(config.HttpsProxy)
-	client.NoProxy = tea.StringValue(config.NoProxy)
-	client.Socks5Proxy = tea.StringValue(config.Socks5Proxy)
-	client.Socks5NetWork = tea.StringValue(config.Socks5NetWork)
-	client.MaxIdleConns = tea.IntValue(config.MaxIdleConns)
-	client.EndpointType = tea.StringValue(config.EndpointType)
-	client.OpenPlatformEndpoint = tea.StringValue(config.OpenPlatformEndpoint)
+	client.Network = config.Network
+	client.Suffix = config.Suffix
+	client.Endpoint = config.Endpoint
+	client.Protocol = config.Protocol
+	client.RegionId = config.RegionId
+	client.UserAgent = config.UserAgent
+	client.ReadTimeout = config.ReadTimeout
+	client.ConnectTimeout = config.ConnectTimeout
+	client.HttpProxy = config.HttpProxy
+	client.HttpsProxy = config.HttpsProxy
+	client.NoProxy = config.NoProxy
+	client.Socks5Proxy = config.Socks5Proxy
+	client.Socks5NetWork = config.Socks5NetWork
+	client.MaxIdleConns = config.MaxIdleConns
+	client.EndpointType = config.EndpointType
+	client.OpenPlatformEndpoint = config.OpenPlatformEndpoint
 	return nil
 }
 
-func (client *Client) DoRequest(action string, protocol string, method string, version string, authType string, query map[string]interface{}, body map[string]interface{}, runtime *util.RuntimeOptions) (_result map[string]interface{}, _err error) {
+func (client *Client) DoRequest(action *string, protocol *string, method *string, version *string, authType *string, query map[string]interface{}, body map[string]interface{}, runtime *util.RuntimeOptions) (_result map[string]interface{}, _err error) {
 	_err = tea.Validate(runtime)
 	if _err != nil {
 		return nil, _err
 	}
 	_runtime := map[string]interface{}{
 		"timeouted":      "retry",
-		"readTimeout":    util.DefaultNumber(tea.IntValue(runtime.ReadTimeout), client.ReadTimeout),
-		"connectTimeout": util.DefaultNumber(tea.IntValue(runtime.ConnectTimeout), client.ConnectTimeout),
-		"httpProxy":      util.DefaultString(tea.StringValue(runtime.HttpProxy), client.HttpProxy),
-		"httpsProxy":     util.DefaultString(tea.StringValue(runtime.HttpsProxy), client.HttpsProxy),
-		"noProxy":        util.DefaultString(tea.StringValue(runtime.NoProxy), client.NoProxy),
-		"maxIdleConns":   util.DefaultNumber(tea.IntValue(runtime.MaxIdleConns), client.MaxIdleConns),
+		"readTimeout":    tea.IntValue(util.DefaultNumber(runtime.ReadTimeout, client.ReadTimeout)),
+		"connectTimeout": tea.IntValue(util.DefaultNumber(runtime.ConnectTimeout, client.ConnectTimeout)),
+		"httpProxy":      tea.StringValue(util.DefaultString(runtime.HttpProxy, client.HttpProxy)),
+		"httpsProxy":     tea.StringValue(util.DefaultString(runtime.HttpsProxy, client.HttpsProxy)),
+		"noProxy":        tea.StringValue(util.DefaultString(runtime.NoProxy, client.NoProxy)),
+		"maxIdleConns":   tea.IntValue(util.DefaultNumber(runtime.MaxIdleConns, client.MaxIdleConns)),
 		"retry": map[string]interface{}{
 			"retryable":   tea.BoolValue(runtime.Autoretry),
-			"maxAttempts": util.DefaultNumber(tea.IntValue(runtime.MaxAttempts), 3),
+			"maxAttempts": tea.IntValue(util.DefaultNumber(runtime.MaxAttempts, tea.Int(3))),
 		},
 		"backoff": map[string]interface{}{
-			"policy": util.DefaultString(tea.StringValue(runtime.BackoffPolicy), "no"),
-			"period": util.DefaultNumber(tea.IntValue(runtime.BackoffPeriod), 1),
+			"policy": tea.StringValue(util.DefaultString(runtime.BackoffPolicy, tea.String("no"))),
+			"period": tea.IntValue(util.DefaultNumber(runtime.BackoffPeriod, tea.Int(1))),
 		},
 		"ignoreSSL": tea.BoolValue(runtime.IgnoreSSL),
 	}
@@ -257,26 +257,26 @@ func (client *Client) DoRequest(action string, protocol string, method string, v
 			request_ := tea.NewRequest()
 			request_.Protocol = util.DefaultString(client.Protocol, protocol)
 			request_.Method = method
-			request_.Pathname = "/"
+			request_.Pathname = tea.String("/")
 			request_.Query = rpcutil.Query(tea.ToMap(map[string]interface{}{
-				"Action":         action,
+				"Action":         tea.StringValue(action),
 				"Format":         "json",
-				"Timestamp":      rpcutil.GetTimestamp(),
-				"Version":        version,
-				"SignatureNonce": util.GetNonce(),
+				"Timestamp":      tea.StringValue(rpcutil.GetTimestamp()),
+				"Version":        tea.StringValue(version),
+				"SignatureNonce": tea.StringValue(util.GetNonce()),
 			}, query))
 			// endpoint is setted in product client
 			request_.Headers = map[string]string{
-				"host":       client.Endpoint,
-				"user-agent": client.GetUserAgent(),
+				"host":       tea.StringValue(client.Endpoint),
+				"user-agent": tea.StringValue(client.GetUserAgent()),
 			}
-			if !util.IsUnset(body) {
+			if !tea.BoolValue(util.IsUnset(body)) {
 				tmp := util.AnyifyMapValue(rpcutil.Query(body))
-				request_.Body = tea.ToReader(util.ToFormString(tmp))
+				request_.Body = tea.ToReader(tea.StringValue(util.ToFormString(tmp)))
 				request_.Headers["content-type"] = "application/x-www-form-urlencoded"
 			}
 
-			if !util.EqualString(authType, "Anonymous") {
+			if !tea.BoolValue(util.EqualString(authType, tea.String("Anonymous"))) {
 				accessKeyId, _err := client.GetAccessKeyId()
 				if _err != nil {
 					return nil, _err
@@ -292,16 +292,16 @@ func (client *Client) DoRequest(action string, protocol string, method string, v
 					return nil, _err
 				}
 
-				if !util.Empty(securityToken) {
-					request_.Query["SecurityToken"] = securityToken
+				if !tea.BoolValue(util.Empty(securityToken)) {
+					request_.Query["SecurityToken"] = tea.StringValue(securityToken)
 				}
 
 				request_.Query["SignatureMethod"] = "HMAC-SHA1"
 				request_.Query["SignatureVersion"] = "1.0"
-				request_.Query["AccessKeyId"] = accessKeyId
+				request_.Query["AccessKeyId"] = tea.StringValue(accessKeyId)
 				signedParam := tea.Merge(request_.Query,
 					rpcutil.Query(body))
-				request_.Query["Signature"] = rpcutil.GetSignatureV1(signedParam, request_.Method, accessKeySecret)
+				request_.Query["Signature"] = tea.StringValue(rpcutil.GetSignatureV1(signedParam, request_.Method, accessKeySecret))
 			}
 
 			response_, _err := tea.DoRequest(request_, _runtime)
@@ -314,7 +314,7 @@ func (client *Client) DoRequest(action string, protocol string, method string, v
 			}
 
 			res := util.AssertAsMap(obj)
-			if util.Is4xx(response_.StatusCode) || util.Is5xx(response_.StatusCode) {
+			if tea.BoolValue(util.Is4xx(response_.StatusCode)) || tea.BoolValue(util.Is5xx(response_.StatusCode)) {
 				_err = tea.NewSDKError(map[string]interface{}{
 					"message": res["Message"],
 					"data":    res,
@@ -334,48 +334,48 @@ func (client *Client) DoRequest(action string, protocol string, method string, v
 	return _resp, _err
 }
 
-func (client *Client) GetUserAgent() (_result string) {
+func (client *Client) GetUserAgent() (_result *string) {
 	userAgent := util.GetUserAgent(client.UserAgent)
 	_result = userAgent
 	return _result
 }
 
-func (client *Client) GetAccessKeyId() (_result string, _err error) {
-	if util.IsUnset(client.Credential) {
+func (client *Client) GetAccessKeyId() (_result *string, _err error) {
+	if tea.BoolValue(util.IsUnset(client.Credential)) {
 		return _result, _err
 	}
 
 	accessKeyId, _err := client.Credential.GetAccessKeyId()
 	if _err != nil {
-		return "", _err
+		return tea.String(""), _err
 	}
 
 	_result = accessKeyId
 	return _result, _err
 }
 
-func (client *Client) GetAccessKeySecret() (_result string, _err error) {
-	if util.IsUnset(client.Credential) {
+func (client *Client) GetAccessKeySecret() (_result *string, _err error) {
+	if tea.BoolValue(util.IsUnset(client.Credential)) {
 		return _result, _err
 	}
 
 	secret, _err := client.Credential.GetAccessKeySecret()
 	if _err != nil {
-		return "", _err
+		return tea.String(""), _err
 	}
 
 	_result = secret
 	return _result, _err
 }
 
-func (client *Client) GetSecurityToken() (_result string, _err error) {
-	if util.IsUnset(client.Credential) {
+func (client *Client) GetSecurityToken() (_result *string, _err error) {
+	if tea.BoolValue(util.IsUnset(client.Credential)) {
 		return _result, _err
 	}
 
 	token, _err := client.Credential.GetSecurityToken()
 	if _err != nil {
-		return "", _err
+		return tea.String(""), _err
 	}
 
 	_result = token
@@ -383,7 +383,7 @@ func (client *Client) GetSecurityToken() (_result string, _err error) {
 }
 
 func (client *Client) CheckConfig(config *Config) (_err error) {
-	if util.Empty(client.EndpointRule) && util.Empty(tea.StringValue(config.Endpoint)) {
+	if tea.BoolValue(util.Empty(client.EndpointRule)) && tea.BoolValue(util.Empty(config.Endpoint)) {
 		_err = tea.NewSDKError(map[string]interface{}{
 			"name":    "ParameterMissing",
 			"message": "'config.endpoint' can not be empty",
