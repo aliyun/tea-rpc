@@ -1,3 +1,6 @@
+2020-04-21 Version: v1.0.0
+- Use pointer params as input params.
+
 2020-04-20 Version: v0.0.2
 - Modify Credential Type.
 

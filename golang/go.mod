@@ -1,8 +1,8 @@
 module github.com/alibabacloud-go/tea-rpc
 
 require (
-	github.com/alibabacloud-go/tea v0.0.12
-	github.com/alibabacloud-go/tea-rpc-utils v0.0.1
-	github.com/alibabacloud-go/tea-utils v0.0.1
-	github.com/aliyun/credentials-go v0.0.3
+	github.com/alibabacloud-go/tea v1.0.0
+	github.com/alibabacloud-go/tea-rpc-utils v1.0.0
+	github.com/alibabacloud-go/tea-utils v1.0.0
+	github.com/aliyun/credentials-go v1.0.0
 )
