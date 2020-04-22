@@ -16,9 +16,6 @@ public class Config extends TeaModel {
     @NameInMap("suffix")
     public String suffix;
 
-    @NameInMap("type")
-    public String type;
-
     @NameInMap("securityToken")
     public String securityToken;
 
@@ -52,6 +49,9 @@ public class Config extends TeaModel {
     @NameInMap("noProxy")
     public String noProxy;
 
+    @NameInMap("credential")
+    public com.aliyun.credentials.Client credential;
+
     @NameInMap("socks5Proxy")
     public String socks5Proxy;
 
@@ -66,6 +66,10 @@ public class Config extends TeaModel {
 
     @NameInMap("openPlatformEndpoint")
     public String openPlatformEndpoint;
+
+    @NameInMap("type")
+    @Deprecated
+    public String type;
 
     public static Config build(java.util.Map<String, ?> map) throws Exception {
         Config self = new Config();
