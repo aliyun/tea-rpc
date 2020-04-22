@@ -27,22 +27,34 @@ public class Client {
     public String _openPlatformEndpoint;
     public com.aliyun.credentials.Client _credential;
     public Client(Config config) throws Exception {
-        com.aliyun.credentials.models.Config credentialConfig = null;
-        if (com.aliyun.teautil.Common.isUnset(TeaModel.buildMap(config)) || com.aliyun.teautil.Common.empty(config.accessKeyId)) {
-            config = new Config();
-            this._credential = new com.aliyun.credentials.Client(null);
-        } else {
-            if (com.aliyun.teautil.Common.empty(config.type)) {
+        if (com.aliyun.teautil.Common.isUnset(TeaModel.buildMap(config))) {
+            throw new TeaException(TeaConverter.buildMap(
+                new TeaPair("code", "ParameterMissing"),
+                new TeaPair("message", "'config' can not be unset")
+            ));
+        }
+
+        if (!com.aliyun.teautil.Common.empty(config.accessKeyId) && !com.aliyun.teautil.Common.empty(config.accessKeySecret)) {
+            if (!com.aliyun.teautil.Common.empty(config.securityToken)) {
+                config.type = "sts";
+            } else {
                 config.type = "access_key";
             }
 
-            credentialConfig = com.aliyun.credentials.models.Config.build(TeaConverter.buildMap(
+            com.aliyun.credentials.models.Config credentialConfig = com.aliyun.credentials.models.Config.build(TeaConverter.buildMap(
                 new TeaPair("accessKeyId", config.accessKeyId),
                 new TeaPair("type", config.type),
                 new TeaPair("accessKeySecret", config.accessKeySecret),
                 new TeaPair("securityToken", config.securityToken)
             ));
             this._credential = new com.aliyun.credentials.Client(credentialConfig);
+        } else if (!com.aliyun.teautil.Common.isUnset(config.credential)) {
+            this._credential = config.credential;
+        } else {
+            throw new TeaException(TeaConverter.buildMap(
+                new TeaPair("code", "ParameterMissing"),
+                new TeaPair("message", "'accessKeyId' and 'accessKeySecret' or 'credential' can not be unset")
+            ));
         }
 
         this._network = config.network;
@@ -198,7 +210,7 @@ public class Client {
     public void checkConfig(Config config) throws Exception {
         if (com.aliyun.teautil.Common.empty(_endpointRule) && com.aliyun.teautil.Common.empty(config.endpoint)) {
             throw new TeaException(TeaConverter.buildMap(
-                new TeaPair("name", "ParameterMissing"),
+                new TeaPair("code", "ParameterMissing"),
                 new TeaPair("message", "'config.endpoint' can not be empty")
             ));
         }
