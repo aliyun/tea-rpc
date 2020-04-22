@@ -38,19 +38,25 @@ namespace AlibabaCloud.RPCClient
 
         public Client(Config config)
         {
-            Aliyun.Credentials.Models.Config credentialConfig = null;
-            if (AlibabaCloud.TeaUtil.Common.IsUnset(config.ToMap()) || AlibabaCloud.TeaUtil.Common.Empty(config.AccessKeyId))
+            if (AlibabaCloud.TeaUtil.Common.IsUnset(config.ToMap()))
             {
-                config = new Config();
-                this._credential = new Aliyun.Credentials.Client(null);
+                throw new TeaException(new Dictionary<string, string>
+                {
+                    {"code", "ParameterMissing"},
+                    {"message", "'config' can not be unset"},
+                });
             }
-            else
+            if (!AlibabaCloud.TeaUtil.Common.Empty(config.AccessKeyId) && !AlibabaCloud.TeaUtil.Common.Empty(config.AccessKeySecret))
             {
-                if (AlibabaCloud.TeaUtil.Common.Empty(config.Type))
+                if (!AlibabaCloud.TeaUtil.Common.Empty(config.SecurityToken))
+                {
+                    config.Type = "sts";
+                }
+                else
                 {
                     config.Type = "access_key";
                 }
-                credentialConfig = new Aliyun.Credentials.Models.Config
+                Aliyun.Credentials.Models.Config credentialConfig = new Aliyun.Credentials.Models.Config
                 {
                     AccessKeyId = config.AccessKeyId,
                     Type = config.Type,
@@ -58,6 +64,18 @@ namespace AlibabaCloud.RPCClient
                     SecurityToken = config.SecurityToken,
                 };
                 this._credential = new Aliyun.Credentials.Client(credentialConfig);
+            }
+            else if (!AlibabaCloud.TeaUtil.Common.IsUnset(config.Credential))
+            {
+                this._credential = config.Credential;
+            }
+            else
+            {
+                throw new TeaException(new Dictionary<string, string>
+                {
+                    {"code", "ParameterMissing"},
+                    {"message", "'accessKeyId' and 'accessKeySecret' or 'credential' can not be unset"},
+                });
             }
             this._network = config.Network;
             this._suffix = config.Suffix;
@@ -385,7 +403,7 @@ namespace AlibabaCloud.RPCClient
             {
                 throw new TeaException(new Dictionary<string, string>
                 {
-                    {"name", "ParameterMissing"},
+                    {"code", "ParameterMissing"},
                     {"message", "'config.endpoint' can not be empty"},
                 });
             }
