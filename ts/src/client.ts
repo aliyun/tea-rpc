@@ -20,7 +20,7 @@ export class Config extends $tea.Model {
   httpProxy?: string;
   httpsProxy?: string;
   noProxy?: string;
-  credential?: ;
+  credential?: Credential;
   socks5Proxy?: string;
   socks5NetWork?: string;
   maxIdleConns?: number;
@@ -71,7 +71,7 @@ export class Config extends $tea.Model {
       httpProxy: 'string',
       httpsProxy: 'string',
       noProxy: 'string',
-      credential: ,
+      credential: Credential,
       socks5Proxy: 'string',
       socks5NetWork: 'string',
       maxIdleConns: 'number',
