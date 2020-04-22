@@ -25,10 +25,6 @@ namespace AlibabaCloud.RPCClient.Models
         [Validation(Required=false)]
         public string Suffix { get; set; }
 
-        [NameInMap("type")]
-        [Validation(Required=false)]
-        public string Type { get; set; }
-
         [NameInMap("securityToken")]
         [Validation(Required=false)]
         public string SecurityToken { get; set; }
@@ -73,6 +69,10 @@ namespace AlibabaCloud.RPCClient.Models
         [Validation(Required=false)]
         public string NoProxy { get; set; }
 
+        [NameInMap("credential")]
+        [Validation(Required=false)]
+        public Aliyun.Credentials.Client Credential { get; set; }
+
         [NameInMap("socks5Proxy")]
         [Validation(Required=false)]
         public string Socks5Proxy { get; set; }
@@ -92,6 +92,11 @@ namespace AlibabaCloud.RPCClient.Models
         [NameInMap("openPlatformEndpoint")]
         [Validation(Required=false)]
         public string OpenPlatformEndpoint { get; set; }
+
+        [NameInMap("type")]
+        [Validation(Required=false)]
+        [Obsolete]
+        public string Type { get; set; }
 
     }
 
