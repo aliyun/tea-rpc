@@ -9,7 +9,6 @@ export class Config extends $tea.Model {
   accessKeySecret?: string;
   network?: string;
   suffix?: string;
-  type?: string;
   securityToken?: string;
   endpoint?: string;
   protocol?: string;
@@ -21,18 +20,19 @@ export class Config extends $tea.Model {
   httpProxy?: string;
   httpsProxy?: string;
   noProxy?: string;
+  credential?: ;
   socks5Proxy?: string;
   socks5NetWork?: string;
   maxIdleConns?: number;
   endpointType?: string;
   openPlatformEndpoint?: string;
+  type?: string;
   static names(): { [key: string]: string } {
     return {
       accessKeyId: 'accessKeyId',
       accessKeySecret: 'accessKeySecret',
       network: 'network',
       suffix: 'suffix',
-      type: 'type',
       securityToken: 'securityToken',
       endpoint: 'endpoint',
       protocol: 'protocol',
@@ -44,11 +44,13 @@ export class Config extends $tea.Model {
       httpProxy: 'httpProxy',
       httpsProxy: 'httpsProxy',
       noProxy: 'noProxy',
+      credential: 'credential',
       socks5Proxy: 'socks5Proxy',
       socks5NetWork: 'socks5NetWork',
       maxIdleConns: 'maxIdleConns',
       endpointType: 'endpointType',
       openPlatformEndpoint: 'openPlatformEndpoint',
+      type: 'type',
     };
   }
 
@@ -58,7 +60,6 @@ export class Config extends $tea.Model {
       accessKeySecret: 'string',
       network: 'string',
       suffix: 'string',
-      type: 'string',
       securityToken: 'string',
       endpoint: 'string',
       protocol: 'string',
@@ -70,11 +71,13 @@ export class Config extends $tea.Model {
       httpProxy: 'string',
       httpsProxy: 'string',
       noProxy: 'string',
+      credential: ,
       socks5Proxy: 'string',
       socks5NetWork: 'string',
       maxIdleConns: 'number',
       endpointType: 'string',
       openPlatformEndpoint: 'string',
+      type: 'string',
     };
   }
 
@@ -107,24 +110,36 @@ export default class Client {
   _credential: Credential;
 
   constructor(config: Config) {
-    let credentialConfig : $Credential.Config = null;
     if (Util.isUnset($tea.toMap(config))) {
-      config = new Config({ });
-    } else if (!Util.empty(config.accessKeyId)) {
-      if (Util.empty(config.type)) {
+      throw $tea.newError({
+        code: "ParameterMissing",
+        message: "'config' can not be unset",
+      });
+    }
+
+    if (!Util.empty(config.accessKeyId) && !Util.empty(config.accessKeySecret)) {
+      if (!Util.empty(config.securityToken)) {
+        config.type = "sts";
+      } else {
         config.type = "access_key";
       }
 
-      credentialConfig = new $Credential.Config({
+      let credentialConfig = new $Credential.Config({
         accessKeyId: config.accessKeyId,
         type: config.type,
         accessKeySecret: config.accessKeySecret,
         securityToken: config.securityToken,
       });
       this._credential = new Credential(credentialConfig);
+    } else if (!Util.isUnset(config.credential)) {
+      this._credential = config.credential;
+    } else {
+      throw $tea.newError({
+        code: "ParameterMissing",
+        message: "'accessKeyId' and 'accessKeySecret' or 'credential' can not be unset",
+      });
     }
 
-    this._credential = new Credential(credentialConfig);
     this._network = config.network;
     this._suffix = config.suffix;
     this._endpoint = config.endpoint;
@@ -277,7 +292,7 @@ export default class Client {
   checkConfig(config: Config): void {
     if (Util.empty(this._endpointRule) && Util.empty(config.endpoint)) {
       throw $tea.newError({
-        name: "ParameterMissing",
+        code: "ParameterMissing",
         message: "'config.endpoint' can not be empty",
       });
     }
