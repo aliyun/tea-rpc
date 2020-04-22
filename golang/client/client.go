@@ -9,27 +9,29 @@ import (
 )
 
 type Config struct {
-	AccessKeyId          *string `json:"accessKeyId" xml:"accessKeyId"`
-	AccessKeySecret      *string `json:"accessKeySecret" xml:"accessKeySecret"`
-	Network              *string `json:"network" xml:"network"`
-	Suffix               *string `json:"suffix" xml:"suffix"`
-	Type                 *string `json:"type" xml:"type"`
-	SecurityToken        *string `json:"securityToken" xml:"securityToken"`
-	Endpoint             *string `json:"endpoint" xml:"endpoint"`
-	Protocol             *string `json:"protocol" xml:"protocol"`
-	RegionId             *string `json:"regionId" xml:"regionId"`
-	ProductId            *string `json:"productId" xml:"productId"`
-	UserAgent            *string `json:"userAgent" xml:"userAgent"`
-	ReadTimeout          *int    `json:"readTimeout" xml:"readTimeout"`
-	ConnectTimeout       *int    `json:"connectTimeout" xml:"connectTimeout"`
-	HttpProxy            *string `json:"httpProxy" xml:"httpProxy"`
-	HttpsProxy           *string `json:"httpsProxy" xml:"httpsProxy"`
-	NoProxy              *string `json:"noProxy" xml:"noProxy"`
-	Socks5Proxy          *string `json:"socks5Proxy" xml:"socks5Proxy"`
-	Socks5NetWork        *string `json:"socks5NetWork" xml:"socks5NetWork"`
-	MaxIdleConns         *int    `json:"maxIdleConns" xml:"maxIdleConns"`
-	EndpointType         *string `json:"endpointType" xml:"endpointType"`
-	OpenPlatformEndpoint *string `json:"openPlatformEndpoint" xml:"openPlatformEndpoint"`
+	AccessKeyId          *string               `json:"accessKeyId" xml:"accessKeyId"`
+	AccessKeySecret      *string               `json:"accessKeySecret" xml:"accessKeySecret"`
+	Network              *string               `json:"network" xml:"network"`
+	Suffix               *string               `json:"suffix" xml:"suffix"`
+	SecurityToken        *string               `json:"securityToken" xml:"securityToken"`
+	Endpoint             *string               `json:"endpoint" xml:"endpoint"`
+	Protocol             *string               `json:"protocol" xml:"protocol"`
+	RegionId             *string               `json:"regionId" xml:"regionId"`
+	ProductId            *string               `json:"productId" xml:"productId"`
+	UserAgent            *string               `json:"userAgent" xml:"userAgent"`
+	ReadTimeout          *int                  `json:"readTimeout" xml:"readTimeout"`
+	ConnectTimeout       *int                  `json:"connectTimeout" xml:"connectTimeout"`
+	HttpProxy            *string               `json:"httpProxy" xml:"httpProxy"`
+	HttpsProxy           *string               `json:"httpsProxy" xml:"httpsProxy"`
+	NoProxy              *string               `json:"noProxy" xml:"noProxy"`
+	Credential           credential.Credential `json:"credential" xml:"credential"`
+	Socks5Proxy          *string               `json:"socks5Proxy" xml:"socks5Proxy"`
+	Socks5NetWork        *string               `json:"socks5NetWork" xml:"socks5NetWork"`
+	MaxIdleConns         *int                  `json:"maxIdleConns" xml:"maxIdleConns"`
+	EndpointType         *string               `json:"endpointType" xml:"endpointType"`
+	OpenPlatformEndpoint *string               `json:"openPlatformEndpoint" xml:"openPlatformEndpoint"`
+	// Deprecated
+	Type *string `json:"type" xml:"type"`
 }
 
 func (s Config) String() string {
@@ -57,11 +59,6 @@ func (s *Config) SetNetwork(v string) *Config {
 
 func (s *Config) SetSuffix(v string) *Config {
 	s.Suffix = &v
-	return s
-}
-
-func (s *Config) SetType(v string) *Config {
-	s.Type = &v
 	return s
 }
 
@@ -120,6 +117,11 @@ func (s *Config) SetNoProxy(v string) *Config {
 	return s
 }
 
+func (s *Config) SetCredential(v credential.Credential) *Config {
+	s.Credential = v
+	return s
+}
+
 func (s *Config) SetSocks5Proxy(v string) *Config {
 	s.Socks5Proxy = &v
 	return s
@@ -142,6 +144,11 @@ func (s *Config) SetEndpointType(v string) *Config {
 
 func (s *Config) SetOpenPlatformEndpoint(v string) *Config {
 	s.OpenPlatformEndpoint = &v
+	return s
+}
+
+func (s *Config) SetType(v string) *Config {
+	s.Type = &v
 	return s
 }
 
@@ -175,20 +182,22 @@ func NewClient(config *Config) (*Client, error) {
 }
 
 func (client *Client) Init(config *Config) (_err error) {
-	credentialConfig := &credential.Config{}
-	if tea.BoolValue(util.IsUnset(tea.ToMap(config))) || tea.BoolValue(util.Empty(config.AccessKeyId)) {
-		config = &Config{}
-		client.Credential, _err = credential.NewCredential(nil)
-		if _err != nil {
-			return _err
-		}
+	if tea.BoolValue(util.IsUnset(tea.ToMap(config))) {
+		_err = tea.NewSDKError(map[string]interface{}{
+			"code":    "ParameterMissing",
+			"message": "'config' can not be unset",
+		})
+		return _err
+	}
 
-	} else {
-		if tea.BoolValue(util.Empty(config.Type)) {
+	if !tea.BoolValue(util.Empty(config.AccessKeyId)) && !tea.BoolValue(util.Empty(config.AccessKeySecret)) {
+		if !tea.BoolValue(util.Empty(config.SecurityToken)) {
+			config.Type = tea.String("sts")
+		} else {
 			config.Type = tea.String("access_key")
 		}
 
-		credentialConfig = &credential.Config{
+		credentialConfig := &credential.Config{
 			AccessKeyId:     config.AccessKeyId,
 			Type:            config.Type,
 			AccessKeySecret: config.AccessKeySecret,
@@ -199,6 +208,14 @@ func (client *Client) Init(config *Config) (_err error) {
 			return _err
 		}
 
+	} else if !tea.BoolValue(util.IsUnset(config.Credential)) {
+		client.Credential = config.Credential
+	} else {
+		_err = tea.NewSDKError(map[string]interface{}{
+			"code":    "ParameterMissing",
+			"message": "'accessKeyId' and 'accessKeySecret' or 'credential' can not be unset",
+		})
+		return _err
 	}
 
 	client.Network = config.Network
@@ -385,7 +402,7 @@ func (client *Client) GetSecurityToken() (_result *string, _err error) {
 func (client *Client) CheckConfig(config *Config) (_err error) {
 	if tea.BoolValue(util.Empty(client.EndpointRule)) && tea.BoolValue(util.Empty(config.Endpoint)) {
 		_err = tea.NewSDKError(map[string]interface{}{
-			"name":    "ParameterMissing",
+			"code":    "ParameterMissing",
 			"message": "'config.endpoint' can not be empty",
 		})
 		return _err
