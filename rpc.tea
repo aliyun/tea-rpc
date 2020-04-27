@@ -1,3 +1,7 @@
+/**
+ * This is for RPC SDK 
+ */
+
 import Util;
 import Credential;
 import RPCUtil;
@@ -23,31 +27,37 @@ type @endpointType = string
 type @openPlatformEndpoint = string
 type @credential = Credential
 
+/**
+ * Model for initing client
+ */
 model Config {
-  accessKeyId?: string,
-  accessKeySecret?: string,
-  network?: string,
-  suffix?: string,
-  securityToken?: string,
-  endpoint?: string,
-  protocol?: string,
-  regionId?: string,
-  productId?: string,
-  userAgent?: string,
-  readTimeout?: number,
-  connectTimeout?: number,
-  httpProxy?: string,
-  httpsProxy?: string,
-  noProxy?: string,
-  credential?: Credential,
-  socks5Proxy?: string,
-  socks5NetWork?: string,
-  maxIdleConns?: number,
-  endpointType?: string,
-  openPlatformEndpoint?: string,
-  type?: string(deprecated=true)
+  accessKeyId?: string(description='accesskey id',default=''),
+  accessKeySecret?: string(description='accesskey secret',default=''),
+  securityToken?: string(description='security token',example='a.txt',default=''),
+  protocol?: string(description='http protocol',example='http',default='http'),
+  regionId?: string(description='region id',example='cn-hangzhou',default=''),
+  readTimeout?: number(description='read timeout',example='10',default=''),
+  connectTimeout?: number(description='connect timeout',example='10',default=''),
+  httpProxy?: string(description='http proxy',example='http://localhost',default=''),
+  httpsProxy?: string(description='https proxy',example='https://localhost',default=''),
+  credential?: Credential(description='credential',example='',default=''),
+  endpoint?: string(description='endpoint',example='cs.aliyuncs.com',default=''),
+  noProxy?: string(description='proxy white list',example='http://localhost',default=''),
+  maxIdleConns?: number(description='max idle conns',example='3',default=''),
+  network?: string(description='network for endpoint',example='public',default=''),
+  userAgent?: string(description='user agent',example='Alibabacloud/1',default=''),
+  suffix?: string(description='suffix for endpoint',example='aliyun',default=''),
+  socks5Proxy?: string(description='socks5 proxy',default=''),
+  socks5NetWork?: string(description='socks5 network',example='TCP',default=''),
+  endpointType?: string(description='endpoint type',example='internal',default=''),
+  openPlatformEndpoint?: string(description='OpenPlatform endpoint',example='openplatform.aliyuncs.com',default=''),
+  type?: string(description='credential type',example='access_key',default='',deprecated=true)
 }
 
+/**
+ * Init client with Config
+ * @param config config contains the necessary information to create a client
+ */
 init(config: Config) {
   if (Util.isUnset(config)) {
     throw {
@@ -95,6 +105,19 @@ init(config: Config) {
   @openPlatformEndpoint = config.openPlatformEndpoint;
 }
 
+/**
+ * Encapsulate the request and invoke the network
+ * @param action api name
+ * @param protocol http or https
+ * @param method e.g. GET
+ * @param version product version
+ * @param authType when authType is Anonymous, the signature will not be calculate
+ * @param pathname pathname of every api
+ * @param query which contains request params
+ * @param body content of request
+ * @param runtime which controls some details of call api, such as retry times
+ * @return the response
+ */
 api doRequest(action: string, protocol: string, method: string, version: string, authType: string, query: object, body: object, runtime: Util.RuntimeOptions): object {
   __request.protocol = Util.defaultString(@protocol, protocol);
   __request.method = method;
@@ -108,7 +131,7 @@ api doRequest(action: string, protocol: string, method: string, version: string,
     ...query
   });
 
-// endpoint is setted in product client
+  // endpoint is setted in product client
   __request.headers = {
     host = @endpoint,
     user-agent = getUserAgent()
@@ -169,11 +192,19 @@ api doRequest(action: string, protocol: string, method: string, version: string,
   ignoreSSL = runtime.ignoreSSL
 }
 
+/**
+ * Get user agent
+ * @return user agent
+ */
 function getUserAgent(): string {
   var userAgent = Util.getUserAgent(@userAgent);
   return userAgent;
 }
 
+/**
+ * Get accesskey id by using credential
+ * @return accesskey id
+ */
 async function getAccessKeyId(): string {
   if (Util.isUnset(@credential)) {
     return '';
@@ -182,6 +213,10 @@ async function getAccessKeyId(): string {
   return accessKeyId;
 }
 
+/**
+ * Get accesskey secret by using credential
+ * @return accesskey secret
+ */
 async function getAccessKeySecret(): string {
   if (Util.isUnset(@credential)) {
     return '';
@@ -190,6 +225,10 @@ async function getAccessKeySecret(): string {
   return secret;
 }
 
+/**
+ * Get security token by using credential
+ * @return security token
+ */
 async function getSecurityToken(): string {
   if (Util.isUnset(@credential)) {
     return '';
@@ -198,6 +237,10 @@ async function getSecurityToken(): string {
   return token;
 }
 
+/**
+ * If the endpointRule and config.endpoint are empty, throw error
+ * @param config config contains the necessary information to create a client
+ */
 function checkConfig(config: Config)throws : void {
   if (Util.empty(@endpointRule) && Util.empty(config.endpoint)) {
     throw {
