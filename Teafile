@@ -1,7 +1,7 @@
 {
   "scope": "alibabacloud",
   "name": "RPC",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "main": "./rpc.tea",
   "maintainers": [
     {
@@ -18,7 +18,8 @@
     "ts": "@alicloud/rpc-client:^1.1.0",
     "go": "github.com/alibabacloud-go/tea-rpc/client:v1.0.1",
     "csharp": "AlibabaCloud.RPCClient:0.0.7",
-    "java": "com.aliyun:tea-rpc:0.0.11"
+    "java": "com.aliyun:tea-rpc:0.0.11",
+    "php": "alibabacloud/tea-rpc:^0.1.5"
   },
   "csharp": {
     "namespace": "AlibabaCloud.RPCClient"
@@ -29,6 +30,7 @@
   "php": {
     "package": "AlibabaCloud.Tea.Rpc",
     "clientName": "Rpc",
+    "modelDirName": "Rpc",
     "packageInfo": {
       "name": "alibabacloud/tea-rpc",
       "desc": "Alibaba Cloud RPC Client",

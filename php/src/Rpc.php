@@ -9,51 +9,90 @@ use AlibabaCloud\Tea\Exception\TeaError;
 use AlibabaCloud\Tea\Exception\TeaUnableRetryError;
 use AlibabaCloud\Tea\Request;
 use AlibabaCloud\Tea\Rpc\Rpc\Config;
+use AlibabaCloud\Tea\Rpc\Rpc\Credential\Config;
 use AlibabaCloud\Tea\RpcUtils\RpcUtils;
 use AlibabaCloud\Tea\Tea;
 use AlibabaCloud\Tea\Utils\Utils;
 use AlibabaCloud\Tea\Utils\Utils\RuntimeOptions;
 
+/**
+ * This is for RPC SDK.
+ */
 class Rpc
 {
-    private $_endpoint;
-    private $_regionId;
-    private $_protocol;
-    private $_userAgent;
-    private $_endpointRule;
-    private $_endpointMap;
-    private $_suffix;
-    private $_readTimeout;
-    private $_connectTimeout;
-    private $_httpProxy;
-    private $_httpsProxy;
-    private $_socks5Proxy;
-    private $_socks5NetWork;
-    private $_noProxy;
-    private $_network;
-    private $_productId;
-    private $_maxIdleConns;
-    private $_endpointType;
-    private $_openPlatformEndpoint;
-    private $_credential;
+    protected $_endpoint;
 
+    protected $_regionId;
+
+    protected $_protocol;
+
+    protected $_userAgent;
+
+    protected $_endpointRule;
+
+    protected $_endpointMap;
+
+    protected $_suffix;
+
+    protected $_readTimeout;
+
+    protected $_connectTimeout;
+
+    protected $_httpProxy;
+
+    protected $_httpsProxy;
+
+    protected $_socks5Proxy;
+
+    protected $_socks5NetWork;
+
+    protected $_noProxy;
+
+    protected $_network;
+
+    protected $_productId;
+
+    protected $_maxIdleConns;
+
+    protected $_endpointType;
+
+    protected $_openPlatformEndpoint;
+
+    protected $_credential;
+
+    /**
+     * Init client with Config.
+     *
+     * @param config config contains the necessary information to create a client
+     */
     public function __construct(Config $config)
     {
-        $credentialConfig = null;
-        if (Utils::isUnset($config) || Utils::empty_($config->accessKeyId)) {
-            $config            = new Config([]);
-            $this->_credential = new Credential(null);
-        } else {
-            if (Utils::empty_($config->type)) {
+        if (Utils::isUnset($config)) {
+            throw new TeaError([
+                'code'    => 'ParameterMissing',
+                'message' => "'config' can not be unset",
+            ]);
+        }
+        if (!Utils::empty_($config->accessKeyId) && !Utils::empty_($config->accessKeySecret)) {
+            if (!Utils::empty_($config->securityToken)) {
+                $config->type = 'sts';
+            } else {
                 $config->type = 'access_key';
             }
-            $credentialConfig = new \AlibabaCloud\Credentials\Credential\Config([
+            $credentialConfig = new Credential\Config([
                 'accessKeyId'     => $config->accessKeyId,
                 'type'            => $config->type,
                 'accessKeySecret' => $config->accessKeySecret,
                 'securityToken'   => $config->securityToken,
             ]);
             $this->_credential = new Credential($credentialConfig);
+        } elseif (!Utils::isUnset($config->credential)) {
+            $this->_credential = $config->credential;
+        } else {
+            throw new TeaError([
+                'code'    => 'ParameterMissing',
+                'message' => "'accessKeyId' and 'accessKeySecret' or 'credential' can not be unset",
+            ]);
         }
         $this->_network              = $config->network;
         $this->_suffix               = $config->suffix;
@@ -74,6 +113,17 @@ class Rpc
     }
 
     /**
+     * Encapsulate the request and invoke the network.
+     *
+     * @param action api name
+     * @param protocol http or https
+     * @param method e.g. GET
+     * @param version product version
+     * @param authType when authType is Anonymous, the signature will not be calculate
+     * @param pathname pathname of every api
+     * @param query which contains request params
+     * @param body content of request
+     * @param runtime which controls some details of call api, such as retry times
      * @param string $action
      * @param string $protocol
      * @param string $method
@@ -84,6 +134,7 @@ class Rpc
      *
      * @throws \Exception
      *
+     * @return the          response
      * @return array|object
      */
     public function doRequest($action, $protocol, $method, $version, $authType, $query, $body, RuntimeOptions $runtime)
@@ -186,8 +237,11 @@ class Rpc
     }
 
     /**
+     * Get user agent.
+     *
      * @throws \Exception
      *
+     * @return user   agent
      * @return string
      */
     public function getUserAgent()
@@ -196,8 +250,11 @@ class Rpc
     }
 
     /**
+     * Get accesskey id by using credential.
+     *
      * @throws \Exception
      *
+     * @return accesskey id
      * @return string
      */
     public function getAccessKeyId()
@@ -210,8 +267,11 @@ class Rpc
     }
 
     /**
+     * Get accesskey secret by using credential.
+     *
      * @throws \Exception
      *
+     * @return accesskey secret
      * @return string
      */
     public function getAccessKeySecret()
@@ -224,8 +284,11 @@ class Rpc
     }
 
     /**
+     * Get security token by using credential.
+     *
      * @throws \Exception
      *
+     * @return security token
      * @return string
      */
     public function getSecurityToken()
@@ -238,13 +301,17 @@ class Rpc
     }
 
     /**
+     * If the endpointRule and config.endpoint are empty, throw error.
+     *
+     * @param config config contains the necessary information to create a client
+     *
      * @throws \Exception
      */
     public function checkConfig(Config $config)
     {
         if (Utils::empty_($this->_endpointRule) && Utils::empty_($config->endpoint)) {
             throw new TeaError([
-                'name'    => 'ParameterMissing',
+                'code'    => 'ParameterMissing',
                 'message' => "'config.endpoint' can not be empty",
             ]);
         }
