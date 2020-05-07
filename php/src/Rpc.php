@@ -7,6 +7,8 @@ namespace AlibabaCloud\Tea\Rpc;
 use AlibabaCloud\Credentials\Credential;
 use AlibabaCloud\Tea\Exception\TeaError;
 use AlibabaCloud\Tea\Exception\TeaUnableRetryError;
+use AlibabaCloud\Tea\Request;
+use AlibabaCloud\Tea\Response;
 use AlibabaCloud\Tea\Rpc\Rpc\Config;
 use AlibabaCloud\Tea\RpcUtils\RpcUtils;
 use AlibabaCloud\Tea\Tea;
