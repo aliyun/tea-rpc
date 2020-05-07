@@ -7,9 +7,7 @@ namespace AlibabaCloud\Tea\Rpc;
 use AlibabaCloud\Credentials\Credential;
 use AlibabaCloud\Tea\Exception\TeaError;
 use AlibabaCloud\Tea\Exception\TeaUnableRetryError;
-use AlibabaCloud\Tea\Request;
 use AlibabaCloud\Tea\Rpc\Rpc\Config;
-use AlibabaCloud\Tea\Rpc\Rpc\Credential\Config;
 use AlibabaCloud\Tea\RpcUtils\RpcUtils;
 use AlibabaCloud\Tea\Tea;
 use AlibabaCloud\Tea\Utils\Utils;
@@ -79,7 +77,7 @@ class Rpc
             } else {
                 $config->type = 'access_key';
             }
-            $credentialConfig = new Credential\Config([
+            $credentialConfig = new \AlibabaCloud\Credentials\Credential\Config([
                 'accessKeyId'     => $config->accessKeyId,
                 'type'            => $config->type,
                 'accessKeySecret' => $config->accessKeySecret,
