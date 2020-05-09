@@ -36,5 +36,9 @@
       "desc": "Alibaba Cloud RPC Client",
       "github": "https://github.com/aliyun/tea-rpc"
     }
+  },
+  "python": {
+    "package": "alibabacloud_tea_rpc",
+    "clientName": "client"
   }
 }
