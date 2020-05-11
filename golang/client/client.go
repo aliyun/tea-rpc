@@ -1,4 +1,7 @@
 // This file is auto-generated, don't edit it. Thanks.
+/**
+ * This is for RPC SDK
+ */
 package client
 
 import (
@@ -8,26 +11,28 @@ import (
 	credential "github.com/aliyun/credentials-go/credentials"
 )
 
+/**
+ * Model for initing client
+ */
 type Config struct {
 	AccessKeyId          *string               `json:"accessKeyId" xml:"accessKeyId"`
 	AccessKeySecret      *string               `json:"accessKeySecret" xml:"accessKeySecret"`
-	Network              *string               `json:"network" xml:"network"`
-	Suffix               *string               `json:"suffix" xml:"suffix"`
 	SecurityToken        *string               `json:"securityToken" xml:"securityToken"`
-	Endpoint             *string               `json:"endpoint" xml:"endpoint"`
 	Protocol             *string               `json:"protocol" xml:"protocol"`
 	RegionId             *string               `json:"regionId" xml:"regionId"`
-	ProductId            *string               `json:"productId" xml:"productId"`
-	UserAgent            *string               `json:"userAgent" xml:"userAgent"`
 	ReadTimeout          *int                  `json:"readTimeout" xml:"readTimeout"`
 	ConnectTimeout       *int                  `json:"connectTimeout" xml:"connectTimeout"`
 	HttpProxy            *string               `json:"httpProxy" xml:"httpProxy"`
 	HttpsProxy           *string               `json:"httpsProxy" xml:"httpsProxy"`
-	NoProxy              *string               `json:"noProxy" xml:"noProxy"`
 	Credential           credential.Credential `json:"credential" xml:"credential"`
+	Endpoint             *string               `json:"endpoint" xml:"endpoint"`
+	NoProxy              *string               `json:"noProxy" xml:"noProxy"`
+	MaxIdleConns         *int                  `json:"maxIdleConns" xml:"maxIdleConns"`
+	Network              *string               `json:"network" xml:"network"`
+	UserAgent            *string               `json:"userAgent" xml:"userAgent"`
+	Suffix               *string               `json:"suffix" xml:"suffix"`
 	Socks5Proxy          *string               `json:"socks5Proxy" xml:"socks5Proxy"`
 	Socks5NetWork        *string               `json:"socks5NetWork" xml:"socks5NetWork"`
-	MaxIdleConns         *int                  `json:"maxIdleConns" xml:"maxIdleConns"`
 	EndpointType         *string               `json:"endpointType" xml:"endpointType"`
 	OpenPlatformEndpoint *string               `json:"openPlatformEndpoint" xml:"openPlatformEndpoint"`
 	// Deprecated
@@ -52,23 +57,8 @@ func (s *Config) SetAccessKeySecret(v string) *Config {
 	return s
 }
 
-func (s *Config) SetNetwork(v string) *Config {
-	s.Network = &v
-	return s
-}
-
-func (s *Config) SetSuffix(v string) *Config {
-	s.Suffix = &v
-	return s
-}
-
 func (s *Config) SetSecurityToken(v string) *Config {
 	s.SecurityToken = &v
-	return s
-}
-
-func (s *Config) SetEndpoint(v string) *Config {
-	s.Endpoint = &v
 	return s
 }
 
@@ -79,16 +69,6 @@ func (s *Config) SetProtocol(v string) *Config {
 
 func (s *Config) SetRegionId(v string) *Config {
 	s.RegionId = &v
-	return s
-}
-
-func (s *Config) SetProductId(v string) *Config {
-	s.ProductId = &v
-	return s
-}
-
-func (s *Config) SetUserAgent(v string) *Config {
-	s.UserAgent = &v
 	return s
 }
 
@@ -112,13 +92,38 @@ func (s *Config) SetHttpsProxy(v string) *Config {
 	return s
 }
 
+func (s *Config) SetCredential(v credential.Credential) *Config {
+	s.Credential = v
+	return s
+}
+
+func (s *Config) SetEndpoint(v string) *Config {
+	s.Endpoint = &v
+	return s
+}
+
 func (s *Config) SetNoProxy(v string) *Config {
 	s.NoProxy = &v
 	return s
 }
 
-func (s *Config) SetCredential(v credential.Credential) *Config {
-	s.Credential = v
+func (s *Config) SetMaxIdleConns(v int) *Config {
+	s.MaxIdleConns = &v
+	return s
+}
+
+func (s *Config) SetNetwork(v string) *Config {
+	s.Network = &v
+	return s
+}
+
+func (s *Config) SetUserAgent(v string) *Config {
+	s.UserAgent = &v
+	return s
+}
+
+func (s *Config) SetSuffix(v string) *Config {
+	s.Suffix = &v
 	return s
 }
 
@@ -129,11 +134,6 @@ func (s *Config) SetSocks5Proxy(v string) *Config {
 
 func (s *Config) SetSocks5NetWork(v string) *Config {
 	s.Socks5NetWork = &v
-	return s
-}
-
-func (s *Config) SetMaxIdleConns(v int) *Config {
-	s.MaxIdleConns = &v
 	return s
 }
 
@@ -158,7 +158,7 @@ type Client struct {
 	Protocol             *string
 	UserAgent            *string
 	EndpointRule         *string
-	EndpointMap          map[string]string
+	EndpointMap          map[string]*string
 	Suffix               *string
 	ReadTimeout          *int
 	ConnectTimeout       *int
@@ -175,6 +175,10 @@ type Client struct {
 	Credential           credential.Credential
 }
 
+/**
+ * Init client with Config
+ * @param config config contains the necessary information to create a client
+ */
 func NewClient(config *Config) (*Client, error) {
 	client := new(Client)
 	err := client.Init(config)
@@ -237,10 +241,23 @@ func (client *Client) Init(config *Config) (_err error) {
 	return nil
 }
 
+/**
+ * Encapsulate the request and invoke the network
+ * @param action api name
+ * @param protocol http or https
+ * @param method e.g. GET
+ * @param version product version
+ * @param authType when authType is Anonymous, the signature will not be calculate
+ * @param pathname pathname of every api
+ * @param query which contains request params
+ * @param body content of request
+ * @param runtime which controls some details of call api, such as retry times
+ * @return the response
+ */
 func (client *Client) DoRequest(action *string, protocol *string, method *string, version *string, authType *string, query map[string]interface{}, body map[string]interface{}, runtime *util.RuntimeOptions) (_result map[string]interface{}, _err error) {
 	_err = tea.Validate(runtime)
 	if _err != nil {
-		return nil, _err
+		return _result, _err
 	}
 	_runtime := map[string]interface{}{
 		"timeouted":      "retry",
@@ -262,10 +279,10 @@ func (client *Client) DoRequest(action *string, protocol *string, method *string
 	}
 
 	_resp := make(map[string]interface{})
-	for _retryTimes := 0; tea.AllowRetry(_runtime["retry"], _retryTimes); _retryTimes++ {
+	for _retryTimes := 0; tea.BoolValue(tea.AllowRetry(_runtime["retry"], tea.Int(_retryTimes))); _retryTimes++ {
 		if _retryTimes > 0 {
-			_backoffTime := tea.GetBackoffTime(_runtime["backoff"], _retryTimes)
-			if _backoffTime > 0 {
+			_backoffTime := tea.GetBackoffTime(_runtime["backoff"], tea.Int(_retryTimes))
+			if tea.IntValue(_backoffTime) > 0 {
 				tea.Sleep(_backoffTime)
 			}
 		}
@@ -283,51 +300,51 @@ func (client *Client) DoRequest(action *string, protocol *string, method *string
 				"SignatureNonce": tea.StringValue(util.GetNonce()),
 			}, query))
 			// endpoint is setted in product client
-			request_.Headers = map[string]string{
-				"host":       tea.StringValue(client.Endpoint),
-				"user-agent": tea.StringValue(client.GetUserAgent()),
+			request_.Headers = map[string]*string{
+				"host":       client.Endpoint,
+				"user-agent": client.GetUserAgent(),
 			}
 			if !tea.BoolValue(util.IsUnset(body)) {
 				tmp := util.AnyifyMapValue(rpcutil.Query(body))
-				request_.Body = tea.ToReader(tea.StringValue(util.ToFormString(tmp)))
-				request_.Headers["content-type"] = "application/x-www-form-urlencoded"
+				request_.Body = tea.ToReader(util.ToFormString(tmp))
+				request_.Headers["content-type"] = tea.String("application/x-www-form-urlencoded")
 			}
 
 			if !tea.BoolValue(util.EqualString(authType, tea.String("Anonymous"))) {
 				accessKeyId, _err := client.GetAccessKeyId()
 				if _err != nil {
-					return nil, _err
+					return _result, _err
 				}
 
 				accessKeySecret, _err := client.GetAccessKeySecret()
 				if _err != nil {
-					return nil, _err
+					return _result, _err
 				}
 
 				securityToken, _err := client.GetSecurityToken()
 				if _err != nil {
-					return nil, _err
+					return _result, _err
 				}
 
 				if !tea.BoolValue(util.Empty(securityToken)) {
-					request_.Query["SecurityToken"] = tea.StringValue(securityToken)
+					request_.Query["SecurityToken"] = securityToken
 				}
 
-				request_.Query["SignatureMethod"] = "HMAC-SHA1"
-				request_.Query["SignatureVersion"] = "1.0"
-				request_.Query["AccessKeyId"] = tea.StringValue(accessKeyId)
+				request_.Query["SignatureMethod"] = tea.String("HMAC-SHA1")
+				request_.Query["SignatureVersion"] = tea.String("1.0")
+				request_.Query["AccessKeyId"] = accessKeyId
 				signedParam := tea.Merge(request_.Query,
 					rpcutil.Query(body))
-				request_.Query["Signature"] = tea.StringValue(rpcutil.GetSignatureV1(signedParam, request_.Method, accessKeySecret))
+				request_.Query["Signature"] = rpcutil.GetSignatureV1(signedParam, request_.Method, accessKeySecret)
 			}
 
 			response_, _err := tea.DoRequest(request_, _runtime)
 			if _err != nil {
-				return nil, _err
+				return _result, _err
 			}
 			obj, _err := util.ReadAsJSON(response_.Body)
 			if _err != nil {
-				return nil, _err
+				return _result, _err
 			}
 
 			res := util.AssertAsMap(obj)
@@ -337,13 +354,13 @@ func (client *Client) DoRequest(action *string, protocol *string, method *string
 					"data":    res,
 					"code":    res["Code"],
 				})
-				return nil, _err
+				return _result, _err
 			}
 
 			_result = res
 			return _result, _err
 		}()
-		if !tea.Retryable(_err) {
+		if !tea.BoolValue(tea.Retryable(_err)) {
 			break
 		}
 	}
@@ -351,12 +368,20 @@ func (client *Client) DoRequest(action *string, protocol *string, method *string
 	return _resp, _err
 }
 
+/**
+ * Get user agent
+ * @return user agent
+ */
 func (client *Client) GetUserAgent() (_result *string) {
 	userAgent := util.GetUserAgent(client.UserAgent)
 	_result = userAgent
 	return _result
 }
 
+/**
+ * Get accesskey id by using credential
+ * @return accesskey id
+ */
 func (client *Client) GetAccessKeyId() (_result *string, _err error) {
 	if tea.BoolValue(util.IsUnset(client.Credential)) {
 		return _result, _err
@@ -364,13 +389,17 @@ func (client *Client) GetAccessKeyId() (_result *string, _err error) {
 
 	accessKeyId, _err := client.Credential.GetAccessKeyId()
 	if _err != nil {
-		return tea.String(""), _err
+		return _result, _err
 	}
 
 	_result = accessKeyId
 	return _result, _err
 }
 
+/**
+ * Get accesskey secret by using credential
+ * @return accesskey secret
+ */
 func (client *Client) GetAccessKeySecret() (_result *string, _err error) {
 	if tea.BoolValue(util.IsUnset(client.Credential)) {
 		return _result, _err
@@ -378,13 +407,17 @@ func (client *Client) GetAccessKeySecret() (_result *string, _err error) {
 
 	secret, _err := client.Credential.GetAccessKeySecret()
 	if _err != nil {
-		return tea.String(""), _err
+		return _result, _err
 	}
 
 	_result = secret
 	return _result, _err
 }
 
+/**
+ * Get security token by using credential
+ * @return security token
+ */
 func (client *Client) GetSecurityToken() (_result *string, _err error) {
 	if tea.BoolValue(util.IsUnset(client.Credential)) {
 		return _result, _err
@@ -392,13 +425,17 @@ func (client *Client) GetSecurityToken() (_result *string, _err error) {
 
 	token, _err := client.Credential.GetSecurityToken()
 	if _err != nil {
-		return tea.String(""), _err
+		return _result, _err
 	}
 
 	_result = token
 	return _result, _err
 }
 
+/**
+ * If the endpointRule and config.endpoint are empty, throw error
+ * @param config config contains the necessary information to create a client
+ */
 func (client *Client) CheckConfig(config *Config) (_err error) {
 	if tea.BoolValue(util.Empty(client.EndpointRule)) && tea.BoolValue(util.Empty(config.Endpoint)) {
 		_err = tea.NewSDKError(map[string]interface{}{
