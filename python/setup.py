@@ -40,7 +40,7 @@ TOPDIR = os.path.dirname(__file__) or "."
 VERSION = __import__(PACKAGE).__version__
 REQUIRES = ["alibabacloud_tea_util>=0.0.2", "alibabacloud_credentials>=0.0.1", "alibabacloud_rpc_util>=0.0.2"]
 
-desc_file = open("README.md")
+desc_file = open("README.md", encoding='utf-8')
 try:
     LONG_DESCRIPTION = desc_file.read()
 finally:
