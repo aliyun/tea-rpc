@@ -1,13 +1,16 @@
 # This file is auto-generated, don't edit it. Thanks.
-from Tea.model import TeaModel as Tea_model_TeaModel
-
-
+from Tea.model import TeaModel
 
 """
 Model for initing client
 """
-class Config(Tea_model_TeaModel):
-    def __init__(self, access_key_id="", access_key_secret="", security_token="", protocol="", region_id="", read_timeout=0, connect_timeout=0, http_proxy="", https_proxy="", credential=None, endpoint="", no_proxy="", max_idle_conns=0, network="", user_agent="", suffix="", socks_5proxy="", socks_5net_work="", endpoint_type="", open_platform_endpoint="", type=""):
+
+
+class Config(TeaModel):
+    def __init__(self, access_key_id="", access_key_secret="", security_token="", protocol="", region_id="",
+                 read_timeout=0, connect_timeout=0, http_proxy="", https_proxy="", credential=None, endpoint="",
+                 no_proxy="", max_idle_conns=0, network="", user_agent="", suffix="", socks_5proxy="",
+                 socks_5net_work="", endpoint_type="", open_platform_endpoint="", type=""):
         self.access_key_id = access_key_id
         self.access_key_secret = access_key_secret
         self.security_token = security_token
@@ -82,4 +85,3 @@ class Config(Tea_model_TeaModel):
         self.open_platform_endpoint = map.get('openPlatformEndpoint')
         self.type = map.get('type')
         return self
-

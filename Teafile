@@ -40,6 +40,13 @@
   },
   "python": {
     "package": "alibabacloud_tea_rpc",
-    "clientName": "client"
+    "clientName": "client",
+    "packageInfo": {
+      "name": "alibabacloud_tea_rpc",
+      "desc": "Aliyun Tea RPC SDK Library for Python",
+      "github": "https://github.com/aliyun/tea-rpc",
+      "author": "Alibaba Cloud",
+      "email": "alibaba-cloud-sdk-dev-team@list.alibaba-inc.com"
+		}
   }
 }
