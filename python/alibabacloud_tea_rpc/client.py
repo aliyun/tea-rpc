@@ -19,10 +19,7 @@ This is for RPC SDK
 
 
 class Client:
-    def __init__(self, config, _endpoint="", _region_id="", _protocol="", _user_agent="", _endpoint_rule="",
-                 _endpoint_map=None, _suffix="", _read_timeout=0, _connect_timeout=0, _http_proxy="", _https_proxy="",
-                 _socks_5proxy="", _socks_5net_work="", _no_proxy="", _network="", _product_id="", _max_idle_conns=0,
-                 _endpoint_type="", _open_platform_endpoint="", _credential=None):
+    def __init__(self, config, _endpoint=None, _region_id=None, _protocol=None, _user_agent=None, _endpoint_rule=None, _endpoint_map=None, _suffix=None, _read_timeout=None, _connect_timeout=None, _http_proxy=None, _https_proxy=None, _socks_5proxy=None, _socks_5net_work=None, _no_proxy=None, _network=None, _product_id=None, _max_idle_conns=None, _endpoint_type=None, _open_platform_endpoint=None, _credential=None):
         """
         Init client with Config
         @param config: config contains the necessary information to create a client
@@ -125,9 +122,9 @@ class Client:
         _last_exception = None
         _now = time.time()
         _retry_times = 0
-        while TeaCore.allow_retry(_runtime["retry"], _retry_times, _now):
+        while TeaCore.allow_retry(_runtime.get('retry'), _retry_times, _now):
             if _retry_times > 0:
-                _backoff_time = TeaCore.get_backoff_time(_runtime["backoff"], _retry_times)
+                _backoff_time = TeaCore.get_backoff_time(_runtime.get('backoff'), _retry_times)
                 if _backoff_time > 0:
                     TeaCore.sleep(_backoff_time)
             _retry_times = _retry_times + 1
@@ -162,18 +159,17 @@ class Client:
                     _request.query["SignatureVersion"] = "1.0"
                     _request.query["AccessKeyId"] = access_key_id
                     signed_param = TeaCore.merge(_request.query,
-                                                 RPCUtilClient.query(body))
-                    _request.query["Signature"] = RPCUtilClient.get_signature_v1(signed_param, _request.method,
-                                                                                 access_key_secret)
+                        RPCUtilClient.query(body))
+                    _request.query["Signature"] = RPCUtilClient.get_signature_v1(signed_param, _request.method, access_key_secret)
                 _last_request = _request
                 _response = TeaCore.do_action(_request, _runtime)
                 obj = UtilClient.read_as_json(_response.body)
                 res = UtilClient.assert_as_map(obj)
                 if UtilClient.is_4xx(_response.status_code) or UtilClient.is_5xx(_response.status_code):
                     raise TeaException({
-                        "message": res["Message"],
+                        "message": res.get('Message'),
                         "data": res,
-                        "code": res["Code"]
+                        "code": res.get('Code')
                     })
                 return res
             except Exception as e:
