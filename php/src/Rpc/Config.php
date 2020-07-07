@@ -221,32 +221,77 @@ class Config extends Model
 
     public function validate()
     {
+        Model::validatePattern('regionId', $this->regionId, '^[a-zA-Z0-9_-]+$');
+        Model::validatePattern('network', $this->network, '^[a-zA-Z0-9_-]+$');
+        Model::validatePattern('suffix', $this->suffix, '^[a-zA-Z0-9_-]+$');
     }
 
     public function toMap()
     {
-        $res                         = [];
-        $res['accessKeyId']          = $this->accessKeyId;
-        $res['accessKeySecret']      = $this->accessKeySecret;
-        $res['securityToken']        = $this->securityToken;
-        $res['protocol']             = $this->protocol;
-        $res['regionId']             = $this->regionId;
-        $res['readTimeout']          = $this->readTimeout;
-        $res['connectTimeout']       = $this->connectTimeout;
-        $res['httpProxy']            = $this->httpProxy;
-        $res['httpsProxy']           = $this->httpsProxy;
-        $res['credential']           = null !== $this->credential ? $this->credential->toMap() : null;
-        $res['endpoint']             = $this->endpoint;
-        $res['noProxy']              = $this->noProxy;
-        $res['maxIdleConns']         = $this->maxIdleConns;
-        $res['network']              = $this->network;
-        $res['userAgent']            = $this->userAgent;
-        $res['suffix']               = $this->suffix;
-        $res['socks5Proxy']          = $this->socks5Proxy;
-        $res['socks5NetWork']        = $this->socks5NetWork;
-        $res['endpointType']         = $this->endpointType;
-        $res['openPlatformEndpoint'] = $this->openPlatformEndpoint;
-        $res['type']                 = $this->type;
+        $res = [];
+        if (null !== $this->accessKeyId) {
+            $res['accessKeyId'] = $this->accessKeyId;
+        }
+        if (null !== $this->accessKeySecret) {
+            $res['accessKeySecret'] = $this->accessKeySecret;
+        }
+        if (null !== $this->securityToken) {
+            $res['securityToken'] = $this->securityToken;
+        }
+        if (null !== $this->protocol) {
+            $res['protocol'] = $this->protocol;
+        }
+        if (null !== $this->regionId) {
+            $res['regionId'] = $this->regionId;
+        }
+        if (null !== $this->readTimeout) {
+            $res['readTimeout'] = $this->readTimeout;
+        }
+        if (null !== $this->connectTimeout) {
+            $res['connectTimeout'] = $this->connectTimeout;
+        }
+        if (null !== $this->httpProxy) {
+            $res['httpProxy'] = $this->httpProxy;
+        }
+        if (null !== $this->httpsProxy) {
+            $res['httpsProxy'] = $this->httpsProxy;
+        }
+        if (null !== $this->credential) {
+            $res['credential'] = null !== $this->credential ? $this->credential->toMap() : null;
+        }
+        if (null !== $this->endpoint) {
+            $res['endpoint'] = $this->endpoint;
+        }
+        if (null !== $this->noProxy) {
+            $res['noProxy'] = $this->noProxy;
+        }
+        if (null !== $this->maxIdleConns) {
+            $res['maxIdleConns'] = $this->maxIdleConns;
+        }
+        if (null !== $this->network) {
+            $res['network'] = $this->network;
+        }
+        if (null !== $this->userAgent) {
+            $res['userAgent'] = $this->userAgent;
+        }
+        if (null !== $this->suffix) {
+            $res['suffix'] = $this->suffix;
+        }
+        if (null !== $this->socks5Proxy) {
+            $res['socks5Proxy'] = $this->socks5Proxy;
+        }
+        if (null !== $this->socks5NetWork) {
+            $res['socks5NetWork'] = $this->socks5NetWork;
+        }
+        if (null !== $this->endpointType) {
+            $res['endpointType'] = $this->endpointType;
+        }
+        if (null !== $this->openPlatformEndpoint) {
+            $res['openPlatformEndpoint'] = $this->openPlatformEndpoint;
+        }
+        if (null !== $this->type) {
+            $res['type'] = $this->type;
+        }
 
         return $res;
     }

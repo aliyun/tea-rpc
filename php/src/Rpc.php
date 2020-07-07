@@ -67,6 +67,7 @@ class Rpc
      */
     public function __construct(Config $config)
     {
+        Utils::validateModel($config);
         if (Utils::isUnset($config)) {
             throw new TeaError([
                 'code'    => 'ParameterMissing',
@@ -115,27 +116,18 @@ class Rpc
     /**
      * Encapsulate the request and invoke the network.
      *
-     * @param action api name
-     * @param protocol http or https
-     * @param method e.g. GET
-     * @param version product version
-     * @param authType when authType is Anonymous, the signature will not be calculate
-     * @param pathname pathname of every api
-     * @param query which contains request params
-     * @param body content of request
-     * @param runtime which controls some details of call api, such as retry times
-     * @param string $action
-     * @param string $protocol
-     * @param string $method
-     * @param string $version
-     * @param string $authType
-     * @param object $query
-     * @param object $body
+     * @param string         $action   api name
+     * @param string         $protocol http or https
+     * @param string         $method   e.g. GET
+     * @param string         $version  product version
+     * @param string         $authType when authType is Anonymous, the signature will not be calculate
+     * @param object         $query    which contains request params
+     * @param object         $body     content of request
+     * @param RuntimeOptions $runtime  which controls some details of call api, such as retry times
      *
      * @throws \Exception
      *
-     * @return the          response
-     * @return array|object
+     * @return array|object the response
      */
     public function doRequest($action, $protocol, $method, $version, $authType, $query, $body, RuntimeOptions $runtime)
     {
@@ -223,6 +215,9 @@ class Rpc
 
                 return $res;
             } catch (\Exception $e) {
+                if (!($e instanceof TeaError)) {
+                    $e = new TeaError([], $e->message, $e->code, $e);
+                }
                 if (Tea::isRetryable($e)) {
                     $_lastException = $e;
 
@@ -241,8 +236,7 @@ class Rpc
      *
      * @throws \Exception
      *
-     * @return user   agent
-     * @return string
+     * @return string user agent
      */
     public function getUserAgent()
     {
@@ -254,8 +248,7 @@ class Rpc
      *
      * @throws \Exception
      *
-     * @return accesskey id
-     * @return string
+     * @return string accesskey id
      */
     public function getAccessKeyId()
     {
@@ -271,8 +264,7 @@ class Rpc
      *
      * @throws \Exception
      *
-     * @return accesskey secret
-     * @return string
+     * @return string accesskey secret
      */
     public function getAccessKeySecret()
     {
@@ -288,8 +280,7 @@ class Rpc
      *
      * @throws \Exception
      *
-     * @return security token
-     * @return string
+     * @return string security token
      */
     public function getSecurityToken()
     {
@@ -303,7 +294,7 @@ class Rpc
     /**
      * If the endpointRule and config.endpoint are empty, throw error.
      *
-     * @param config config contains the necessary information to create a client
+     * @param Config $config config contains the necessary information to create a client
      *
      * @throws \Exception
      */
