@@ -44,6 +44,7 @@ class Client:
         self._endpoint_type = _endpoint_type
         self._open_platform_endpoint = _open_platform_endpoint
         self._credential = _credential
+        UtilClient.validate_model(config)
         if UtilClient.is_unset(config.to_map()):
             raise TeaException({
                 "code": "ParameterMissing",
