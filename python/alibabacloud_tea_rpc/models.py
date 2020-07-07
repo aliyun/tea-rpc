@@ -31,8 +31,14 @@ class Config(TeaModel):
         self.type = type
 
     def validate(self):
+        if self.region_id:
+            self.validate_pattern(self.region_id, 'region_id', '^[a-zA-Z0-9_-]+$')
         if self.credential:
             self.credential.validate()
+        if self.network:
+            self.validate_pattern(self.network, 'network', '^[a-zA-Z0-9_-]+$')
+        if self.suffix:
+            self.validate_pattern(self.suffix, 'suffix', '^[a-zA-Z0-9_-]+$')
 
     def to_map(self):
         result = {}
