@@ -35,7 +35,7 @@ model Config {
   accessKeySecret?: string(description='accesskey secret',default=''),
   securityToken?: string(description='security token',example='a.txt',default=''),
   protocol?: string(description='http protocol',example='http',default='http'),
-  regionId?: string(description='region id',example='cn-hangzhou',default=''),
+  regionId?: string(description='region id',example='cn-hangzhou',default='',pattern='^[a-zA-Z0-9_-]+$'),
   readTimeout?: number(description='read timeout',example='10',default=''),
   connectTimeout?: number(description='connect timeout',example='10',default=''),
   httpProxy?: string(description='http proxy',example='http://localhost',default=''),
@@ -44,9 +44,9 @@ model Config {
   endpoint?: string(description='endpoint',example='cs.aliyuncs.com',default=''),
   noProxy?: string(description='proxy white list',example='http://localhost',default=''),
   maxIdleConns?: number(description='max idle conns',example='3',default=''),
-  network?: string(description='network for endpoint',example='public',default=''),
+  network?: string(description='network for endpoint',example='public',default='',pattern='^[a-zA-Z0-9_-]+$'),
   userAgent?: string(description='user agent',example='Alibabacloud/1',default=''),
-  suffix?: string(description='suffix for endpoint',example='aliyun',default=''),
+  suffix?: string(description='suffix for endpoint',example='aliyun',default='',pattern='^[a-zA-Z0-9_-]+$'),
   socks5Proxy?: string(description='socks5 proxy',default=''),
   socks5NetWork?: string(description='socks5 network',example='TCP',default=''),
   endpointType?: string(description='endpoint type',example='internal',default=''),
@@ -59,6 +59,7 @@ model Config {
  * @param config config contains the necessary information to create a client
  */
 init(config: Config) {
+  Util.validateModel(config);
   if (Util.isUnset(config)) {
     throw {
       code = 'ParameterMissing',

@@ -15,28 +15,28 @@ import (
  * Model for initing client
  */
 type Config struct {
-	AccessKeyId          *string               `json:"accessKeyId" xml:"accessKeyId"`
-	AccessKeySecret      *string               `json:"accessKeySecret" xml:"accessKeySecret"`
-	SecurityToken        *string               `json:"securityToken" xml:"securityToken"`
-	Protocol             *string               `json:"protocol" xml:"protocol"`
-	RegionId             *string               `json:"regionId" xml:"regionId"`
-	ReadTimeout          *int                  `json:"readTimeout" xml:"readTimeout"`
-	ConnectTimeout       *int                  `json:"connectTimeout" xml:"connectTimeout"`
-	HttpProxy            *string               `json:"httpProxy" xml:"httpProxy"`
-	HttpsProxy           *string               `json:"httpsProxy" xml:"httpsProxy"`
-	Credential           credential.Credential `json:"credential" xml:"credential"`
-	Endpoint             *string               `json:"endpoint" xml:"endpoint"`
-	NoProxy              *string               `json:"noProxy" xml:"noProxy"`
-	MaxIdleConns         *int                  `json:"maxIdleConns" xml:"maxIdleConns"`
-	Network              *string               `json:"network" xml:"network"`
-	UserAgent            *string               `json:"userAgent" xml:"userAgent"`
-	Suffix               *string               `json:"suffix" xml:"suffix"`
-	Socks5Proxy          *string               `json:"socks5Proxy" xml:"socks5Proxy"`
-	Socks5NetWork        *string               `json:"socks5NetWork" xml:"socks5NetWork"`
-	EndpointType         *string               `json:"endpointType" xml:"endpointType"`
-	OpenPlatformEndpoint *string               `json:"openPlatformEndpoint" xml:"openPlatformEndpoint"`
+	AccessKeyId          *string               `json:"accessKeyId,omitempty" xml:"accessKeyId,omitempty"`
+	AccessKeySecret      *string               `json:"accessKeySecret,omitempty" xml:"accessKeySecret,omitempty"`
+	SecurityToken        *string               `json:"securityToken,omitempty" xml:"securityToken,omitempty"`
+	Protocol             *string               `json:"protocol,omitempty" xml:"protocol,omitempty"`
+	RegionId             *string               `json:"regionId,omitempty" xml:"regionId,omitempty" pattern:"^[a-zA-Z0-9_-]+$"`
+	ReadTimeout          *int                  `json:"readTimeout,omitempty" xml:"readTimeout,omitempty"`
+	ConnectTimeout       *int                  `json:"connectTimeout,omitempty" xml:"connectTimeout,omitempty"`
+	HttpProxy            *string               `json:"httpProxy,omitempty" xml:"httpProxy,omitempty"`
+	HttpsProxy           *string               `json:"httpsProxy,omitempty" xml:"httpsProxy,omitempty"`
+	Credential           credential.Credential `json:"credential,omitempty" xml:"credential,omitempty"`
+	Endpoint             *string               `json:"endpoint,omitempty" xml:"endpoint,omitempty"`
+	NoProxy              *string               `json:"noProxy,omitempty" xml:"noProxy,omitempty"`
+	MaxIdleConns         *int                  `json:"maxIdleConns,omitempty" xml:"maxIdleConns,omitempty"`
+	Network              *string               `json:"network,omitempty" xml:"network,omitempty" pattern:"^[a-zA-Z0-9_-]+$"`
+	UserAgent            *string               `json:"userAgent,omitempty" xml:"userAgent,omitempty"`
+	Suffix               *string               `json:"suffix,omitempty" xml:"suffix,omitempty" pattern:"^[a-zA-Z0-9_-]+$"`
+	Socks5Proxy          *string               `json:"socks5Proxy,omitempty" xml:"socks5Proxy,omitempty"`
+	Socks5NetWork        *string               `json:"socks5NetWork,omitempty" xml:"socks5NetWork,omitempty"`
+	EndpointType         *string               `json:"endpointType,omitempty" xml:"endpointType,omitempty"`
+	OpenPlatformEndpoint *string               `json:"openPlatformEndpoint,omitempty" xml:"openPlatformEndpoint,omitempty"`
 	// Deprecated
-	Type *string `json:"type" xml:"type"`
+	Type *string `json:"type,omitempty" xml:"type,omitempty"`
 }
 
 func (s Config) String() string {
@@ -186,6 +186,10 @@ func NewClient(config *Config) (*Client, error) {
 }
 
 func (client *Client) Init(config *Config) (_err error) {
+	_err = util.ValidateModel(config)
+	if _err != nil {
+		return _err
+	}
 	if tea.BoolValue(util.IsUnset(tea.ToMap(config))) {
 		_err = tea.NewSDKError(map[string]interface{}{
 			"code":    "ParameterMissing",
