@@ -1,3 +1,6 @@
+### 2020-07-08 Version 0.0.8
+* Supported config filter
+
 ### 2020-04-22 Version 0.0.7
   * Supported Obsolete
 
