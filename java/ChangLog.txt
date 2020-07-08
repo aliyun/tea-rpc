@@ -1,3 +1,6 @@
+2020-07-08 Version: 0.0.12
+1. Improve init
+
 2020-04-22 Version: 0.0.11
 1. Update Client
 
