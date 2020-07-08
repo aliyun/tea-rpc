@@ -20,7 +20,7 @@
     "csharp": "AlibabaCloud.RPCClient:0.0.7",
     "java": "com.aliyun:tea-rpc:0.0.11",
     "php": "alibabacloud/tea-rpc:^0.1.5",
-    "python": "alibabacloud_tea_rpc:0.0.1"
+    "python": "alibabacloud_tea_rpc:0.0.3"
   },
   "csharp": {
     "namespace": "AlibabaCloud.RPCClient"
