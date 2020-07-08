@@ -36,8 +36,13 @@ namespace AlibabaCloud.RPCClient
         protected string _openPlatformEndpoint;
         protected Aliyun.Credentials.Client _credential;
 
+        /**
+         * Init client with Config
+         * @param config config contains the necessary information to create a client
+         */
         public Client(Config config)
         {
+            AlibabaCloud.TeaUtil.Common.ValidateModel(config);
             if (AlibabaCloud.TeaUtil.Common.IsUnset(config.ToMap()))
             {
                 throw new TeaException(new Dictionary<string, string>
@@ -95,6 +100,19 @@ namespace AlibabaCloud.RPCClient
             this._openPlatformEndpoint = config.OpenPlatformEndpoint;
         }
 
+        /**
+         * Encapsulate the request and invoke the network
+         * @param action api name
+         * @param protocol http or https
+         * @param method e.g. GET
+         * @param version product version
+         * @param authType when authType is Anonymous, the signature will not be calculate
+         * @param pathname pathname of every api
+         * @param query which contains request params
+         * @param body content of request
+         * @param runtime which controls some details of call api, such as retry times
+         * @return the response
+         */
         public Dictionary<string, object> DoRequest(string action, string protocol, string method, string version, string authType, Dictionary<string, object> query, Dictionary<string, object> body, AlibabaCloud.TeaUtil.Models.RuntimeOptions runtime)
         {
             Dictionary<string, object> runtime_ = new Dictionary<string, object>
@@ -213,6 +231,19 @@ namespace AlibabaCloud.RPCClient
             throw new TeaUnretryableException(_lastRequest, _lastException);
         }
 
+        /**
+         * Encapsulate the request and invoke the network
+         * @param action api name
+         * @param protocol http or https
+         * @param method e.g. GET
+         * @param version product version
+         * @param authType when authType is Anonymous, the signature will not be calculate
+         * @param pathname pathname of every api
+         * @param query which contains request params
+         * @param body content of request
+         * @param runtime which controls some details of call api, such as retry times
+         * @return the response
+         */
         public async Task<Dictionary<string, object>> DoRequestAsync(string action, string protocol, string method, string version, string authType, Dictionary<string, object> query, Dictionary<string, object> body, AlibabaCloud.TeaUtil.Models.RuntimeOptions runtime)
         {
             Dictionary<string, object> runtime_ = new Dictionary<string, object>
@@ -331,12 +362,20 @@ namespace AlibabaCloud.RPCClient
             throw new TeaUnretryableException(_lastRequest, _lastException);
         }
 
+        /**
+         * Get user agent
+         * @return user agent
+         */
         public string GetUserAgent()
         {
             string userAgent = AlibabaCloud.TeaUtil.Common.GetUserAgent(_userAgent);
             return userAgent;
         }
 
+        /**
+         * Get accesskey id by using credential
+         * @return accesskey id
+         */
         public string GetAccessKeyId()
         {
             if (AlibabaCloud.TeaUtil.Common.IsUnset(_credential))
@@ -347,6 +386,10 @@ namespace AlibabaCloud.RPCClient
             return accessKeyId;
         }
 
+        /**
+         * Get accesskey id by using credential
+         * @return accesskey id
+         */
         public async Task<string> GetAccessKeyIdAsync()
         {
             if (AlibabaCloud.TeaUtil.Common.IsUnset(_credential))
@@ -357,6 +400,10 @@ namespace AlibabaCloud.RPCClient
             return accessKeyId;
         }
 
+        /**
+         * Get accesskey secret by using credential
+         * @return accesskey secret
+         */
         public string GetAccessKeySecret()
         {
             if (AlibabaCloud.TeaUtil.Common.IsUnset(_credential))
@@ -367,6 +414,10 @@ namespace AlibabaCloud.RPCClient
             return secret;
         }
 
+        /**
+         * Get accesskey secret by using credential
+         * @return accesskey secret
+         */
         public async Task<string> GetAccessKeySecretAsync()
         {
             if (AlibabaCloud.TeaUtil.Common.IsUnset(_credential))
@@ -377,6 +428,10 @@ namespace AlibabaCloud.RPCClient
             return secret;
         }
 
+        /**
+         * Get security token by using credential
+         * @return security token
+         */
         public string GetSecurityToken()
         {
             if (AlibabaCloud.TeaUtil.Common.IsUnset(_credential))
@@ -387,6 +442,10 @@ namespace AlibabaCloud.RPCClient
             return token;
         }
 
+        /**
+         * Get security token by using credential
+         * @return security token
+         */
         public async Task<string> GetSecurityTokenAsync()
         {
             if (AlibabaCloud.TeaUtil.Common.IsUnset(_credential))
@@ -397,6 +456,10 @@ namespace AlibabaCloud.RPCClient
             return token;
         }
 
+        /**
+         * If the endpointRule and config.endpoint are empty, throw error
+         * @param config config contains the necessary information to create a client
+         */
         public void CheckConfig(Config config)
         {
             if (AlibabaCloud.TeaUtil.Common.Empty(_endpointRule) && AlibabaCloud.TeaUtil.Common.Empty(config.Endpoint))
