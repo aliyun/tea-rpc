@@ -23,7 +23,10 @@
     "python": "alibabacloud_tea_rpc:0.0.3"
   },
   "csharp": {
-    "namespace": "AlibabaCloud.RPCClient"
+    "namespace": "AlibabaCloud.RPCClient",
+    "packageInfo": {
+      "name": "RPCClient"
+    }
   },
   "java": {
     "package": "com.aliyun.tearpc"
