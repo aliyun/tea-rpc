@@ -3,6 +3,9 @@ package com.aliyun.tearpc.models;
 
 import com.aliyun.tea.*;
 
+/**
+ * Model for initing client
+ */
 public class Config extends TeaModel {
     @NameInMap("accessKeyId")
     public String accessKeyId;
@@ -10,29 +13,15 @@ public class Config extends TeaModel {
     @NameInMap("accessKeySecret")
     public String accessKeySecret;
 
-    @NameInMap("network")
-    public String network;
-
-    @NameInMap("suffix")
-    public String suffix;
-
     @NameInMap("securityToken")
     public String securityToken;
-
-    @NameInMap("endpoint")
-    public String endpoint;
 
     @NameInMap("protocol")
     public String protocol;
 
     @NameInMap("regionId")
+    @Validation(pattern = "^[a-zA-Z0-9_-]+$")
     public String regionId;
-
-    @NameInMap("productId")
-    public String productId;
-
-    @NameInMap("userAgent")
-    public String userAgent;
 
     @NameInMap("readTimeout")
     public Integer readTimeout;
@@ -46,20 +35,34 @@ public class Config extends TeaModel {
     @NameInMap("httpsProxy")
     public String httpsProxy;
 
+    @NameInMap("credential")
+    public com.aliyun.credentials.Client credential;
+
+    @NameInMap("endpoint")
+    public String endpoint;
+
     @NameInMap("noProxy")
     public String noProxy;
 
-    @NameInMap("credential")
-    public com.aliyun.credentials.Client credential;
+    @NameInMap("maxIdleConns")
+    public Integer maxIdleConns;
+
+    @NameInMap("network")
+    @Validation(pattern = "^[a-zA-Z0-9_-]+$")
+    public String network;
+
+    @NameInMap("userAgent")
+    public String userAgent;
+
+    @NameInMap("suffix")
+    @Validation(pattern = "^[a-zA-Z0-9_-]+$")
+    public String suffix;
 
     @NameInMap("socks5Proxy")
     public String socks5Proxy;
 
     @NameInMap("socks5NetWork")
     public String socks5NetWork;
-
-    @NameInMap("maxIdleConns")
-    public Integer maxIdleConns;
 
     @NameInMap("endpointType")
     public String endpointType;

@@ -26,7 +26,12 @@ public class Client {
     public String _endpointType;
     public String _openPlatformEndpoint;
     public com.aliyun.credentials.Client _credential;
+    /**
+     * Init client with Config
+     * @param config config contains the necessary information to create a client
+     */
     public Client(Config config) throws Exception {
+        com.aliyun.teautil.Common.validateModel(config);
         if (com.aliyun.teautil.Common.isUnset(TeaModel.buildMap(config))) {
             throw new TeaException(TeaConverter.buildMap(
                 new TeaPair("code", "ParameterMissing"),
@@ -75,7 +80,7 @@ public class Client {
         this._openPlatformEndpoint = config.openPlatformEndpoint;
     }
 
-    public java.util.Map<String, Object> doRequest(String action, String protocol, String method, String version, String authType, java.util.Map<String, Object> query, java.util.Map<String, Object> body, com.aliyun.teautil.models.RuntimeOptions runtime) throws Exception {
+    public java.util.Map<String, ?> doRequest(String action, String protocol, String method, String version, String authType, java.util.Map<String, ?> query, java.util.Map<String, ?> body, com.aliyun.teautil.models.RuntimeOptions runtime) throws Exception {
         java.util.Map<String, Object> runtime_ = TeaConverter.buildMap(
             new TeaPair("timeouted", "retry"),
             new TeaPair("readTimeout", com.aliyun.teautil.Common.defaultNumber(runtime.readTimeout, _readTimeout)),
@@ -175,11 +180,19 @@ public class Client {
         throw new TeaUnretryableException(_lastRequest);
     }
 
+    /**
+     * Get user agent
+     * @return user agent
+     */
     public String getUserAgent() throws Exception {
         String userAgent = com.aliyun.teautil.Common.getUserAgent(_userAgent);
         return userAgent;
     }
 
+    /**
+     * Get accesskey id by using credential
+     * @return accesskey id
+     */
     public String getAccessKeyId() throws Exception {
         if (com.aliyun.teautil.Common.isUnset(_credential)) {
             return "";
@@ -189,6 +202,10 @@ public class Client {
         return accessKeyId;
     }
 
+    /**
+     * Get accesskey secret by using credential
+     * @return accesskey secret
+     */
     public String getAccessKeySecret() throws Exception {
         if (com.aliyun.teautil.Common.isUnset(_credential)) {
             return "";
@@ -198,6 +215,10 @@ public class Client {
         return secret;
     }
 
+    /**
+     * Get security token by using credential
+     * @return security token
+     */
     public String getSecurityToken() throws Exception {
         if (com.aliyun.teautil.Common.isUnset(_credential)) {
             return "";
@@ -207,6 +228,10 @@ public class Client {
         return token;
     }
 
+    /**
+     * If the endpointRule and config.endpoint are empty, throw error
+     * @param config config contains the necessary information to create a client
+     */
     public void checkConfig(Config config) throws Exception {
         if (com.aliyun.teautil.Common.empty(_endpointRule) && com.aliyun.teautil.Common.empty(config.endpoint)) {
             throw new TeaException(TeaConverter.buildMap(
