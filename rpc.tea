@@ -59,13 +59,14 @@ model Config {
  * @param config config contains the necessary information to create a client
  */
 init(config: Config) {
-  Util.validateModel(config);
   if (Util.isUnset(config)) {
     throw {
       code = 'ParameterMissing',
       message = '\'config\' can not be unset'
     };
   }
+
+  Util.validateModel(config);
 
   if(!Util.empty(config.accessKeyId) && !Util.empty(config.accessKeySecret)){
     if (!Util.empty(config.securityToken)) {

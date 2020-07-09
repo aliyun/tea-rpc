@@ -186,10 +186,6 @@ func NewClient(config *Config) (*Client, error) {
 }
 
 func (client *Client) Init(config *Config) (_err error) {
-	_err = util.ValidateModel(config)
-	if _err != nil {
-		return _err
-	}
 	if tea.BoolValue(util.IsUnset(tea.ToMap(config))) {
 		_err = tea.NewSDKError(map[string]interface{}{
 			"code":    "ParameterMissing",
@@ -198,6 +194,10 @@ func (client *Client) Init(config *Config) (_err error) {
 		return _err
 	}
 
+	_err = util.ValidateModel(config)
+	if _err != nil {
+		return _err
+	}
 	if !tea.BoolValue(util.Empty(config.AccessKeyId)) && !tea.BoolValue(util.Empty(config.AccessKeySecret)) {
 		if !tea.BoolValue(util.Empty(config.SecurityToken)) {
 			config.Type = tea.String("sts")
