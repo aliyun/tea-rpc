@@ -64,16 +64,17 @@ class Rpc
      * Init client with Config.
      *
      * @param config config contains the necessary information to create a client
+     * @param mixed $config
      */
-    public function __construct(Config $config)
+    public function __construct($config)
     {
-        Utils::validateModel($config);
         if (Utils::isUnset($config)) {
             throw new TeaError([
                 'code'    => 'ParameterMissing',
                 'message' => "'config' can not be unset",
             ]);
         }
+        Utils::validateModel($config);
         if (!Utils::empty_($config->accessKeyId) && !Utils::empty_($config->accessKeySecret)) {
             if (!Utils::empty_($config->securityToken)) {
                 $config->type = 'sts';
@@ -129,7 +130,7 @@ class Rpc
      *
      * @return array|object the response
      */
-    public function doRequest($action, $protocol, $method, $version, $authType, $query, $body, RuntimeOptions $runtime)
+    public function doRequest($action, $protocol, $method, $version, $authType, $query, $body, $runtime)
     {
         $runtime->validate();
         $_runtime = [
@@ -216,7 +217,7 @@ class Rpc
                 return $res;
             } catch (\Exception $e) {
                 if (!($e instanceof TeaError)) {
-                    $e = new TeaError([], $e->message, $e->code, $e);
+                    $e = new TeaError([], $e->getMessage(), $e->getCode(), $e);
                 }
                 if (Tea::isRetryable($e)) {
                     $_lastException = $e;
@@ -298,7 +299,7 @@ class Rpc
      *
      * @throws \Exception
      */
-    public function checkConfig(Config $config)
+    public function checkConfig($config)
     {
         if (Utils::empty_($this->_endpointRule) && Utils::empty_($config->endpoint)) {
             throw new TeaError([

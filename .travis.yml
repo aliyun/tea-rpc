@@ -13,21 +13,21 @@ jobs:
     # - language: node_js
     #   node_js: 12
     #   env: TEA_UTIL_ENV="ts"
-    # - language: php
-    #   php: '5.6'
-    #   env: TEA_UTIL_ENV="php"
-    # - language: php
-    #   php: '7.0'
-    #   env: TEA_UTIL_ENV="php"
-    # - language: php
-    #   php: '7.1'
-    #   env: TEA_UTIL_ENV="php"
-    # - language: php
-    #   php: '7.2'
-    #   env: TEA_UTIL_ENV="php"
-    # - language: php
-    #   php: '7.3'
-    #   env: TEA_UTIL_ENV="php"
+    - language: php
+      php: '5.6'
+      env: TEA_UTIL_ENV="php"
+    - language: php
+      php: '7.0'
+      env: TEA_UTIL_ENV="php"
+    - language: php
+      php: '7.1'
+      env: TEA_UTIL_ENV="php"
+    - language: php
+      php: '7.2'
+      env: TEA_UTIL_ENV="php"
+    - language: php
+      php: '7.3'
+      env: TEA_UTIL_ENV="php"
     - language: python
       python: 3.4
       env: TEA_UTIL_ENV="python"
