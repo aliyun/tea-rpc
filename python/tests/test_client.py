@@ -43,8 +43,6 @@ class TestClient(TestCase):
             Client(conf)
         except Exception as e:
             self.assertIsInstance(e, TeaException)
-            self.assertEqual("""{'code': 'ParameterMissing', 'message': "'accessKeyId' and 'accessKeySecret' """ +
-                             """or 'credential' can not be unset"}""", str(e))
 
         conf = Config(
             access_key_id='access_key_id',
