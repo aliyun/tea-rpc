@@ -8,12 +8,12 @@ use AlibabaCloud\Credentials\Credential;
 use AlibabaCloud\Tea\Exception\TeaError;
 use AlibabaCloud\Tea\Exception\TeaUnableRetryError;
 use AlibabaCloud\Tea\Request;
-use AlibabaCloud\Tea\Response;
 use AlibabaCloud\Tea\Rpc\Rpc\Config;
 use AlibabaCloud\Tea\RpcUtils\RpcUtils;
 use AlibabaCloud\Tea\Tea;
 use AlibabaCloud\Tea\Utils\Utils;
 use AlibabaCloud\Tea\Utils\Utils\RuntimeOptions;
+use Exception;
 
 /**
  * This is for RPC SDK.
@@ -122,13 +122,15 @@ class Rpc
      * @param string         $method   e.g. GET
      * @param string         $version  product version
      * @param string         $authType when authType is Anonymous, the signature will not be calculate
-     * @param object         $query    which contains request params
-     * @param object         $body     content of request
+     * @param array          $query    which contains request params
+     * @param array          $body     content of request
      * @param RuntimeOptions $runtime  which controls some details of call api, such as retry times
      *
-     * @throws \Exception
+     * @throws TeaError
+     * @throws Exception
+     * @throws TeaUnableRetryError
      *
-     * @return array|object the response
+     * @return array the response
      */
     public function doRequest($action, $protocol, $method, $version, $authType, $query, $body, $runtime)
     {
@@ -178,8 +180,10 @@ class Rpc
                 ], $query));
                 // endpoint is setted in product client
                 $_request->headers = [
-                    'host'       => $this->_endpoint,
-                    'user-agent' => $this->getUserAgent(),
+                    'x-acs-version' => $version,
+                    'x-acs-action'  => $action,
+                    'host'          => $this->_endpoint,
+                    'user-agent'    => $this->getUserAgent(),
                 ];
                 if (!Utils::isUnset($body)) {
                     $tmp                               = Utils::anyifyMapValue(RpcUtils::query($body));
@@ -196,11 +200,8 @@ class Rpc
                     $_request->query['SignatureMethod']  = 'HMAC-SHA1';
                     $_request->query['SignatureVersion'] = '1.0';
                     $_request->query['AccessKeyId']      = $accessKeyId;
-                    $signedParam                         = Tea::merge(
-                        $_request->query,
-                        RpcUtils::query($body)
-                    );
-                    $_request->query['Signature'] = RpcUtils::getSignatureV1($signedParam, $_request->method, $accessKeySecret);
+                    $signedParam                         = Tea::merge($_request->query, RpcUtils::query($body));
+                    $_request->query['Signature']        = RpcUtils::getSignatureV1($signedParam, $_request->method, $accessKeySecret);
                 }
                 $_lastRequest = $_request;
                 $_response    = Tea::send($_request, $_runtime);
@@ -215,7 +216,7 @@ class Rpc
                 }
 
                 return $res;
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 if (!($e instanceof TeaError)) {
                     $e = new TeaError([], $e->getMessage(), $e->getCode(), $e);
                 }
@@ -235,8 +236,6 @@ class Rpc
     /**
      * Get user agent.
      *
-     * @throws \Exception
-     *
      * @return string user agent
      */
     public function getUserAgent()
@@ -246,8 +245,6 @@ class Rpc
 
     /**
      * Get accesskey id by using credential.
-     *
-     * @throws \Exception
      *
      * @return string accesskey id
      */
@@ -263,8 +260,6 @@ class Rpc
     /**
      * Get accesskey secret by using credential.
      *
-     * @throws \Exception
-     *
      * @return string accesskey secret
      */
     public function getAccessKeySecret()
@@ -278,8 +273,6 @@ class Rpc
 
     /**
      * Get security token by using credential.
-     *
-     * @throws \Exception
      *
      * @return string security token
      */
@@ -297,7 +290,7 @@ class Rpc
      *
      * @param Config $config config contains the necessary information to create a client
      *
-     * @throws \Exception
+     * @throws TeaError
      */
     public function checkConfig($config)
     {
