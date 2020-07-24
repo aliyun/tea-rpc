@@ -15,27 +15,48 @@ import (
  * Model for initing client
  */
 type Config struct {
-	AccessKeyId          *string               `json:"accessKeyId,omitempty" xml:"accessKeyId,omitempty"`
-	AccessKeySecret      *string               `json:"accessKeySecret,omitempty" xml:"accessKeySecret,omitempty"`
-	SecurityToken        *string               `json:"securityToken,omitempty" xml:"securityToken,omitempty"`
-	Protocol             *string               `json:"protocol,omitempty" xml:"protocol,omitempty"`
-	RegionId             *string               `json:"regionId,omitempty" xml:"regionId,omitempty" pattern:"^[a-zA-Z0-9_-]+$"`
-	ReadTimeout          *int                  `json:"readTimeout,omitempty" xml:"readTimeout,omitempty"`
-	ConnectTimeout       *int                  `json:"connectTimeout,omitempty" xml:"connectTimeout,omitempty"`
-	HttpProxy            *string               `json:"httpProxy,omitempty" xml:"httpProxy,omitempty"`
-	HttpsProxy           *string               `json:"httpsProxy,omitempty" xml:"httpsProxy,omitempty"`
-	Credential           credential.Credential `json:"credential,omitempty" xml:"credential,omitempty"`
-	Endpoint             *string               `json:"endpoint,omitempty" xml:"endpoint,omitempty"`
-	NoProxy              *string               `json:"noProxy,omitempty" xml:"noProxy,omitempty"`
-	MaxIdleConns         *int                  `json:"maxIdleConns,omitempty" xml:"maxIdleConns,omitempty"`
-	Network              *string               `json:"network,omitempty" xml:"network,omitempty" pattern:"^[a-zA-Z0-9_-]+$"`
-	UserAgent            *string               `json:"userAgent,omitempty" xml:"userAgent,omitempty"`
-	Suffix               *string               `json:"suffix,omitempty" xml:"suffix,omitempty" pattern:"^[a-zA-Z0-9_-]+$"`
-	Socks5Proxy          *string               `json:"socks5Proxy,omitempty" xml:"socks5Proxy,omitempty"`
-	Socks5NetWork        *string               `json:"socks5NetWork,omitempty" xml:"socks5NetWork,omitempty"`
-	EndpointType         *string               `json:"endpointType,omitempty" xml:"endpointType,omitempty"`
-	OpenPlatformEndpoint *string               `json:"openPlatformEndpoint,omitempty" xml:"openPlatformEndpoint,omitempty"`
+	// accesskey id
+	AccessKeyId *string `json:"accessKeyId,omitempty" xml:"accessKeyId,omitempty"`
+	// accesskey secret
+	AccessKeySecret *string `json:"accessKeySecret,omitempty" xml:"accessKeySecret,omitempty"`
+	// security token
+	SecurityToken *string `json:"securityToken,omitempty" xml:"securityToken,omitempty"`
+	// http protocol
+	Protocol *string `json:"protocol,omitempty" xml:"protocol,omitempty"`
+	// region id
+	RegionId *string `json:"regionId,omitempty" xml:"regionId,omitempty" pattern:"^[a-zA-Z0-9_-]+$"`
+	// read timeout
+	ReadTimeout *int `json:"readTimeout,omitempty" xml:"readTimeout,omitempty"`
+	// connect timeout
+	ConnectTimeout *int `json:"connectTimeout,omitempty" xml:"connectTimeout,omitempty"`
+	// http proxy
+	HttpProxy *string `json:"httpProxy,omitempty" xml:"httpProxy,omitempty"`
+	// https proxy
+	HttpsProxy *string `json:"httpsProxy,omitempty" xml:"httpsProxy,omitempty"`
+	// credential
+	Credential credential.Credential `json:"credential,omitempty" xml:"credential,omitempty"`
+	// endpoint
+	Endpoint *string `json:"endpoint,omitempty" xml:"endpoint,omitempty"`
+	// proxy white list
+	NoProxy *string `json:"noProxy,omitempty" xml:"noProxy,omitempty"`
+	// max idle conns
+	MaxIdleConns *int `json:"maxIdleConns,omitempty" xml:"maxIdleConns,omitempty"`
+	// network for endpoint
+	Network *string `json:"network,omitempty" xml:"network,omitempty" pattern:"^[a-zA-Z0-9_-]+$"`
+	// user agent
+	UserAgent *string `json:"userAgent,omitempty" xml:"userAgent,omitempty"`
+	// suffix for endpoint
+	Suffix *string `json:"suffix,omitempty" xml:"suffix,omitempty" pattern:"^[a-zA-Z0-9_-]+$"`
+	// socks5 proxy
+	Socks5Proxy *string `json:"socks5Proxy,omitempty" xml:"socks5Proxy,omitempty"`
+	// socks5 network
+	Socks5NetWork *string `json:"socks5NetWork,omitempty" xml:"socks5NetWork,omitempty"`
+	// endpoint type
+	EndpointType *string `json:"endpointType,omitempty" xml:"endpointType,omitempty"`
+	// OpenPlatform endpoint
+	OpenPlatformEndpoint *string `json:"openPlatformEndpoint,omitempty" xml:"openPlatformEndpoint,omitempty"`
 	// Deprecated
+	// credential type
 	Type *string `json:"type,omitempty" xml:"type,omitempty"`
 }
 
@@ -305,8 +326,10 @@ func (client *Client) DoRequest(action *string, protocol *string, method *string
 			}, query))
 			// endpoint is setted in product client
 			request_.Headers = map[string]*string{
-				"host":       client.Endpoint,
-				"user-agent": client.GetUserAgent(),
+				"x-acs-version": version,
+				"x-acs-action":  action,
+				"host":          client.Endpoint,
+				"user-agent":    client.GetUserAgent(),
 			}
 			if !tea.BoolValue(util.IsUnset(body)) {
 				tmp := util.AnyifyMapValue(rpcutil.Query(body))

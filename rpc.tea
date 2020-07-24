@@ -135,6 +135,8 @@ api doRequest(action: string, protocol: string, method: string, version: string,
 
   // endpoint is setted in product client
   __request.headers = {
+    x-acs-version = version,
+    x-acs-action = action,
     host = @endpoint,
     user-agent = getUserAgent()
   };
