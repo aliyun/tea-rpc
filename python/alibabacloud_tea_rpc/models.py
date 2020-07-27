@@ -1,12 +1,11 @@
 # This file is auto-generated, don't edit it. Thanks.
 from Tea.model import TeaModel
 
-"""
-Model for initing client
-"""
-
 
 class Config(TeaModel):
+    """
+    Model for initing client
+    """
     def __init__(self, access_key_id=None, access_key_secret=None, security_token=None, protocol=None, region_id=None, read_timeout=None, connect_timeout=None, http_proxy=None, https_proxy=None, credential=None, endpoint=None, no_proxy=None, max_idle_conns=None, network=None, user_agent=None, suffix=None, socks_5proxy=None, socks_5net_work=None, endpoint_type=None, open_platform_endpoint=None, type=None):
         self.access_key_id = access_key_id
         self.access_key_secret = access_key_secret
