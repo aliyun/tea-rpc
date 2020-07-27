@@ -1,3 +1,6 @@
+### 2020-07-27 Version 1.0.0
+* Add description
+
 ### 2020-07-08 Version 0.0.8
 * Supported config filter
 
