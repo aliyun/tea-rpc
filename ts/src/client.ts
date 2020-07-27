@@ -1,29 +1,34 @@
 // This file is auto-generated, don't edit it
+/**
+ * This is for RPC SDK 
+ */
 import Util, * as $Util from '@alicloud/tea-util';
 import Credential, * as $Credential from '@alicloud/credentials';
 import RPCUtil from '@alicloud/rpc-util';
 import * as $tea from '@alicloud/tea-typescript';
 
+/**
+ * Model for initing client
+ */
 export class Config extends $tea.Model {
   accessKeyId?: string;
   accessKeySecret?: string;
-  network?: string;
-  suffix?: string;
   securityToken?: string;
-  endpoint?: string;
   protocol?: string;
   regionId?: string;
-  productId?: string;
-  userAgent?: string;
   readTimeout?: number;
   connectTimeout?: number;
   httpProxy?: string;
   httpsProxy?: string;
-  noProxy?: string;
   credential?: Credential;
+  endpoint?: string;
+  noProxy?: string;
+  maxIdleConns?: number;
+  network?: string;
+  userAgent?: string;
+  suffix?: string;
   socks5Proxy?: string;
   socks5NetWork?: string;
-  maxIdleConns?: number;
   endpointType?: string;
   openPlatformEndpoint?: string;
   type?: string;
@@ -31,23 +36,22 @@ export class Config extends $tea.Model {
     return {
       accessKeyId: 'accessKeyId',
       accessKeySecret: 'accessKeySecret',
-      network: 'network',
-      suffix: 'suffix',
       securityToken: 'securityToken',
-      endpoint: 'endpoint',
       protocol: 'protocol',
       regionId: 'regionId',
-      productId: 'productId',
-      userAgent: 'userAgent',
       readTimeout: 'readTimeout',
       connectTimeout: 'connectTimeout',
       httpProxy: 'httpProxy',
       httpsProxy: 'httpsProxy',
-      noProxy: 'noProxy',
       credential: 'credential',
+      endpoint: 'endpoint',
+      noProxy: 'noProxy',
+      maxIdleConns: 'maxIdleConns',
+      network: 'network',
+      userAgent: 'userAgent',
+      suffix: 'suffix',
       socks5Proxy: 'socks5Proxy',
       socks5NetWork: 'socks5NetWork',
-      maxIdleConns: 'maxIdleConns',
       endpointType: 'endpointType',
       openPlatformEndpoint: 'openPlatformEndpoint',
       type: 'type',
@@ -58,23 +62,22 @@ export class Config extends $tea.Model {
     return {
       accessKeyId: 'string',
       accessKeySecret: 'string',
-      network: 'string',
-      suffix: 'string',
       securityToken: 'string',
-      endpoint: 'string',
       protocol: 'string',
       regionId: 'string',
-      productId: 'string',
-      userAgent: 'string',
       readTimeout: 'number',
       connectTimeout: 'number',
       httpProxy: 'string',
       httpsProxy: 'string',
-      noProxy: 'string',
       credential: Credential,
+      endpoint: 'string',
+      noProxy: 'string',
+      maxIdleConns: 'number',
+      network: 'string',
+      userAgent: 'string',
+      suffix: 'string',
       socks5Proxy: 'string',
       socks5NetWork: 'string',
-      maxIdleConns: 'number',
       endpointType: 'string',
       openPlatformEndpoint: 'string',
       type: 'string',
@@ -109,6 +112,10 @@ export default class Client {
   _openPlatformEndpoint: string;
   _credential: Credential;
 
+  /**
+   * Init client with Config
+   * @param config config contains the necessary information to create a client
+   */
   constructor(config: Config) {
     if (Util.isUnset($tea.toMap(config))) {
       throw $tea.newError({
@@ -117,6 +124,7 @@ export default class Client {
       });
     }
 
+    Util.validateModel(config);
     if (!Util.empty(config.accessKeyId) && !Util.empty(config.accessKeySecret)) {
       if (!Util.empty(config.securityToken)) {
         config.type = "sts";
@@ -158,6 +166,19 @@ export default class Client {
     this._openPlatformEndpoint = config.openPlatformEndpoint;
   }
 
+  /**
+   * Encapsulate the request and invoke the network
+   * @param action api name
+   * @param protocol http or https
+   * @param method e.g. GET
+   * @param version product version
+   * @param authType when authType is Anonymous, the signature will not be calculate
+   * @param pathname pathname of every api
+   * @param query which contains request params
+   * @param body content of request
+   * @param runtime which controls some details of call api, such as retry times
+   * @return the response
+   */
   async doRequest(action: string, protocol: string, method: string, version: string, authType: string, query: {[key: string]: any}, body: {[key: string]: any}, runtime: $Util.RuntimeOptions): Promise<{[key: string]: any}> {
     let _runtime: { [key: string]: any } = {
       timeouted: "retry",
@@ -205,6 +226,8 @@ export default class Client {
         });
         // endpoint is setted in product client
         request_.headers = {
+          'x-acs-version': version,
+          'x-acs-action': action,
           host: this._endpoint,
           'user-agent': this.getUserAgent(),
         };
@@ -257,11 +280,19 @@ export default class Client {
     throw $tea.newUnretryableError(_lastRequest);
   }
 
+  /**
+   * Get user agent
+   * @return user agent
+   */
   getUserAgent(): string {
     let userAgent = Util.getUserAgent(this._userAgent);
     return userAgent;
   }
 
+  /**
+   * Get accesskey id by using credential
+   * @return accesskey id
+   */
   async getAccessKeyId(): Promise<string> {
     if (Util.isUnset(this._credential)) {
       return "";
@@ -271,6 +302,10 @@ export default class Client {
     return accessKeyId;
   }
 
+  /**
+   * Get accesskey secret by using credential
+   * @return accesskey secret
+   */
   async getAccessKeySecret(): Promise<string> {
     if (Util.isUnset(this._credential)) {
       return "";
@@ -280,6 +315,10 @@ export default class Client {
     return secret;
   }
 
+  /**
+   * Get security token by using credential
+   * @return security token
+   */
   async getSecurityToken(): Promise<string> {
     if (Util.isUnset(this._credential)) {
       return "";
@@ -289,6 +328,10 @@ export default class Client {
     return token;
   }
 
+  /**
+   * If the endpointRule and config.endpoint are empty, throw error
+   * @param config config contains the necessary information to create a client
+   */
   checkConfig(config: Config): void {
     if (Util.empty(this._endpointRule) && Util.empty(config.endpoint)) {
       throw $tea.newError({
