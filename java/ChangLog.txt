@@ -1,3 +1,6 @@
+2020-07-27 Version: 0.0.13
+1. Release version 0.0.13
+
 2020-07-08 Version: 0.0.12
 1. Improve init
 
