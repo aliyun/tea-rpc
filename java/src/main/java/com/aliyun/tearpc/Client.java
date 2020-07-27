@@ -31,7 +31,6 @@ public class Client {
      * @param config config contains the necessary information to create a client
      */
     public Client(Config config) throws Exception {
-        com.aliyun.teautil.Common.validateModel(config);
         if (com.aliyun.teautil.Common.isUnset(TeaModel.buildMap(config))) {
             throw new TeaException(TeaConverter.buildMap(
                 new TeaPair("code", "ParameterMissing"),
@@ -39,6 +38,7 @@ public class Client {
             ));
         }
 
+        com.aliyun.teautil.Common.validateModel(config);
         if (!com.aliyun.teautil.Common.empty(config.accessKeyId) && !com.aliyun.teautil.Common.empty(config.accessKeySecret)) {
             if (!com.aliyun.teautil.Common.empty(config.securityToken)) {
                 config.type = "sts";
@@ -128,6 +128,8 @@ public class Client {
                 ));
                 // endpoint is setted in product client
                 request_.headers = TeaConverter.buildMap(
+                    new TeaPair("x-acs-version", version),
+                    new TeaPair("x-acs-action", action),
                     new TeaPair("host", _endpoint),
                     new TeaPair("user-agent", this.getUserAgent())
                 );
