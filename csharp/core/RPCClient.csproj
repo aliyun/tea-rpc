@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net45</TargetFrameworks>
@@ -40,7 +40,7 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="AlibabaCloud.TeaUtil" Version="0.1.4"/>
+    <PackageReference Include="AlibabaCloud.TeaUtil" Version="0.1.5"/>
     <PackageReference Include="Aliyun.Credentials" Version="1.2.1"/>
     <PackageReference Include="AlibabaCloud.SDK.Common" Version="0.2.5"/>
   </ItemGroup>

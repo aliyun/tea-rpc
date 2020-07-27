@@ -42,7 +42,6 @@ namespace AlibabaCloud.RPCClient
          */
         public Client(Config config)
         {
-            AlibabaCloud.TeaUtil.Common.ValidateModel(config);
             if (AlibabaCloud.TeaUtil.Common.IsUnset(config.ToMap()))
             {
                 throw new TeaException(new Dictionary<string, string>
@@ -51,6 +50,7 @@ namespace AlibabaCloud.RPCClient
                     {"message", "'config' can not be unset"},
                 });
             }
+            AlibabaCloud.TeaUtil.Common.ValidateModel(config);
             if (!AlibabaCloud.TeaUtil.Common.Empty(config.AccessKeyId) && !AlibabaCloud.TeaUtil.Common.Empty(config.AccessKeySecret))
             {
                 if (!AlibabaCloud.TeaUtil.Common.Empty(config.SecurityToken))
@@ -173,6 +173,8 @@ namespace AlibabaCloud.RPCClient
                     // endpoint is setted in product client
                     request_.Headers = new Dictionary<string, string>
                     {
+                        {"x-acs-version", version},
+                        {"x-acs-action", action},
                         {"host", _endpoint},
                         {"user-agent", GetUserAgent()},
                     };
@@ -304,6 +306,8 @@ namespace AlibabaCloud.RPCClient
                     // endpoint is setted in product client
                     request_.Headers = new Dictionary<string, string>
                     {
+                        {"x-acs-version", version},
+                        {"x-acs-action", action},
                         {"host", _endpoint},
                         {"user-agent", GetUserAgent()},
                     };
