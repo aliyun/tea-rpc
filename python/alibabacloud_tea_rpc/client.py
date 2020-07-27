@@ -13,16 +13,16 @@ from Tea.response import TeaResponse
 from alibabacloud_rpc_util.client import Client as RPCUtilClient
 from Tea.exceptions import UnretryableException
 
-"""
-This is for RPC SDK
-"""
-
 
 class Client:
+    """
+    This is for RPC SDK
+    """
     def __init__(self, config, _endpoint=None, _region_id=None, _protocol=None, _user_agent=None, _endpoint_rule=None, _endpoint_map=None, _suffix=None, _read_timeout=None, _connect_timeout=None, _http_proxy=None, _https_proxy=None, _socks_5proxy=None, _socks_5net_work=None, _no_proxy=None, _network=None, _product_id=None, _max_idle_conns=None, _endpoint_type=None, _open_platform_endpoint=None, _credential=None):
         """
         Init client with Config
-        @param config: config contains the necessary information to create a client
+
+        :param config: config contains the necessary information to create a client
         """
         self._endpoint = _endpoint
         self._region_id = _region_id
@@ -44,12 +44,12 @@ class Client:
         self._endpoint_type = _endpoint_type
         self._open_platform_endpoint = _open_platform_endpoint
         self._credential = _credential
-        UtilClient.validate_model(config)
         if UtilClient.is_unset(config.to_map()):
             raise TeaException({
                 "code": "ParameterMissing",
                 "message": "'config' can not be unset"
             })
+        UtilClient.validate_model(config)
         if not UtilClient.empty(config.access_key_id) and not UtilClient.empty(config.access_key_secret):
             if not UtilClient.empty(config.security_token):
                 config.type = "sts"
@@ -89,16 +89,33 @@ class Client:
     def do_request(self, action, protocol, method, version, auth_type, query, body, runtime):
         """
         Encapsulate the request and invoke the network
-        @param action: api name
-        @param protocol: http or https
-        @param method: e.g. GET
-        @param version: product version
-        @param auth_type: when authType is Anonymous, the signature will not be calculate
-        @param pathname: pathname of every api
-        @param query: which contains request params
-        @param body: content of request
-        @param runtime: which controls some details of call api, such as retry times
-        @return the response
+
+        :type action: str
+        :param action: api name
+
+        :type protocol: str
+        :param protocol: http or https
+
+        :type method: str
+        :param method: e.g. GET
+
+        :type version: str
+        :param version: product version
+
+        :type auth_type: str
+        :param auth_type: when authType is Anonymous, the signature will not be calculate
+
+        :param pathname: pathname of every api
+
+        :type query: dict
+        :param query: which contains request params
+
+        :type body: dict
+        :param body: content of request
+
+        :param runtime: which controls some details of call api, such as retry times
+
+        :return: the response
         """
         runtime.validate()
         _runtime = {
@@ -143,6 +160,8 @@ class Client:
                 }, query))
                 # endpoint is setted in product client
                 _request.headers = {
+                    "x-acs-version": version,
+                    "x-acs-action": action,
                     "host": self._endpoint,
                     "user-agent": self.get_user_agent()
                 }
@@ -183,7 +202,8 @@ class Client:
     def get_user_agent(self):
         """
         Get user agent
-        @return user agent
+
+        :return: user agent
         """
         user_agent = UtilClient.get_user_agent(self._user_agent)
         return user_agent
@@ -191,7 +211,8 @@ class Client:
     def get_access_key_id(self):
         """
         Get accesskey id by using credential
-        @return accesskey id
+
+        :return: accesskey id
         """
         if UtilClient.is_unset(self._credential):
             return ''
@@ -201,7 +222,8 @@ class Client:
     def get_access_key_secret(self):
         """
         Get accesskey secret by using credential
-        @return accesskey secret
+
+        :return: accesskey secret
         """
         if UtilClient.is_unset(self._credential):
             return ''
@@ -211,7 +233,8 @@ class Client:
     def get_security_token(self):
         """
         Get security token by using credential
-        @return security token
+
+        :return: security token
         """
         if UtilClient.is_unset(self._credential):
             return ''
@@ -221,7 +244,8 @@ class Client:
     def check_config(self, config):
         """
         If the endpointRule and config.endpoint are empty, throw error
-        @param config: config contains the necessary information to create a client
+
+        :param config: config contains the necessary information to create a client
         """
         if UtilClient.empty(self._endpoint_rule) and UtilClient.empty(config.endpoint):
             raise TeaException({
