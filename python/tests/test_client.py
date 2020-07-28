@@ -108,3 +108,26 @@ class TestClient(TestCase):
             )
         except Exception as e:
             self.assertIsInstance(e, UnretryableException)
+
+    def test_validate(self):
+        conf = Config(
+            access_key_id='access_key_id',
+            access_key_secret='access_key_secret',
+            protocol='http',
+            region_id='',
+            endpoint='127.0.0.1:8888',
+            network='',
+            suffix=''
+        )
+        conf.validate()
+        conf = Config(
+            access_key_id='access_key_id',
+            access_key_secret='access_key_secret',
+            protocol='http',
+            region_id=None,
+            endpoint='127.0.0.1:8888',
+            network=None,
+            suffix=None
+        )
+        self.assertIsInstance(conf, Config)
+        conf.validate()
