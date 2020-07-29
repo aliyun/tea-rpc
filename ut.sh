@@ -36,7 +36,7 @@ function run_csharp {
 
   # install
   cd csharp/tests/ || return 126
-  dotnet tool install --global altcover.visualizer
+  dotnet tool install --global altcover.visualizer --version 6.7.750
   dotnet restore
   dotnet build
   cd ../
