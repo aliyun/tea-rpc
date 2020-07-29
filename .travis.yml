@@ -1,9 +1,9 @@
 jobs:
   include:
-    # - language: csharp
-    #   mono: none
-    #   dist: xenial
-    #   env: TEA_UTIL_ENV="csharp"
+    - language: csharp
+      mono: none
+      dist: xenial
+      env: TEA_UTIL_ENV="csharp"
     # - language: java
     #   jdk: openjdk8
     #   env: TEA_UTIL_ENV="java"
