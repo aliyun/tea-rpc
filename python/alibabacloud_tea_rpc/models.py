@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # This file is auto-generated, don't edit it. Thanks.
 from Tea.model import TeaModel
 
@@ -6,34 +7,56 @@ class Config(TeaModel):
     """
     Model for initing client
     """
-    def __init__(self, access_key_id=None, access_key_secret=None, security_token=None, protocol=None, region_id=None, read_timeout=None, connect_timeout=None, http_proxy=None, https_proxy=None, credential=None, endpoint=None, no_proxy=None, max_idle_conns=None, network=None, user_agent=None, suffix=None, socks_5proxy=None, socks_5net_work=None, endpoint_type=None, open_platform_endpoint=None, type=None):
+    def __init__(self, access_key_id=None, access_key_secret=None, security_token=None, protocol=None,
+                 region_id=None, read_timeout=None, connect_timeout=None, http_proxy=None, https_proxy=None, credential=None,
+                 endpoint=None, no_proxy=None, max_idle_conns=None, network=None, user_agent=None, suffix=None,
+                 socks_5proxy=None, socks_5net_work=None, endpoint_type=None, open_platform_endpoint=None, type=None):
+        # accesskey id
         self.access_key_id = access_key_id
+        # accesskey secret
         self.access_key_secret = access_key_secret
+        # security token
         self.security_token = security_token
+        # http protocol
         self.protocol = protocol
+        # region id
         self.region_id = region_id
+        # read timeout
         self.read_timeout = read_timeout
+        # connect timeout
         self.connect_timeout = connect_timeout
+        # http proxy
         self.http_proxy = http_proxy
+        # https proxy
         self.https_proxy = https_proxy
+        # credential
         self.credential = credential
+        # endpoint
         self.endpoint = endpoint
+        # proxy white list
         self.no_proxy = no_proxy
+        # max idle conns
         self.max_idle_conns = max_idle_conns
+        # network for endpoint
         self.network = network
+        # user agent
         self.user_agent = user_agent
+        # suffix for endpoint
         self.suffix = suffix
+        # socks5 proxy
         self.socks_5proxy = socks_5proxy
+        # socks5 network
         self.socks_5net_work = socks_5net_work
+        # endpoint type
         self.endpoint_type = endpoint_type
+        # OpenPlatform endpoint
         self.open_platform_endpoint = open_platform_endpoint
+        # credential type
         self.type = type
 
     def validate(self):
         if self.region_id:
             self.validate_pattern(self.region_id, 'region_id', '^[a-zA-Z0-9_-]+$')
-        if self.credential:
-            self.credential.validate()
         if self.network:
             self.validate_pattern(self.network, 'network', '^[a-zA-Z0-9_-]+$')
         if self.suffix:
