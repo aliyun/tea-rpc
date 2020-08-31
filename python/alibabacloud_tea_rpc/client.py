@@ -1,35 +1,36 @@
+# -*- coding: utf-8 -*-
 # This file is auto-generated, don't edit it. Thanks.
 import time
 
 from alibabacloud_credentials.client import Client as CredentialClient
-from alibabacloud_tea_rpc import models as _rpc_models
 from alibabacloud_tea_util.client import Client as UtilClient
 from Tea.exceptions import TeaException
 from alibabacloud_credentials import models as credential_models
-from alibabacloud_tea_util import models as util_models
 from Tea.request import TeaRequest
 from Tea.core import TeaCore
-from Tea.response import TeaResponse
 from alibabacloud_rpc_util.client import Client as RPCUtilClient
 from Tea.exceptions import UnretryableException
 
 
-class Client:
+class Client(object):
     """
     This is for RPC SDK
     """
-    def __init__(self, config, _endpoint=None, _region_id=None, _protocol=None, _user_agent=None, _endpoint_rule=None, _endpoint_map=None, _suffix=None, _read_timeout=None, _connect_timeout=None, _http_proxy=None, _https_proxy=None, _socks_5proxy=None, _socks_5net_work=None, _no_proxy=None, _network=None, _product_id=None, _max_idle_conns=None, _endpoint_type=None, _open_platform_endpoint=None, _credential=None):
+    def __init__(self, config, _endpoint=None, _region_id=None, _protocol=None, _user_agent=None, _endpoint_rule=None,
+                 _endpoint_map=None, _suffix=None, _read_timeout=None, _connect_timeout=None, _http_proxy=None, _https_proxy=None,
+                 _socks_5proxy=None, _socks_5net_work=None, _no_proxy=None, _network=None, _product_id=None, _max_idle_conns=None,
+                 _endpoint_type=None, _open_platform_endpoint=None, _credential=None):
         """
         Init client with Config
 
-        :param config: config contains the necessary information to create a client
+        @param config: config contains the necessary information to create a client
         """
         self._endpoint = _endpoint
         self._region_id = _region_id
         self._protocol = _protocol
         self._user_agent = _user_agent
         self._endpoint_rule = _endpoint_rule
-        self._endpoint_map = {}
+        self._endpoint_map = _endpoint_map
         self._suffix = _suffix
         self._read_timeout = _read_timeout
         self._connect_timeout = _connect_timeout
@@ -44,7 +45,7 @@ class Client:
         self._endpoint_type = _endpoint_type
         self._open_platform_endpoint = _open_platform_endpoint
         self._credential = _credential
-        if UtilClient.is_unset(config.to_map()):
+        if UtilClient.is_unset(config):
             raise TeaException({
                 "code": "ParameterMissing",
                 "message": "'config' can not be unset"
@@ -90,32 +91,33 @@ class Client:
         """
         Encapsulate the request and invoke the network
 
-        :type action: str
-        :param action: api name
+        @type action: str
+        @param action: api name
 
-        :type protocol: str
-        :param protocol: http or https
+        @type protocol: str
+        @param protocol: http or https
 
-        :type method: str
-        :param method: e.g. GET
+        @type method: str
+        @param method: e.g. GET
 
-        :type version: str
-        :param version: product version
+        @type version: str
+        @param version: product version
 
-        :type auth_type: str
-        :param auth_type: when authType is Anonymous, the signature will not be calculate
+        @type auth_type: str
+        @param auth_type: when authType is Anonymous, the signature will not be calculate
 
-        :param pathname: pathname of every api
+        @param pathname: pathname of every api
 
-        :type query: dict
-        :param query: which contains request params
+        @type query: dict
+        @param query: which contains request params
 
-        :type body: dict
-        :param body: content of request
+        @type body: dict
+        @param body: content of request
 
-        :param runtime: which controls some details of call api, such as retry times
+        @param runtime: which controls some details of call api, such as retry times
 
-        :return: the response
+        @rtype: dict
+        @return: the response
         """
         runtime.validate()
         _runtime = {
@@ -203,7 +205,8 @@ class Client:
         """
         Get user agent
 
-        :return: user agent
+        @rtype: str
+        @return: user agent
         """
         user_agent = UtilClient.get_user_agent(self._user_agent)
         return user_agent
@@ -212,7 +215,8 @@ class Client:
         """
         Get accesskey id by using credential
 
-        :return: accesskey id
+        @rtype: str
+        @return: accesskey id
         """
         if UtilClient.is_unset(self._credential):
             return ''
@@ -223,7 +227,8 @@ class Client:
         """
         Get accesskey secret by using credential
 
-        :return: accesskey secret
+        @rtype: str
+        @return: accesskey secret
         """
         if UtilClient.is_unset(self._credential):
             return ''
@@ -234,7 +239,8 @@ class Client:
         """
         Get security token by using credential
 
-        :return: security token
+        @rtype: str
+        @return: security token
         """
         if UtilClient.is_unset(self._credential):
             return ''
@@ -245,7 +251,7 @@ class Client:
         """
         If the endpointRule and config.endpoint are empty, throw error
 
-        :param config: config contains the necessary information to create a client
+        @param config: config contains the necessary information to create a client
         """
         if UtilClient.empty(self._endpoint_rule) and UtilClient.empty(config.endpoint):
             raise TeaException({
