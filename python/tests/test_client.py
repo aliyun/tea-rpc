@@ -43,6 +43,14 @@ class TestClient(TestCase):
             Client(conf)
         except Exception as e:
             self.assertIsInstance(e, TeaException)
+        try:
+            Client(None)
+        except Exception as e:
+            self.assertIsInstance(e, TeaException)
+            self.assertEqual(
+                "'config' can not be unset",
+                e.message
+            )
 
         conf = Config(
             access_key_id='access_key_id',
@@ -109,7 +117,7 @@ class TestClient(TestCase):
         except Exception as e:
             self.assertIsInstance(e, UnretryableException)
 
-    def test_validate(self):
+    def test_model(self):
         conf = Config(
             access_key_id='access_key_id',
             access_key_secret='access_key_secret',
@@ -131,3 +139,9 @@ class TestClient(TestCase):
         )
         self.assertIsInstance(conf, Config)
         conf.validate()
+        conf.to_map()
+        conf.from_map({})
+
+    def test_default_any(self):
+        self.assertEqual('test', Client.default_any('test', 'test1'))
+        self.assertEqual('test1', Client.default_any(None, 'test1'))
