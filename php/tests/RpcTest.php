@@ -76,4 +76,10 @@ class RpcTest extends TestCase
         );
         $this->assertEquals(['foo' => 'bar'], $res);
     }
+
+    public function testDefaultAny()
+    {
+        $this->assertEquals('foo', Rpc::defaultAny('foo', 'bar'));
+        $this->assertEquals('bar', Rpc::defaultAny(null, 'bar'));
+    }
 }

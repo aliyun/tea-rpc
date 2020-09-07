@@ -122,8 +122,8 @@ class Rpc
      * @param string         $method   e.g. GET
      * @param string         $version  product version
      * @param string         $authType when authType is Anonymous, the signature will not be calculate
-     * @param array          $query    which contains request params
-     * @param array          $body     content of request
+     * @param mixed[]        $query    which contains request params
+     * @param mixed[]        $body     content of request
      * @param RuntimeOptions $runtime  which controls some details of call api, such as retry times
      *
      * @throws TeaError
@@ -209,9 +209,9 @@ class Rpc
                 $res          = Utils::assertAsMap($obj);
                 if (Utils::is4xx($_response->statusCode) || Utils::is5xx($_response->statusCode)) {
                     throw new TeaError([
-                        'message' => $res['Message'],
+                        'code'    => '' . self::defaultAny($res['Code'], $res['code']) . 'Error',
+                        'message' => 'code: ' . $_response->statusCode . ', ' . self::defaultAny($res['Message'], $res['message']) . ' requestid: ' . self::defaultAny($res['RequestId'], $res['requestId']) . '',
                         'data'    => $res,
-                        'code'    => $res['Code'],
                     ]);
                 }
 
@@ -300,5 +300,22 @@ class Rpc
                 'message' => "'config.endpoint' can not be empty",
             ]);
         }
+    }
+
+    /**
+     * If inputValue is not null, return it or return defaultValue.
+     *
+     * @param mixed $inputValue   users input value
+     * @param mixed $defaultValue default value
+     *
+     * @return any the final result
+     */
+    public static function defaultAny($inputValue, $defaultValue)
+    {
+        if (Utils::isUnset($inputValue)) {
+            return $defaultValue;
+        }
+
+        return $inputValue;
     }
 }
