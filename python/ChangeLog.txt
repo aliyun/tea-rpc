@@ -1,3 +1,6 @@
+2020-09-07 Version 0.0.6
+- Improve throw exception.
+
 2020-08-31 Version 0.0.5
 - Fix non-model object call validate
 
