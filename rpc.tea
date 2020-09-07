@@ -171,9 +171,9 @@ api doRequest(action: string, protocol: string, method: string, version: string,
 
   if (Util.is4xx(__response.statusCode) || Util.is5xx(__response.statusCode)) {
     throw {
-      message = res.Message,
+      code = `${defaultAny(res.Code, res.code)}Error`,
+      message = `code: ${__response.statusCode}, ${defaultAny(res.Message, res.message)} requestid: ${defaultAny(res.RequestId, res.requestId)}`,
       data = res,
-      code = res.Code
     };
   }
   return res;
@@ -254,3 +254,15 @@ function checkConfig(config: Config)throws : void {
   }
 }
 
+/**
+ * If inputValue is not null, return it or return defaultValue
+ * @param inputValue  users input value
+ * @param defaultValue default value
+ * @return the final result
+ */
+static function defaultAny(inputValue: any, defaultValue: any): any {
+  if (Util.isUnset(inputValue)) {
+    return defaultValue;
+  }
+  return inputValue;
+}

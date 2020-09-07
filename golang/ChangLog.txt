@@ -1,3 +1,6 @@
+2020-09-07 Version: v1.1.5
+- Improve Error.
+
 2020-07-24 Version: v1.1.4
 - Support Extra Headers.
 

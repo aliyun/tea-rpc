@@ -262,9 +262,9 @@ export default class Client {
         let res = Util.assertAsMap(obj);
         if (Util.is4xx(response_.statusCode) || Util.is5xx(response_.statusCode)) {
           throw $tea.newError({
-            message: res["Message"],
+            code: `${Client.defaultAny(res["Code"], res["code"])}Error`,
+            message: `code: ${response_.statusCode}, ${Client.defaultAny(res["Message"], res["message"])} requestid: ${Client.defaultAny(res["RequestId"], res["requestId"])}`,
             data: res,
-            code: res["Code"],
           });
         }
 
@@ -340,6 +340,20 @@ export default class Client {
       });
     }
 
+  }
+
+  /**
+   * If inputValue is not null, return it or return defaultValue
+   * @param inputValue  users input value
+   * @param defaultValue default value
+   * @return the final result
+   */
+  static defaultAny(inputValue: any, defaultValue: any): any {
+    if (Util.isUnset(inputValue)) {
+      return defaultValue;
+    }
+
+    return inputValue;
   }
 
 }
