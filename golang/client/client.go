@@ -377,9 +377,9 @@ func (client *Client) DoRequest(action *string, protocol *string, method *string
 			res := util.AssertAsMap(obj)
 			if tea.BoolValue(util.Is4xx(response_.StatusCode)) || tea.BoolValue(util.Is5xx(response_.StatusCode)) {
 				_err = tea.NewSDKError(map[string]interface{}{
-					"message": res["Message"],
+					"code":    tea.ToString(DefaultAny(res["Code"], res["code"])) + "Error",
+					"message": "code: " + tea.ToString(tea.IntValue(response_.StatusCode)) + ", " + tea.ToString(DefaultAny(res["Message"], res["message"])) + " requestid: " + tea.ToString(DefaultAny(res["RequestId"], res["requestId"])),
 					"data":    res,
-					"code":    res["Code"],
 				})
 				return _result, _err
 			}
@@ -473,4 +473,20 @@ func (client *Client) CheckConfig(config *Config) (_err error) {
 	}
 
 	return _err
+}
+
+/**
+ * If inputValue is not null, return it or return defaultValue
+ * @param inputValue  users input value
+ * @param defaultValue default value
+ * @return the final result
+ */
+func DefaultAny(inputValue interface{}, defaultValue interface{}) (_result interface{}) {
+	if tea.BoolValue(util.IsUnset(inputValue)) {
+		_result = defaultValue
+		return _result
+	}
+
+	_result = inputValue
+	return _result
 }
