@@ -212,9 +212,9 @@ namespace AlibabaCloud.RPCClient
                     {
                         throw new TeaException(new Dictionary<string, object>
                         {
-                            {"message", res.Get("Message")},
+                            {"code", Client.DefaultAny(res.Get("Code"), res.Get("code")) + "Error"},
+                            {"message", "code: " + response_.StatusCode + ", " + Client.DefaultAny(res.Get("Message"), res.Get("message")) + " requestid: " + Client.DefaultAny(res.Get("RequestId"), res.Get("requestId"))},
                             {"data", res},
-                            {"code", res.Get("Code")},
                         });
                     }
                     return res;
@@ -345,9 +345,9 @@ namespace AlibabaCloud.RPCClient
                     {
                         throw new TeaException(new Dictionary<string, object>
                         {
-                            {"message", res.Get("Message")},
+                            {"code", Client.DefaultAny(res.Get("Code"), res.Get("code")) + "Error"},
+                            {"message", "code: " + response_.StatusCode + ", " + Client.DefaultAny(res.Get("Message"), res.Get("message")) + " requestid: " + Client.DefaultAny(res.Get("RequestId"), res.Get("requestId"))},
                             {"data", res},
-                            {"code", res.Get("Code")},
                         });
                     }
                     return res;
@@ -474,6 +474,21 @@ namespace AlibabaCloud.RPCClient
                     {"message", "'config.endpoint' can not be empty"},
                 });
             }
+        }
+
+        /**
+         * If inputValue is not null, return it or return defaultValue
+         * @param inputValue  users input value
+         * @param defaultValue default value
+         * @return the final result
+         */
+        public static object DefaultAny(object inputValue, object defaultValue)
+        {
+            if (AlibabaCloud.TeaUtil.Common.IsUnset(inputValue))
+            {
+                return defaultValue;
+            }
+            return inputValue;
         }
 
     }

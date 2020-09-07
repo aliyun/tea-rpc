@@ -46,7 +46,7 @@ namespace tests
             var res = client.DoRequest("GetSuccess", "http", "GET", "version", "auth_type", query, new Dictionary<string, object>(), runtime);
             Assert.Equal("server test", res["result"].ToString());
 
-            var exception = Assert.Throws<Tea.TeaUnretryableException>(() =>
+            var exception = Assert.Throws<Tea.TeaException>(() =>
             {
                 client.DoRequest("PostError", "http", "POST", "version", "auth_type", null, new Dictionary<string, object>(), runtime);
             });
@@ -81,11 +81,19 @@ namespace tests
             var res = await client.DoRequestAsync("GetSuccess", "http", "GET", "version", "auth_type", query, new Dictionary<string, object>(), runtime);
             Assert.Equal("server test", res["result"].ToString());
 
-            var exception = await Assert.ThrowsAsync<Tea.TeaUnretryableException>(async() =>
+            var exception = await Assert.ThrowsAsync<Tea.TeaException>(async() =>
             {
                 await client.DoRequestAsync("PostError", "http", "POST", "version", "auth_type", null, new Dictionary<string, object>(), runtime);
             });
             Assert.Contains("server server error", exception.Message);
+        }
+
+        [Fact]
+        public void Test_DefaultAny()
+        {
+            Assert.Equal("foo", Client.DefaultAny("foo", "bar"));
+
+            Assert.Equal("bar", Client.DefaultAny(null, "bar"));
         }
 
     }
