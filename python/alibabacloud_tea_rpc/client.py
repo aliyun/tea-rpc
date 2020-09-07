@@ -2,14 +2,14 @@
 # This file is auto-generated, don't edit it. Thanks.
 import time
 
-from alibabacloud_credentials.client import Client as CredentialClient
-from alibabacloud_tea_util.client import Client as UtilClient
-from Tea.exceptions import TeaException
-from alibabacloud_credentials import models as credential_models
+from Tea.exceptions import TeaException, UnretryableException
 from Tea.request import TeaRequest
 from Tea.core import TeaCore
+
+from alibabacloud_credentials.client import Client as CredentialClient
+from alibabacloud_tea_util.client import Client as UtilClient
+from alibabacloud_credentials import models as credential_models
 from alibabacloud_rpc_util.client import Client as RPCUtilClient
-from Tea.exceptions import UnretryableException
 
 
 class Client(object):
@@ -25,25 +25,25 @@ class Client(object):
 
         @param config: config contains the necessary information to create a client
         """
-        self._endpoint = _endpoint
-        self._region_id = _region_id
-        self._protocol = _protocol
-        self._user_agent = _user_agent
-        self._endpoint_rule = _endpoint_rule
-        self._endpoint_map = _endpoint_map
-        self._suffix = _suffix
-        self._read_timeout = _read_timeout
-        self._connect_timeout = _connect_timeout
-        self._http_proxy = _http_proxy
-        self._https_proxy = _https_proxy
-        self._socks_5proxy = _socks_5proxy
-        self._socks_5net_work = _socks_5net_work
-        self._no_proxy = _no_proxy
-        self._network = _network
-        self._product_id = _product_id
-        self._max_idle_conns = _max_idle_conns
-        self._endpoint_type = _endpoint_type
-        self._open_platform_endpoint = _open_platform_endpoint
+        self._endpoint = _endpoint      # type: str
+        self._region_id = _region_id    # type: str
+        self._protocol = _protocol      # type: str
+        self._user_agent = _user_agent  # type: str
+        self._endpoint_rule = _endpoint_rule  # type: str
+        self._endpoint_map = _endpoint_map  # type: dict
+        self._suffix = _suffix          # type: str
+        self._read_timeout = _read_timeout  # type: int
+        self._connect_timeout = _connect_timeout  # type: int
+        self._http_proxy = _http_proxy  # type: str
+        self._https_proxy = _https_proxy  # type: str
+        self._socks_5proxy = _socks_5proxy  # type: str
+        self._socks_5net_work = _socks_5net_work  # type: str
+        self._no_proxy = _no_proxy      # type: str
+        self._network = _network        # type: str
+        self._product_id = _product_id  # type: str
+        self._max_idle_conns = _max_idle_conns  # type: int
+        self._endpoint_type = _endpoint_type  # type: str
+        self._open_platform_endpoint = _open_platform_endpoint  # type: str
         self._credential = _credential
         if UtilClient.is_unset(config):
             raise TeaException({
@@ -189,9 +189,9 @@ class Client(object):
                 res = UtilClient.assert_as_map(obj)
                 if UtilClient.is_4xx(_response.status_code) or UtilClient.is_5xx(_response.status_code):
                     raise TeaException({
-                        "message": res.get('Message'),
-                        "data": res,
-                        "code": res.get('Code')
+                        "code": "" + str(self.default_any(res.get('Code'), res.get('code'))) + "Error",
+                        "message": "code: " + str(_response.status_code) + ", " + str(self.default_any(res.get('Message'), res.get('message'))) + " requestid: " + str(self.default_any(res.get('RequestId'), res.get('requestId'))) + "",
+                        "data": res
                     })
                 return res
             except Exception as e:
@@ -258,3 +258,18 @@ class Client(object):
                 "code": "ParameterMissing",
                 "message": "'config.endpoint' can not be empty"
             })
+
+    @staticmethod
+    def default_any(input_value, default_value):
+        """
+        If inputValue is not null, return it or return defaultValue
+
+        @param input_value:  users input value
+
+        @param default_value: default value
+
+        @return: the final result
+        """
+        if UtilClient.is_unset(input_value):
+            return default_value
+        return input_value

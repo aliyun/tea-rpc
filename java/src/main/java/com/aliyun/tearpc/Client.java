@@ -164,9 +164,9 @@ public class Client {
                 java.util.Map<String, Object> res = com.aliyun.teautil.Common.assertAsMap(obj);
                 if (com.aliyun.teautil.Common.is4xx(response_.statusCode) || com.aliyun.teautil.Common.is5xx(response_.statusCode)) {
                     throw new TeaException(TeaConverter.buildMap(
-                        new TeaPair("message", res.get("Message")),
-                        new TeaPair("data", res),
-                        new TeaPair("code", res.get("Code"))
+                        new TeaPair("code", "" + Client.defaultAny(res.get("Code"), res.get("code")) + "Error"),
+                        new TeaPair("message", "code: " + response_.statusCode + ", " + Client.defaultAny(res.get("Message"), res.get("message")) + " requestid: " + Client.defaultAny(res.get("RequestId"), res.get("requestId")) + ""),
+                        new TeaPair("data", res)
                     ));
                 }
 
@@ -242,5 +242,19 @@ public class Client {
             ));
         }
 
+    }
+
+    /**
+     * If inputValue is not null, return it or return defaultValue
+     * @param inputValue  users input value
+     * @param defaultValue default value
+     * @return the final result
+     */
+    public static Object defaultAny(Object inputValue, Object defaultValue) throws Exception {
+        if (com.aliyun.teautil.Common.isUnset(inputValue)) {
+            return defaultValue;
+        }
+
+        return inputValue;
     }
 }
