@@ -5,9 +5,9 @@
 
 #include <alibabacloud/credential.hpp>
 #include <alibabacloud/rpcutil.hpp>
-#include <alibabacloud/util.hpp>
 #include <boost/any.hpp>
 #include <darabonba/core.hpp>
+#include <darabonba/util.hpp>
 #include <iostream>
 #include <map>
 
@@ -93,7 +93,7 @@ public:
   }
   int getReadTimeout(){
     string name = "readTimeout";
-    int prop_val;
+    int prop_val = 0;
     if (_properties.find(name) != _properties.end()) {
       boost::any val = _properties.at(name);
       prop_val = boost::any_cast<int>(val);
@@ -107,7 +107,7 @@ public:
   }
   int getConnectTimeout(){
     string name = "connectTimeout";
-    int prop_val;
+    int prop_val = 0;
     if (_properties.find(name) != _properties.end()) {
       boost::any val = _properties.at(name);
       prop_val = boost::any_cast<int>(val);
@@ -147,16 +147,16 @@ public:
     boost::any prop_val(val);
     _properties.insert(pair<string, boost::any>(name, prop_val));
   }
-  Credential getCredential(){
+  Alibabacloud_Credential::Client getCredential(){
     string name = "credential";
-    Credential prop_val;
+    Alibabacloud_Credential::Client prop_val;
     if (_properties.find(name) != _properties.end()) {
       boost::any val = _properties.at(name);
-      prop_val = boost::any_cast<Credential>(val);
+      prop_val = boost::any_cast<Alibabacloud_Credential::Client>(val);
     }
     return prop_val;
   }
-  void setCredential(Credential val){
+  void setCredential(Alibabacloud_Credential::Client val){
     string name = "credential";
     boost::any prop_val(val);
     _properties.insert(pair<string, boost::any>(name, prop_val));
@@ -191,7 +191,7 @@ public:
   }
   int getMaxIdleConns(){
     string name = "maxIdleConns";
-    int prop_val;
+    int prop_val = 0;
     if (_properties.find(name) != _properties.end()) {
       boost::any val = _properties.at(name);
       prop_val = boost::any_cast<int>(val);
@@ -316,7 +316,7 @@ public:
     _properties.insert(pair<string, boost::any>(name, prop_val));
   }
 };
-class Client {
+class Client : public Model {
 public:
   Client();
   ~Client();
@@ -421,7 +421,7 @@ public:
   }
   int get_readTimeout(){
     string name = "_readTimeout";
-    int prop_val;
+    int prop_val = 0;
     if (_properties.find(name) != _properties.end()) {
       boost::any val = _properties.at(name);
       prop_val = boost::any_cast<int>(val);
@@ -435,7 +435,7 @@ public:
   }
   int get_connectTimeout(){
     string name = "_connectTimeout";
-    int prop_val;
+    int prop_val = 0;
     if (_properties.find(name) != _properties.end()) {
       boost::any val = _properties.at(name);
       prop_val = boost::any_cast<int>(val);
@@ -547,7 +547,7 @@ public:
   }
   int get_maxIdleConns(){
     string name = "_maxIdleConns";
-    int prop_val;
+    int prop_val = 0;
     if (_properties.find(name) != _properties.end()) {
       boost::any val = _properties.at(name);
       prop_val = boost::any_cast<int>(val);
@@ -602,12 +602,13 @@ public:
     _properties.insert(pair<string, boost::any>(name, prop_val));
   }
   Client(Config config);
-  map<string, boost::any> doRequest(string action, string protocol, string method, string version, string authType, map<string, boost::any> query, map<string, boost::any> body, Alibabacloud_Util::RuntimeOptions runtime);
+  map<string, boost::any> doRequest(string action, string protocol, string method, string version, string authType, map<string, boost::any> query, map<string, boost::any> body, Darabonba_Util::RuntimeOptions runtime);
   string getUserAgent();
   string getAccessKeyId();
   string getAccessKeySecret();
   string getSecurityToken();
   void checkConfig(Config config);
+  boost::any defaultAny(boost::any inputValue, boost::any defaultValue);
 };
 } // namespace Alibabacloud_RPC
 

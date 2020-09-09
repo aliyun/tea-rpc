@@ -3,10 +3,10 @@
 #include <alibabacloud/rpc.hpp>
 #include <alibabacloud/credential.hpp>
 #include <alibabacloud/rpcutil.hpp>
-#include <alibabacloud/util.hpp>
 #include <boost/any.hpp>
 #include <boost/exception/all.hpp>
 #include <darabonba/core.hpp>
+#include <darabonba/util.hpp>
 #include <iostream>
 #include <map>
 
@@ -14,15 +14,15 @@ using namespace Darabonba;
 using namespace std;
 
 Alibabacloud_RPC::Client::Client(Config config) {
-  if (Alibabacloud_Util::Client::isUnset(config)) {
+  if (Darabonba_Util::Client::isUnset(config)) {
     BOOST_THROW_EXCEPTION(Error({
       {"code", "ParameterMissing"},
       {"message", "'config' can not be unset"}
     }));
   }
-  Alibabacloud_Util::Client::validateModel(config);
-  if (!Alibabacloud_Util::Client::empty(config.accessKeyId) && !Alibabacloud_Util::Client::empty(config.accessKeySecret)) {
-    if (!Alibabacloud_Util::Client::empty(config.securityToken)) {
+  Darabonba_Util::Client::validateModel(config);
+  if (!Darabonba_Util::Client::empty(config.accessKeyId) && !Darabonba_Util::Client::empty(config.accessKeySecret)) {
+    if (!Darabonba_Util::Client::empty(config.securityToken)) {
       config.type = "sts";
     }
     else {
@@ -36,7 +36,7 @@ Alibabacloud_RPC::Client::Client(Config config) {
     });
     this->_credential = new Alibabacloud_Credential::Client(credentialConfig);
   }
-  else if (!Alibabacloud_Util::Client::isUnset(config.credential)) {
+  else if (!Darabonba_Util::Client::isUnset(config.credential)) {
     this->_credential = config.credential;
   }
   else {
@@ -63,23 +63,23 @@ Alibabacloud_RPC::Client::Client(Config config) {
   this->_openPlatformEndpoint = config.openPlatformEndpoint;
 };
 
-map<string, boost::any> Alibabacloud_RPC::Client::doRequest(string action, string protocol, string method, string version, string authType, map<string, boost::any> query, map<string, boost::any> body, Alibabacloud_Util::RuntimeOptions runtime){
+map<string, boost::any> Alibabacloud_RPC::Client::doRequest(string action, string protocol, string method, string version, string authType, map<string, boost::any> query, map<string, boost::any> body, Darabonba_Util::RuntimeOptions runtime){
   runtime->validate();
   map<string, boost::any> runtime_ = {
     {"timeouted", "retry"},
-    {"readTimeout", Alibabacloud_Util::Client::defaultNumber(runtime.readTimeout, this->_readTimeout)},
-    {"connectTimeout", Alibabacloud_Util::Client::defaultNumber(runtime.connectTimeout, this->_connectTimeout)},
-    {"httpProxy", Alibabacloud_Util::Client::defaultString(runtime.httpProxy, this->_httpProxy)},
-    {"httpsProxy", Alibabacloud_Util::Client::defaultString(runtime.httpsProxy, this->_httpsProxy)},
-    {"noProxy", Alibabacloud_Util::Client::defaultString(runtime.noProxy, this->_noProxy)},
-    {"maxIdleConns", Alibabacloud_Util::Client::defaultNumber(runtime.maxIdleConns, this->_maxIdleConns)},
+    {"readTimeout", Darabonba_Util::Client::defaultNumber(runtime.readTimeout, this->_readTimeout)},
+    {"connectTimeout", Darabonba_Util::Client::defaultNumber(runtime.connectTimeout, this->_connectTimeout)},
+    {"httpProxy", Darabonba_Util::Client::defaultString(runtime.httpProxy, this->_httpProxy)},
+    {"httpsProxy", Darabonba_Util::Client::defaultString(runtime.httpsProxy, this->_httpsProxy)},
+    {"noProxy", Darabonba_Util::Client::defaultString(runtime.noProxy, this->_noProxy)},
+    {"maxIdleConns", Darabonba_Util::Client::defaultNumber(runtime.maxIdleConns, this->_maxIdleConns)},
     {"retry", map<string, boost::any>({
       {"retryable", runtime.autoretry},
-      {"maxAttempts", Alibabacloud_Util::Client::defaultNumber(runtime.maxAttempts, 3)}
+      {"maxAttempts", Darabonba_Util::Client::defaultNumber(runtime.maxAttempts, 3)}
     })},
     {"backoff", map<string, boost::any>({
-      {"policy", Alibabacloud_Util::Client::defaultString(runtime.backoffPolicy, "no")},
-      {"period", Alibabacloud_Util::Client::defaultNumber(runtime.backoffPeriod, 1)}
+      {"policy", Darabonba_Util::Client::defaultString(runtime.backoffPolicy, "no")},
+      {"period", Darabonba_Util::Client::defaultNumber(runtime.backoffPeriod, 1)}
     })},
     {"ignoreSSL", runtime.ignoreSSL}
   };
@@ -97,7 +97,7 @@ map<string, boost::any> Alibabacloud_RPC::Client::doRequest(string action, strin
     _retryTimes = _retryTimes + 1;
     try {
       Request request_ = new Request();
-      request_.protocol = Alibabacloud_Util::Client::defaultString(this->_protocol, protocol);
+      request_.protocol = Darabonba_Util::Client::defaultString(this->_protocol, protocol);
       request_.method = method;
       request_.pathname = "/";
       request_.query = Alibabacloud_RPCUtil::Client::query({
@@ -105,7 +105,7 @@ map<string, boost::any> Alibabacloud_RPC::Client::doRequest(string action, strin
         {"Format", "json"},
         {"Timestamp", Alibabacloud_RPCUtil::Client::getTimestamp()},
         {"Version", version},
-        {"SignatureNonce", Alibabacloud_Util::Client::getNonce()},
+        {"SignatureNonce", Darabonba_Util::Client::getNonce()},
         {"", query}
       });
       // endpoint is setted in product client
@@ -115,16 +115,16 @@ map<string, boost::any> Alibabacloud_RPC::Client::doRequest(string action, strin
         {"host", this->_endpoint},
         {"user-agent", this.getUserAgent()}
       };
-      if (!Alibabacloud_Util::Client::isUnset(body)) {
-        map<string, boost::any> tmp = Alibabacloud_Util::Client::anyifyMapValue(Alibabacloud_RPCUtil::Client::query(body));
-        request_.body = Alibabacloud_Util::Client::toFormString(tmp);
+      if (!Darabonba_Util::Client::isUnset(body)) {
+        map<string, boost::any> tmp = Darabonba_Util::Client::anyifyMapValue(Alibabacloud_RPCUtil::Client::query(body));
+        request_.body = Darabonba_Util::Client::toFormString(tmp);
         request_.headers.insert(pair<string, string>("content-type", "application/x-www-form-urlencoded"));
       }
-      if (!Alibabacloud_Util::Client::equalString(authType, "Anonymous")) {
+      if (!Darabonba_Util::Client::equalString(authType, "Anonymous")) {
         string accessKeyId = this.getAccessKeyId();
         string accessKeySecret = this.getAccessKeySecret();
         string securityToken = this.getSecurityToken();
-        if (!Alibabacloud_Util::Client::empty(securityToken)) {
+        if (!Darabonba_Util::Client::empty(securityToken)) {
           request_.query.insert(pair<string, string>("SecurityToken", securityToken));
         }
         request_.query.insert(pair<string, string>("SignatureMethod", "HMAC-SHA1"));
@@ -138,13 +138,13 @@ map<string, boost::any> Alibabacloud_RPC::Client::doRequest(string action, strin
       }
       _lastRequest = request_;
       Response response_= Core::doRequest(request_, runtime_);
-      boost::any obj = Alibabacloud_Util::Client::readAsJSON(response_.body);
-      map<string, boost::any> res = Alibabacloud_Util::Client::assertAsMap(obj);
-      if (Alibabacloud_Util::Client::is4xx(response_.statusCode) || Alibabacloud_Util::Client::is5xx(response_.statusCode)) {
+      boost::any obj = Darabonba_Util::Client::readAsJSON(response_.body);
+      map<string, boost::any> res = Darabonba_Util::Client::assertAsMap(obj);
+      if (Darabonba_Util::Client::is4xx(response_.statusCode) || Darabonba_Util::Client::is5xx(response_.statusCode)) {
         BOOST_THROW_EXCEPTION(Error({
-          {"message", res["Message"]},
-          {"data", res},
-          {"code", res["Code"]}
+          {"code", "" + Client::defaultAny(res["Code"], res["code"]) + "Error"},
+          {"message", "code: " + response_.statusCode + ", " + Client::defaultAny(res["Message"], res["message"]) + " requestid: " + Client::defaultAny(res["RequestId"], res["requestId"]) + ""},
+          {"data", res}
         }));
       }
       return res;
@@ -161,12 +161,12 @@ map<string, boost::any> Alibabacloud_RPC::Client::doRequest(string action, strin
 }
 
 string Alibabacloud_RPC::Client::getUserAgent(){
-  string userAgent = Alibabacloud_Util::Client::getUserAgent(this->_userAgent);
+  string userAgent = Darabonba_Util::Client::getUserAgent(this->_userAgent);
   return userAgent;
 }
 
 string Alibabacloud_RPC::Client::getAccessKeyId(){
-  if (Alibabacloud_Util::Client::isUnset(this->_credential)) {
+  if (Darabonba_Util::Client::isUnset(this->_credential)) {
     return '';
   }
   string accessKeyId = this->_credential.getAccessKeyId();
@@ -174,7 +174,7 @@ string Alibabacloud_RPC::Client::getAccessKeyId(){
 }
 
 string Alibabacloud_RPC::Client::getAccessKeySecret(){
-  if (Alibabacloud_Util::Client::isUnset(this->_credential)) {
+  if (Darabonba_Util::Client::isUnset(this->_credential)) {
     return '';
   }
   string secret = this->_credential.getAccessKeySecret();
@@ -182,7 +182,7 @@ string Alibabacloud_RPC::Client::getAccessKeySecret(){
 }
 
 string Alibabacloud_RPC::Client::getSecurityToken(){
-  if (Alibabacloud_Util::Client::isUnset(this->_credential)) {
+  if (Darabonba_Util::Client::isUnset(this->_credential)) {
     return '';
   }
   string token = this->_credential.getSecurityToken();
@@ -190,11 +190,18 @@ string Alibabacloud_RPC::Client::getSecurityToken(){
 }
 
 void Alibabacloud_RPC::Client::checkConfig(Config config){
-  if (Alibabacloud_Util::Client::empty(this->_endpointRule) && Alibabacloud_Util::Client::empty(config.endpoint)) {
+  if (Darabonba_Util::Client::empty(this->_endpointRule) && Darabonba_Util::Client::empty(config.endpoint)) {
     BOOST_THROW_EXCEPTION(Error({
       {"code", "ParameterMissing"},
       {"message", "'config.endpoint' can not be empty"}
     }));
   }
+}
+
+boost::any Alibabacloud_RPC::Client::defaultAny(boost::any inputValue, boost::any defaultValue){
+  if (Darabonba_Util::Client::isUnset(inputValue)) {
+    return defaultValue;
+  }
+  return inputValue;
 }
 

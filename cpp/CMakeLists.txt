@@ -38,7 +38,7 @@ target_sources(${PROJECT_NAME}
         ${headers})
 
 target_include_directories(${PROJECT_NAME}
-        PUBLIC
+        PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 set_target_properties(${PROJECT_NAME}
@@ -52,7 +52,7 @@ set_target_properties(${PROJECT_NAME}
         WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
 add_subdirectory(external/libraries)
-target_link_libraries(${PROJECT_NAME} PRIVATE alibabacloud_util alibabacloud_rpcutil alibabacloud_credential)
+target_link_libraries(${PROJECT_NAME} PRIVATE darabonba_util alibabacloud_rpcutil alibabacloud_credential)
 
 message(STATUS "Project will be installed to ${CMAKE_INSTALL_PREFIX}")
 
@@ -97,17 +97,50 @@ set_target_properties(${PROJECT_NAME}
 
 install(
         TARGETS
-        ${PROJECT_NAME}
+          ${PROJECT_NAME}
+        EXPORT
+          alibabacloud_rpcTargets
         ARCHIVE
-        DESTINATION ${INSTALL_LIBDIR}
-        COMPONENT lib
+          DESTINATION ${INSTALL_LIBDIR}
+          COMPONENT lib
         RUNTIME
-        DESTINATION ${INSTALL_BINDIR}
-        COMPONENT bin
+          DESTINATION ${INSTALL_BINDIR}
+          COMPONENT bin
         LIBRARY
-        DESTINATION ${INSTALL_LIBDIR}
-        COMPONENT lib
+          DESTINATION ${INSTALL_LIBDIR}
+          COMPONENT lib
         PUBLIC_HEADER
-        DESTINATION ${INSTALL_INCLUDEDIR}/alibabacloud
-        COMPONENT dev
+          DESTINATION ${INSTALL_INCLUDEDIR}/alibabacloud
+          COMPONENT dev
+)
+
+# install cmake config
+install(
+        EXPORT
+          alibabacloud_rpcTargets
+        NAMESPACE
+          "alibabacloud_rpc::"
+        DESTINATION
+          ${INSTALL_CMAKEDIR}
+        COMPONENT
+          dev
+)
+include(CMakePackageConfigHelpers)
+
+write_basic_package_version_file(
+        ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
+        VERSION ${PROJECT_VERSION}
+        COMPATIBILITY SameMajorVersion
+)
+configure_package_config_file(
+        ${PROJECT_SOURCE_DIR}/cmake/${PROJECT_NAME}Config.cmake.in
+        ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
+        INSTALL_DESTINATION ${INSTALL_CMAKEDIR}
+)
+install(
+        FILES
+        ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
+        ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
+        DESTINATION
+        ${INSTALL_CMAKEDIR}
 )
