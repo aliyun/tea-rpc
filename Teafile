@@ -50,6 +50,14 @@
       "github": "https://github.com/aliyun/tea-rpc",
       "author": "Alibaba Cloud",
       "email": "alibaba-cloud-sdk-dev-team@list.alibaba-inc.com"
-		}
+    }
+  },
+  "cpp": {
+    "packageInfo": {
+      "git": {
+        "scope": "alibabacloud-sdk-cpp",
+        "project": "rpc"
+      }
+    }
   }
 }
