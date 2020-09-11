@@ -1,7 +1,7 @@
 {
   "scope": "alibabacloud",
   "name": "RPC",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "main": "./rpc.tea",
   "maintainers": [
     {
@@ -16,7 +16,7 @@
   },
   "releases": {
     "ts": "@alicloud/rpc-client:^1.3.1",
-    "go": "github.com/alibabacloud-go/tea-rpc/client:v1.1.5",
+    "go": "github.com/alibabacloud-go/tea-rpc/client:v1.1.6",
     "csharp": "AlibabaCloud.RPCClient:1.0.1",
     "java": "com.aliyun:tea-rpc:0.1.2",
     "php": "alibabacloud/tea-rpc:^0.1.5",
