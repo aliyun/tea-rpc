@@ -95,9 +95,13 @@ public class Config extends TeaModel {
     @Deprecated
     public String type;
 
-    public static Config build(java.util.Map<String, ?> map) throws Exception {
+    public static Config build(java.util.Map<String, ?> map) {
         Config self = new Config();
-        return TeaModel.build(map, self);
+        try {
+            return TeaModel.build(map, self);
+        } catch (Exception e) {
+         throw new RuntimeException(e);
+        }
     }
 
     public Config setAccessKeyId(String accessKeyId) {
