@@ -171,8 +171,8 @@ api doRequest(action: string, protocol: string, method: string, version: string,
 
   if (Util.is4xx(__response.statusCode) || Util.is5xx(__response.statusCode)) {
     throw {
-      code = `${defaultAny(res.Code, res.code)}Error`,
-      message = `code: ${__response.statusCode}, ${defaultAny(res.Message, res.message)} requestid: ${defaultAny(res.RequestId, res.requestId)}`,
+      code = `${defaultAny(res.Code, res.code)}`,
+      message = `code: ${__response.statusCode}, ${defaultAny(res.Message, res.message)} request id: ${defaultAny(res.RequestId, res.requestId)}`,
       data = res,
     };
   }
