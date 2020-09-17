@@ -11,7 +11,7 @@ English | [简体中文](/README-zh-CN.md)
 ### Linux
 
 ```bash
-git clone https://github.com/alibabacloud/rpc.git
+git clone https://github.com/alibabacloud-sdk-cpp/rpc.git
 cd rpc
 sh scripts/install.sh
 ```
@@ -21,7 +21,7 @@ sh scripts/install.sh
 1. Run the following command to clone code from Github via git-bash:
 
   ```bash
-  git clone https://github.com/alibabacloud/rpc.git
+  git clone https://github.com/alibabacloud-sdk-cpp/rpc.git
   ```
 2. Build Visual Studio solution
   * Change directory to source code and make directory `cmake_build`
@@ -40,7 +40,7 @@ sh scripts/install.sh
 
 ## Issue
 
-[Submit Issue](https://github.com/alibabacloud/rpc/issues/new/choose), Problems that do not meet the guidelines may close immediately.
+[Submit Issue](https://github.com/alibabacloud-sdk-cpp/rpc/issues/new/choose), Problems that do not meet the guidelines may close immediately.
 
 
 ## Related
@@ -57,6 +57,6 @@ sh scripts/install.sh
 Copyright (c) 2009-present, Alibaba Cloud All rights reserved.
 
 [open-api]: https://api.aliyun.com
-[latest-release]: https://github.com/alibabacloud/rpc/releases
+[latest-release]: https://github.com/alibabacloud-sdk-cpp/rpc/releases
 [console]: https://home.console.aliyun.com
 [aliyun]: https://www.aliyun.com

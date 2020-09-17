@@ -10,16 +10,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 message("C++ compiler flags: ${CMAKE_CXX_FLAGS}")
 
-message(STATUS "Enable testing: ${ENABLE_UNIT_TESTS}")
-
 if (CMAKE_CXX_COMPILER_LOADED)
     message(STATUS "The C++ compiler ID is: ${CMAKE_CXX_COMPILER_ID}")
     message(STATUS "The C++ compiler version is: ${CMAKE_CXX_COMPILER_VERSION}")
-endif ()
-
-list(APPEND flags "-fPIC" "-Wall" "-Wno-dev")
-if (NOT WIN32)
-    list(APPEND flags "-Wextra" "-Wpedantic")
 endif ()
 
 if (NOT CMAKE_BUILD_TYPE)
@@ -51,7 +44,7 @@ set_target_properties(${PROJECT_NAME}
         MACOSX_RPATH ON
         WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
-add_subdirectory(external/libraries)
+add_subdirectory(external)
 target_link_libraries(${PROJECT_NAME} PRIVATE darabonba_util alibabacloud_rpcutil alibabacloud_credential)
 
 message(STATUS "Project will be installed to ${CMAKE_INSTALL_PREFIX}")

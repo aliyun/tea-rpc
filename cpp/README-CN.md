@@ -11,7 +11,7 @@
 ### Linux
 
 ```bash
-git clone https://github.com/alibabacloud/rpc.git
+git clone https://github.com/alibabacloud-sdk-cpp/rpc.git
 cd rpc
 sh scripts/install.sh
 ```
@@ -21,7 +21,7 @@ sh scripts/install.sh
 1. 使用 git-bash 执行以下命令，从 Github 克隆源码
 
   ```bash
-  git clone https://github.com/alibabacloud/rpc.git
+  git clone https://github.com/alibabacloud-sdk-cpp/rpc.git
   ```
 2. 使用 Visual Studio 进行编译:
   * 在根目录下创建 `cmake_build` 目录
