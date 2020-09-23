@@ -6,13 +6,15 @@ cd "$basepath/" || exit
 
 main() {
     mkdir -p cmake_build/
-    cd cmake_build/ || exit
-    cmake .. || {
+    cd cmake_build/
+    cmake .. -DENABLE_UNIT_TESTS=ON || {
         error_exit "Failed to cmake."
     }
-
     cmake --build . || {
         error_exit "Failed to make."
+    }
+    ./tests_alibabacloud_rpc || {
+        error_exit "Failed to test."
     }
 }
 

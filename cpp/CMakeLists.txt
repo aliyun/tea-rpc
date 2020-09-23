@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.5 FATAL_ERROR)
 
 project(alibabacloud_rpc VERSION "0.1.0")
 
-# <<< General set up >>>
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< General set up >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> #
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -20,34 +20,49 @@ if (NOT CMAKE_BUILD_TYPE)
 endif ()
 message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
 
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Target set up >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> #
 add_library(${PROJECT_NAME} SHARED "")
-
 set(headers
         include/alibabacloud/rpc.hpp)
-
 target_sources(${PROJECT_NAME}
         PRIVATE
         src/rpc.cpp
         ${headers})
-
 target_include_directories(${PROJECT_NAME}
         PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/include)
-
 set_target_properties(${PROJECT_NAME}
         PROPERTIES
         POSITION_INDEPENDENT_CODE 1
         SOVERSION ${PROJECT_VERSION_MAJOR}
-        OUTPUT_NAME "rpc"
+        OUTPUT_NAME "${PROJECT_NAME}"
         DEBUG_POSTFIX "_d"
         PUBLIC_HEADER "${headers}"
         MACOSX_RPATH ON
         WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< External set up >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> #
 add_subdirectory(external)
-target_link_libraries(${PROJECT_NAME} PRIVATE darabonba_util alibabacloud_rpcutil alibabacloud_credential)
+target_link_libraries(${PROJECT_NAME} PRIVATE darabonba_core darabonba_util alibabacloud_credential alibabacloud_rpcutil)
+if (ENABLE_UNIT_TESTS)
+    include(CTest)
+    enable_testing()
+    add_executable(tests_alibabacloud_rpc
+            tests/main.cpp)
+    target_include_directories(tests_alibabacloud_rpc
+            PRIVATE
+            ${CMAKE_CURRENT_SOURCE_DIR}/include)
+    target_link_libraries(tests_alibabacloud_rpc
+            PRIVATE
+            ${PROJECT_NAME}
+            gtest_main
+            gmock_main darabonba_util alibabacloud_credential alibabacloud_rpcutil)
+    add_test(NAME google_test
+            COMMAND $<TARGET_FILE:tests_alibabacloud_rpc>)
+endif ()
 
-message(STATUS "Project will be installed to ${CMAKE_INSTALL_PREFIX}")
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Install set up >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> #
+message(STATUS "${PROJECT_NAME} : Project will be installed to ${CMAKE_INSTALL_PREFIX}")
 
 include(GNUInstallDirs)
 
@@ -107,7 +122,7 @@ install(
           COMPONENT dev
 )
 
-# install cmake config
+# Install cmake config
 install(
         EXPORT
           alibabacloud_rpcTargets
