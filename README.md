@@ -4,6 +4,9 @@ English | [简体中文](README-CN.md)
 
 ## Alibaba Cloud RPC Client
 
+[![Travis Build Status](https://travis-ci.org/aliyun/tea-rpc.svg?branch=master)](https://travis-ci.org/aliyun/tea-rpc)
+[![codecov](https://codecov.io/gh/aliyun/tea-rpc/branch/master/graph/badge.svg)](https://codecov.io/gh/aliyun/tea-rpc)
+
 ## Installation
 
 - [Go](./golang/README.md)
