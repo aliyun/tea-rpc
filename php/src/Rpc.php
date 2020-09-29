@@ -209,8 +209,8 @@ class Rpc
                 $res          = Utils::assertAsMap($obj);
                 if (Utils::is4xx($_response->statusCode) || Utils::is5xx($_response->statusCode)) {
                     throw new TeaError([
-                        'code'    => '' . self::defaultAny($res['Code'], $res['code']) . 'Error',
-                        'message' => 'code: ' . $_response->statusCode . ', ' . self::defaultAny($res['Message'], $res['message']) . ' requestid: ' . self::defaultAny($res['RequestId'], $res['requestId']) . '',
+                        'code'    => '' . (string) (self::defaultAny($res['Code'], $res['code'])) . '',
+                        'message' => 'code: ' . (string) ($_response->statusCode) . ', ' . (string) (self::defaultAny($res['Message'], $res['message'])) . ' request id: ' . (string) (self::defaultAny($res['RequestId'], $res['requestId'])) . '',
                         'data'    => $res,
                     ]);
                 }

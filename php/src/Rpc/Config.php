@@ -4,6 +4,7 @@
 
 namespace AlibabaCloud\Tea\Rpc\Rpc;
 
+use AlibabaCloud\Credentials\Credential;
 use AlibabaCloud\Tea\Model;
 
 /**
