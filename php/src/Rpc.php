@@ -157,9 +157,9 @@ class Rpc
         $_lastException = null;
         $_now           = time();
         $_retryTimes    = 0;
-        while (Tea::allowRetry($_runtime['retry'], $_retryTimes, $_now)) {
+        while (Tea::allowRetry(@$_runtime['retry'], $_retryTimes, $_now)) {
             if ($_retryTimes > 0) {
-                $_backoffTime = Tea::getBackoffTime($_runtime['backoff'], $_retryTimes);
+                $_backoffTime = Tea::getBackoffTime(@$_runtime['backoff'], $_retryTimes);
                 if ($_backoffTime > 0) {
                     Tea::sleep($_backoffTime);
                 }
@@ -209,8 +209,8 @@ class Rpc
                 $res          = Utils::assertAsMap($obj);
                 if (Utils::is4xx($_response->statusCode) || Utils::is5xx($_response->statusCode)) {
                     throw new TeaError([
-                        'code'    => '' . (string) (self::defaultAny($res['Code'], $res['code'])) . '',
-                        'message' => 'code: ' . (string) ($_response->statusCode) . ', ' . (string) (self::defaultAny($res['Message'], $res['message'])) . ' request id: ' . (string) (self::defaultAny($res['RequestId'], $res['requestId'])) . '',
+                        'code'    => '' . (string) (self::defaultAny(@$res['Code'], @$res['code'])) . '',
+                        'message' => 'code: ' . (string) ($_response->statusCode) . ', ' . (string) (self::defaultAny(@$res['Message'], @$res['message'])) . ' request id: ' . (string) (self::defaultAny(@$res['RequestId'], @$res['requestId'])) . '',
                         'data'    => $res,
                     ]);
                 }
