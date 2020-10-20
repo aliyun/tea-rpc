@@ -41,14 +41,26 @@ set_target_properties(${PROJECT_NAME}
         MACOSX_RPATH ON
         WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
-# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< External set up >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> #
-add_subdirectory(external)
-target_link_libraries(${PROJECT_NAME} PRIVATE darabonba_core darabonba_util alibabacloud_credential alibabacloud_rpcutil)
 if (ENABLE_UNIT_TESTS)
+    OPTION(ENABLE_COVERAGE "Use gcov" OFF)
+    message(STATUS "Enable coverage: ${ENABLE_COVERAGE}")
+    if (ENABLE_COVERAGE AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+        set(CMAKE_BUILD_TYPE "Coverage")
+        set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
+        include(CodeCoverage)
+        setup_target_for_coverage(${PROJECT_NAME}_coverage ${PROJECT_NAME}_test coverage)
+    endif ()
     include(CTest)
     enable_testing()
     add_executable(tests_alibabacloud_rpc
             tests/main.cpp)
+endif ()
+
+# <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< External set up >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> #
+add_subdirectory(external)
+target_link_libraries(${PROJECT_NAME} PRIVATE darabonba_core crypto darabonba_util alibabacloud_credential alibabacloud_rpcutil)
+
+if (ENABLE_UNIT_TESTS)
     target_include_directories(tests_alibabacloud_rpc
             PRIVATE
             ${CMAKE_CURRENT_SOURCE_DIR}/include)

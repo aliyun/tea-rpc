@@ -6,7 +6,6 @@
 #include <boost/any.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/throw_exception.hpp>
-#include <cpprest/streams.h>
 #include <darabonba/core.hpp>
 #include <darabonba/util.hpp>
 #include <iostream>
@@ -14,7 +13,9 @@
 
 using namespace std;
 
-Alibabacloud_RPC::Client::Client(Config *config) {
+using namespace Alibabacloud_RPC;
+
+Alibabacloud_RPC::Client::Client(shared_ptr<Config> config) {
   if (Darabonba_Util::Client::isUnset(config)) {
     BOOST_THROW_EXCEPTION(Darabonba::Error(map<string, string>({
       {"code", "ParameterMissing"},
@@ -24,18 +25,18 @@ Alibabacloud_RPC::Client::Client(Config *config) {
   Darabonba_Util::Client::validateModel(config);
   if (!Darabonba_Util::Client::empty(config->accessKeyId) && !Darabonba_Util::Client::empty(config->accessKeySecret)) {
     if (!Darabonba_Util::Client::empty(config->securityToken)) {
-      config->type = new string("sts");
+      config->type = make_shared<string>("sts");
     }
     else {
-      config->type = new string("access_key");
+      config->type = make_shared<string>("access_key");
     }
-    Alibabacloud_Credential::Config credentialConfig = Alibabacloud_Credential::Config(new map<string, string>({
-      {"accessKeyId", *config->accessKeyId},
-      {"type", *config->type},
-      {"accessKeySecret", *config->accessKeySecret},
-      {"securityToken", *config->securityToken}
+    Alibabacloud_Credential::Config credentialConfig(map<string, string>({
+      {"accessKeyId", !config->accessKeyId ? NULL : *config->accessKeyId},
+      {"type", !config->type ? NULL : *config->type},
+      {"accessKeySecret", !config->accessKeySecret ? NULL : *config->accessKeySecret},
+      {"securityToken", !config->securityToken ? NULL : *config->securityToken}
     }));
-    _credential = new Alibabacloud_Credential::Client(Alibabacloud_Credential::Client(new Alibabacloud_Credential::Config(credentialConfig)));
+    _credential = make_shared<Alibabacloud_Credential::Client>(make_shared<Alibabacloud_Credential::Config>(credentialConfig));
   }
   else if (!Darabonba_Util::Client::isUnset(config->credential)) {
     _credential = config->credential;
@@ -64,14 +65,14 @@ Alibabacloud_RPC::Client::Client(Config *config) {
   _openPlatformEndpoint = config->openPlatformEndpoint;
 };
 
-map<string, boost::any> Alibabacloud_RPC::Client::doRequest(string *action,
-                                                            string *protocol,
-                                                            string *method,
-                                                            string *version,
-                                                            string *authType,
-                                                            map<string, boost::any> *query,
-                                                            map<string, boost::any> *body,
-                                                            Darabonba_Util::RuntimeOptions *runtime) {
+map<string, boost::any> Alibabacloud_RPC::Client::doRequest(shared_ptr<string> action,
+                                                            shared_ptr<string> protocol,
+                                                            shared_ptr<string> method,
+                                                            shared_ptr<string> version,
+                                                            shared_ptr<string> authType,
+                                                            shared_ptr<map<string, boost::any>> query,
+                                                            shared_ptr<map<string, boost::any>> body,
+                                                            shared_ptr<Darabonba_Util::RuntimeOptions> runtime) {
   runtime->validate();
   map<string, boost::any> runtime_ = {
     {"timeouted", boost::any("retry")},
@@ -82,24 +83,24 @@ map<string, boost::any> Alibabacloud_RPC::Client::doRequest(string *action,
     {"noProxy", boost::any(Darabonba_Util::Client::defaultString(runtime->noProxy, _noProxy))},
     {"maxIdleConns", boost::any(Darabonba_Util::Client::defaultNumber(runtime->maxIdleConns, _maxIdleConns))},
     {"retry", boost::any(map<string, boost::any>({
-      {"retryable", boost::any(*runtime->autoretry)},
-      {"maxAttempts", boost::any(Darabonba_Util::Client::defaultNumber(runtime->maxAttempts, new int(3)))}
+      {"retryable", boost::any(!runtime->autoretry ? NULL : *runtime->autoretry)},
+      {"maxAttempts", boost::any(Darabonba_Util::Client::defaultNumber(runtime->maxAttempts, make_shared<int>(3)))}
     }))},
     {"backoff", boost::any(map<string, boost::any>({
-      {"policy", boost::any(Darabonba_Util::Client::defaultString(runtime->backoffPolicy, new string("no")))},
-      {"period", boost::any(Darabonba_Util::Client::defaultNumber(runtime->backoffPeriod, new int(1)))}
+      {"policy", boost::any(Darabonba_Util::Client::defaultString(runtime->backoffPolicy, make_shared<string>("no")))},
+      {"period", boost::any(Darabonba_Util::Client::defaultNumber(runtime->backoffPeriod, make_shared<int>(1)))}
     }))},
-    {"ignoreSSL", boost::any(*runtime->ignoreSSL)}
+    {"ignoreSSL", boost::any(!runtime->ignoreSSL ? NULL : *runtime->ignoreSSL)}
   };
   Darabonba::Request _lastRequest;
   std::exception _lastException;
   int _now = 0;
   int _retryTimes = 0;
-  while (Darabonba::Core::allowRetry(new boost::any(runtime_["retry"]), new int(_retryTimes), new int(_now))) {
+  while (Darabonba::Core::allowRetry(make_shared<boost::any>(runtime_.at("retry")), make_shared<int>(_retryTimes), make_shared<int>(_now))) {
     if (_retryTimes > 0) {
-      int _backoffTime = Darabonba::Core::getBackoffTime(new boost::any(runtime_["backoff"]), new int(_retryTimes));
+      int _backoffTime = Darabonba::Core::getBackoffTime(make_shared<boost::any>(runtime_.at("backoff")), make_shared<int>(_retryTimes));
       if (_backoffTime > 0) {
-        Darabonba::Core::sleep(new int(_backoffTime));
+        Darabonba::Core::sleep(make_shared<int>(_backoffTime));
       }
     }
     _retryTimes = _retryTimes + 1;
@@ -109,52 +110,52 @@ map<string, boost::any> Alibabacloud_RPC::Client::doRequest(string *action,
       request_.method = *method;
       request_.pathname = "/";
       request_.query = Alibabacloud_RPCUtil::Client::query(Darabonba::Converter::mapPointer(Darabonba::Converter::merge(map<string, boost::any>({
-        {"Action", boost::any(*action)},
+        {"Action", boost::any(!action ? NULL : *action)},
         {"Format", boost::any("json")},
         {"Timestamp", boost::any(Alibabacloud_RPCUtil::Client::getTimestamp())},
-        {"Version", boost::any(*version)},
+        {"Version", boost::any(!version ? NULL : *version)},
         {"SignatureNonce", boost::any(Darabonba_Util::Client::getNonce())}
       }), *query)));
       // endpoint is setted in product client
       request_.headers = {
-        {"x-acs-version", *version},
-        {"x-acs-action", *action},
-        {"host", *_endpoint},
+        {"x-acs-version", !version ? NULL : *version},
+        {"x-acs-action", !action ? NULL : *action},
+        {"host", !_endpoint ? NULL : *_endpoint},
         {"user-agent", getUserAgent()}
       };
       if (!Darabonba_Util::Client::isUnset(body)) {
-        map<string, boost::any> tmp = Darabonba_Util::Client::anyifyMapValue(new map<string, string>(Alibabacloud_RPCUtil::Client::query(body)));
-        request_.body = Darabonba_Util::Client::toFormString(new map<string, boost::any>(tmp));
+        map<string, boost::any> tmp = Darabonba_Util::Client::anyifyMapValue(make_shared<map<string, string>>(Alibabacloud_RPCUtil::Client::query(body)));
+        request_.body = Darabonba::Converter::toStream(Darabonba_Util::Client::toFormString(make_shared<map<string, boost::any>>(tmp)));
         request_.headers.insert(pair<string, string>("content-type", "application/x-www-form-urlencoded"));
       }
-      if (!Darabonba_Util::Client::equalString(authType, new string("Anonymous"))) {
+      if (!Darabonba_Util::Client::equalString(authType, make_shared<string>("Anonymous"))) {
         string accessKeyId = getAccessKeyId();
         string accessKeySecret = getAccessKeySecret();
         string securityToken = getSecurityToken();
-        if (!Darabonba_Util::Client::empty(&securityToken)) {
+        if (!Darabonba_Util::Client::empty(make_shared<string>(securityToken))) {
           request_.query.insert(pair<string, string>("SecurityToken", securityToken));
         }
         request_.query.insert(pair<string, string>("SignatureMethod", "HMAC-SHA1"));
         request_.query.insert(pair<string, string>("SignatureVersion", "1.0"));
         request_.query.insert(pair<string, string>("AccessKeyId", accessKeyId));
         map<string, string> signedParam = Darabonba::Converter::merge(map<string, string>(request_.query), map<string, string>(Alibabacloud_RPCUtil::Client::query(body)));
-        request_.query.insert(pair<string, string>("Signature", Alibabacloud_RPCUtil::Client::getSignatureV1(new map<string, string>(signedParam), new string(request_.method), new string(accessKeySecret))));
+        request_.query.insert(pair<string, string>("Signature", Alibabacloud_RPCUtil::Client::getSignatureV1(make_shared<map<string, string>>(signedParam), make_shared<string>(request_.method), make_shared<string>(accessKeySecret))));
       }
       _lastRequest = request_;
       Darabonba::Response response_= Darabonba::Core::doAction(request_, runtime_);
-      boost::any obj = Darabonba_Util::Client::readAsJSON(new concurrency::streams::istream(response_.body));
-      map<string, boost::any> res = Darabonba_Util::Client::assertAsMap(new boost::any(obj));
-      if (Darabonba_Util::Client::is4xx(new int(response_.statusCode)) || Darabonba_Util::Client::is5xx(new int(response_.statusCode))) {
+      boost::any obj = Darabonba_Util::Client::readAsJSON(response_.body);
+      map<string, boost::any> res = Darabonba_Util::Client::assertAsMap(make_shared<boost::any>(obj));
+      if (Darabonba_Util::Client::is4xx(make_shared<int>(response_.statusCode)) || Darabonba_Util::Client::is5xx(make_shared<int>(response_.statusCode))) {
         BOOST_THROW_EXCEPTION(Darabonba::Error(map<string, boost::any>({
-          {"code", boost::any(string("" + Darabonba::Converter::toString(Client::defaultAny(new boost::any(res["Code"]), new boost::any(res["code"]))) + ""))},
-          {"message", boost::any(string("code: " + boost::lexical_cast<string>(response_.statusCode) + ", " + Darabonba::Converter::toString(Client::defaultAny(new boost::any(res["Message"]), new boost::any(res["message"]))) + " request id: " + Darabonba::Converter::toString(Client::defaultAny(new boost::any(res["RequestId"]), new boost::any(res["requestId"]))) + ""))},
+          {"code", boost::any(string("" + Darabonba::Converter::toString(Client::defaultAny(make_shared<boost::any>(res.at("Code")), make_shared<boost::any>(res.at("code")))) + ""))},
+          {"message", boost::any(string("code: " + boost::lexical_cast<string>(response_.statusCode) + ", " + Darabonba::Converter::toString(Client::defaultAny(make_shared<boost::any>(res.at("Message")), make_shared<boost::any>(res.at("message")))) + " request id: " + Darabonba::Converter::toString(Client::defaultAny(make_shared<boost::any>(res.at("RequestId")), make_shared<boost::any>(res.at("requestId")))) + ""))},
           {"data", boost::any(res)}
         })));
       }
       return res;
     }
     catch (std::exception &e) {
-      if (Darabonba::Core::isRetryable(&e)) {
+      if (Darabonba::Core::isRetryable(e)) {
         _lastException = e;
         continue;
       }
@@ -193,7 +194,7 @@ string Alibabacloud_RPC::Client::getSecurityToken() {
   return token;
 }
 
-void Alibabacloud_RPC::Client::checkConfig(Config *config) {
+void Alibabacloud_RPC::Client::checkConfig(shared_ptr<Config> config) {
   if (Darabonba_Util::Client::empty(_endpointRule) && Darabonba_Util::Client::empty(config->endpoint)) {
     BOOST_THROW_EXCEPTION(Darabonba::Error(map<string, string>({
       {"code", "ParameterMissing"},
@@ -202,7 +203,7 @@ void Alibabacloud_RPC::Client::checkConfig(Config *config) {
   }
 }
 
-boost::any Alibabacloud_RPC::Client::defaultAny(boost::any *inputValue, boost::any *defaultValue) {
+boost::any Alibabacloud_RPC::Client::defaultAny(shared_ptr<boost::any> inputValue, shared_ptr<boost::any> defaultValue) {
   if (Darabonba_Util::Client::isUnset(inputValue)) {
     return *defaultValue;
   }

@@ -39,7 +39,7 @@ sh scripts/install.sh
 
 ## 问题
 
-[提交 Issue](https://github.com/aliyun/tea-cpp/issues/new/choose)，不符合指南的问题可能会立即关闭。
+[提交 Issue](https://github.com/alibabacloud-sdk-cpp/rpc/issues/new/choose)，不符合指南的问题可能会立即关闭。
 
 ## 相关
 
@@ -55,6 +55,6 @@ sh scripts/install.sh
 Copyright (c) 2009-present, Alibaba Cloud All rights reserved.
 
 [open-api]: https://api.aliyun.com
-[latest-release]: https://github.com/aliyun/tea-cpp/releases
+[latest-release]: https://github.com/alibabacloud-sdk-cpp/rpc/releases
 [console]: https://home.console.aliyun.com
 [aliyun]: https://www.aliyun.com
