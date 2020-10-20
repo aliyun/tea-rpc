@@ -18,248 +18,211 @@ class Config : public Darabonba::Model {
 protected:
   void _init(){
     _default = {
-      {"accessKeyId" , boost::any("")},
-      {"accessKeySecret" , boost::any("")},
-      {"securityToken" , boost::any("")},
       {"protocol" , boost::any("http")},
-      {"regionId" , boost::any("")},
-      {"readTimeout" , boost::any("")},
-      {"connectTimeout" , boost::any("")},
-      {"httpProxy" , boost::any("")},
-      {"httpsProxy" , boost::any("")},
-      {"credential" , boost::any("")},
-      {"endpoint" , boost::any("")},
-      {"noProxy" , boost::any("")},
-      {"maxIdleConns" , boost::any("")},
-      {"network" , boost::any("")},
-      {"userAgent" , boost::any("")},
-      {"suffix" , boost::any("")},
-      {"socks5Proxy" , boost::any("")},
-      {"socks5NetWork" , boost::any("")},
-      {"endpointType" , boost::any("")},
-      {"openPlatformEndpoint" , boost::any("")},
-      {"type" , boost::any("")},
     };
   }
 public:
-  Config() {_init();};
-  explicit Config(const std::map<string, boost::any> &config) : Darabonba::Model(config) {_init();};
+  Config() {}
+  explicit Config(const std::map<string, boost::any> &config) : Darabonba::Model(config) {
+    fromMap(config);
+  };
 
-
-  map<string, boost::any> toMap() {
+  void validate() override {
+    Darabonba::Model::validatePattern("regionId", regionId, "^[a-zA-Z0-9_-]+$");
+    Darabonba::Model::validatePattern("network", network, "^[a-zA-Z0-9_-]+$");
+    Darabonba::Model::validatePattern("suffix", suffix, "^[a-zA-Z0-9_-]+$");
+  }
+  map<string, boost::any> toMap() override {
     map<string, boost::any> res;
-    if (nullptr != accessKeyId) {
+    if (accessKeyId) {
       res["accessKeyId"] = boost::any(*accessKeyId);
     }
-    if (nullptr != accessKeySecret) {
+    if (accessKeySecret) {
       res["accessKeySecret"] = boost::any(*accessKeySecret);
     }
-    if (nullptr != securityToken) {
+    if (securityToken) {
       res["securityToken"] = boost::any(*securityToken);
     }
-    if (nullptr != protocol) {
+    if (protocol) {
       res["protocol"] = boost::any(*protocol);
     }
-    if (nullptr != regionId) {
+    if (regionId) {
       res["regionId"] = boost::any(*regionId);
     }
-    if (nullptr != readTimeout) {
+    if (readTimeout) {
       res["readTimeout"] = boost::any(*readTimeout);
     }
-    if (nullptr != connectTimeout) {
+    if (connectTimeout) {
       res["connectTimeout"] = boost::any(*connectTimeout);
     }
-    if (nullptr != httpProxy) {
+    if (httpProxy) {
       res["httpProxy"] = boost::any(*httpProxy);
     }
-    if (nullptr != httpsProxy) {
+    if (httpsProxy) {
       res["httpsProxy"] = boost::any(*httpsProxy);
     }
-    if (nullptr != credential) {
-    }
-    if (nullptr != endpoint) {
+    if (endpoint) {
       res["endpoint"] = boost::any(*endpoint);
     }
-    if (nullptr != noProxy) {
+    if (noProxy) {
       res["noProxy"] = boost::any(*noProxy);
     }
-    if (nullptr != maxIdleConns) {
+    if (maxIdleConns) {
       res["maxIdleConns"] = boost::any(*maxIdleConns);
     }
-    if (nullptr != network) {
+    if (network) {
       res["network"] = boost::any(*network);
     }
-    if (nullptr != userAgent) {
+    if (userAgent) {
       res["userAgent"] = boost::any(*userAgent);
     }
-    if (nullptr != suffix) {
+    if (suffix) {
       res["suffix"] = boost::any(*suffix);
     }
-    if (nullptr != socks5Proxy) {
+    if (socks5Proxy) {
       res["socks5Proxy"] = boost::any(*socks5Proxy);
     }
-    if (nullptr != socks5NetWork) {
+    if (socks5NetWork) {
       res["socks5NetWork"] = boost::any(*socks5NetWork);
     }
-    if (nullptr != endpointType) {
+    if (endpointType) {
       res["endpointType"] = boost::any(*endpointType);
     }
-    if (nullptr != openPlatformEndpoint) {
+    if (openPlatformEndpoint) {
       res["openPlatformEndpoint"] = boost::any(*openPlatformEndpoint);
     }
-    if (nullptr != type) {
+    if (type) {
       res["type"] = boost::any(*type);
     }
     return res;
   }
 
-  string *accessKeyId{};
-  string *accessKeySecret{};
-  string *securityToken{};
-  string *protocol{};
-  string *regionId{};
-  int *readTimeout{};
-  int *connectTimeout{};
-  string *httpProxy{};
-  string *httpsProxy{};
-  Alibabacloud_Credential::Client *credential{};
-  string *endpoint{};
-  string *noProxy{};
-  int *maxIdleConns{};
-  string *network{};
-  string *userAgent{};
-  string *suffix{};
-  string *socks5Proxy{};
-  string *socks5NetWork{};
-  string *endpointType{};
-  string *openPlatformEndpoint{};
-  string *type{};
+  void fromMap(map<string, boost::any> m) override {
+    if (m.find("accessKeyId") != m.end()) {
+      accessKeyId = make_shared<string>(boost::any_cast<string>(m["accessKeyId"]));
+    }
+    if (m.find("accessKeySecret") != m.end()) {
+      accessKeySecret = make_shared<string>(boost::any_cast<string>(m["accessKeySecret"]));
+    }
+    if (m.find("securityToken") != m.end()) {
+      securityToken = make_shared<string>(boost::any_cast<string>(m["securityToken"]));
+    }
+    if (m.find("protocol") != m.end()) {
+      protocol = make_shared<string>(boost::any_cast<string>(m["protocol"]));
+    }
+    if (m.find("regionId") != m.end()) {
+      regionId = make_shared<string>(boost::any_cast<string>(m["regionId"]));
+    }
+    if (m.find("readTimeout") != m.end()) {
+      readTimeout = make_shared<int>(boost::any_cast<int>(m["readTimeout"]));
+    }
+    if (m.find("connectTimeout") != m.end()) {
+      connectTimeout = make_shared<int>(boost::any_cast<int>(m["connectTimeout"]));
+    }
+    if (m.find("httpProxy") != m.end()) {
+      httpProxy = make_shared<string>(boost::any_cast<string>(m["httpProxy"]));
+    }
+    if (m.find("httpsProxy") != m.end()) {
+      httpsProxy = make_shared<string>(boost::any_cast<string>(m["httpsProxy"]));
+    }
+    if (m.find("endpoint") != m.end()) {
+      endpoint = make_shared<string>(boost::any_cast<string>(m["endpoint"]));
+    }
+    if (m.find("noProxy") != m.end()) {
+      noProxy = make_shared<string>(boost::any_cast<string>(m["noProxy"]));
+    }
+    if (m.find("maxIdleConns") != m.end()) {
+      maxIdleConns = make_shared<int>(boost::any_cast<int>(m["maxIdleConns"]));
+    }
+    if (m.find("network") != m.end()) {
+      network = make_shared<string>(boost::any_cast<string>(m["network"]));
+    }
+    if (m.find("userAgent") != m.end()) {
+      userAgent = make_shared<string>(boost::any_cast<string>(m["userAgent"]));
+    }
+    if (m.find("suffix") != m.end()) {
+      suffix = make_shared<string>(boost::any_cast<string>(m["suffix"]));
+    }
+    if (m.find("socks5Proxy") != m.end()) {
+      socks5Proxy = make_shared<string>(boost::any_cast<string>(m["socks5Proxy"]));
+    }
+    if (m.find("socks5NetWork") != m.end()) {
+      socks5NetWork = make_shared<string>(boost::any_cast<string>(m["socks5NetWork"]));
+    }
+    if (m.find("endpointType") != m.end()) {
+      endpointType = make_shared<string>(boost::any_cast<string>(m["endpointType"]));
+    }
+    if (m.find("openPlatformEndpoint") != m.end()) {
+      openPlatformEndpoint = make_shared<string>(boost::any_cast<string>(m["openPlatformEndpoint"]));
+    }
+    if (m.find("type") != m.end()) {
+      type = make_shared<string>(boost::any_cast<string>(m["type"]));
+    }
+  }
 
-  ~Config() {
-    delete accessKeyId;
-    accessKeyId = nullptr;
-    delete accessKeySecret;
-    accessKeySecret = nullptr;
-    delete securityToken;
-    securityToken = nullptr;
-    delete protocol;
-    protocol = nullptr;
-    delete regionId;
-    regionId = nullptr;
-    delete readTimeout;
-    readTimeout = nullptr;
-    delete connectTimeout;
-    connectTimeout = nullptr;
-    delete httpProxy;
-    httpProxy = nullptr;
-    delete httpsProxy;
-    httpsProxy = nullptr;
-    delete credential;
-    credential = nullptr;
-    delete endpoint;
-    endpoint = nullptr;
-    delete noProxy;
-    noProxy = nullptr;
-    delete maxIdleConns;
-    maxIdleConns = nullptr;
-    delete network;
-    network = nullptr;
-    delete userAgent;
-    userAgent = nullptr;
-    delete suffix;
-    suffix = nullptr;
-    delete socks5Proxy;
-    socks5Proxy = nullptr;
-    delete socks5NetWork;
-    socks5NetWork = nullptr;
-    delete endpointType;
-    endpointType = nullptr;
-    delete openPlatformEndpoint;
-    openPlatformEndpoint = nullptr;
-    delete type;
-    type = nullptr;
-  };
+  shared_ptr<string> accessKeyId{};
+  shared_ptr<string> accessKeySecret{};
+  shared_ptr<string> securityToken{};
+  shared_ptr<string> protocol{};
+  shared_ptr<string> regionId{};
+  shared_ptr<int> readTimeout{};
+  shared_ptr<int> connectTimeout{};
+  shared_ptr<string> httpProxy{};
+  shared_ptr<string> httpsProxy{};
+  shared_ptr<Alibabacloud_Credential::Client> credential{};
+  shared_ptr<string> endpoint{};
+  shared_ptr<string> noProxy{};
+  shared_ptr<int> maxIdleConns{};
+  shared_ptr<string> network{};
+  shared_ptr<string> userAgent{};
+  shared_ptr<string> suffix{};
+  shared_ptr<string> socks5Proxy{};
+  shared_ptr<string> socks5NetWork{};
+  shared_ptr<string> endpointType{};
+  shared_ptr<string> openPlatformEndpoint{};
+  shared_ptr<string> type{};
+
+  ~Config() {};
 };
 class Client {
 public:
-  string *_endpoint{};
-  string *_regionId{};
-  string *_protocol{};
-  string *_userAgent{};
-  string *_endpointRule{};
-  map<string, string> *_endpointMap{};
-  string *_suffix{};
-  int *_readTimeout{};
-  int *_connectTimeout{};
-  string *_httpProxy{};
-  string *_httpsProxy{};
-  string *_socks5Proxy{};
-  string *_socks5NetWork{};
-  string *_noProxy{};
-  string *_network{};
-  string *_productId{};
-  int *_maxIdleConns{};
-  string *_endpointType{};
-  string *_openPlatformEndpoint{};
-  Alibabacloud_Credential::Client *_credential{};
-  explicit Client(Config *config);
-  map<string, boost::any> doRequest(string *action,
-                                    string *protocol,
-                                    string *method,
-                                    string *version,
-                                    string *authType,
-                                    map<string, boost::any> *query,
-                                    map<string, boost::any> *body,
-                                    Darabonba_Util::RuntimeOptions *runtime);
+  shared_ptr<string> _endpoint{};
+  shared_ptr<string> _regionId{};
+  shared_ptr<string> _protocol{};
+  shared_ptr<string> _userAgent{};
+  shared_ptr<string> _endpointRule{};
+  shared_ptr<map<string, string>> _endpointMap{};
+  shared_ptr<string> _suffix{};
+  shared_ptr<int> _readTimeout{};
+  shared_ptr<int> _connectTimeout{};
+  shared_ptr<string> _httpProxy{};
+  shared_ptr<string> _httpsProxy{};
+  shared_ptr<string> _socks5Proxy{};
+  shared_ptr<string> _socks5NetWork{};
+  shared_ptr<string> _noProxy{};
+  shared_ptr<string> _network{};
+  shared_ptr<string> _productId{};
+  shared_ptr<int> _maxIdleConns{};
+  shared_ptr<string> _endpointType{};
+  shared_ptr<string> _openPlatformEndpoint{};
+  shared_ptr<Alibabacloud_Credential::Client> _credential{};
+  explicit Client(shared_ptr<Config> config);
+  map<string, boost::any> doRequest(shared_ptr<string> action,
+                                    shared_ptr<string> protocol,
+                                    shared_ptr<string> method,
+                                    shared_ptr<string> version,
+                                    shared_ptr<string> authType,
+                                    shared_ptr<map<string, boost::any>> query,
+                                    shared_ptr<map<string, boost::any>> body,
+                                    shared_ptr<Darabonba_Util::RuntimeOptions> runtime);
   string getUserAgent();
   string getAccessKeyId();
   string getAccessKeySecret();
   string getSecurityToken();
-  void checkConfig(Config *config);
-  static boost::any defaultAny(boost::any *inputValue, boost::any *defaultValue);
+  void checkConfig(shared_ptr<Config> config);
+  static boost::any defaultAny(shared_ptr<boost::any> inputValue, shared_ptr<boost::any> defaultValue);
 
-  ~Client() {
-    delete _endpoint;
-    _endpoint = nullptr;
-    delete _regionId;
-    _regionId = nullptr;
-    delete _protocol;
-    _protocol = nullptr;
-    delete _userAgent;
-    _userAgent = nullptr;
-    delete _endpointRule;
-    _endpointRule = nullptr;
-    delete _endpointMap;
-    _endpointMap = nullptr;
-    delete _suffix;
-    _suffix = nullptr;
-    delete _readTimeout;
-    _readTimeout = nullptr;
-    delete _connectTimeout;
-    _connectTimeout = nullptr;
-    delete _httpProxy;
-    _httpProxy = nullptr;
-    delete _httpsProxy;
-    _httpsProxy = nullptr;
-    delete _socks5Proxy;
-    _socks5Proxy = nullptr;
-    delete _socks5NetWork;
-    _socks5NetWork = nullptr;
-    delete _noProxy;
-    _noProxy = nullptr;
-    delete _network;
-    _network = nullptr;
-    delete _productId;
-    _productId = nullptr;
-    delete _maxIdleConns;
-    _maxIdleConns = nullptr;
-    delete _endpointType;
-    _endpointType = nullptr;
-    delete _openPlatformEndpoint;
-    _openPlatformEndpoint = nullptr;
-    delete _credential;
-    _credential = nullptr;
-  };
+  ~Client() {};
 };
 } // namespace Alibabacloud_RPC
 
