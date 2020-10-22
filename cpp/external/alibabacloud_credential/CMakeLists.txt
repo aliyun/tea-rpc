@@ -21,6 +21,6 @@ else()
       ${_alibabacloud_credential_SOURCE_DIR} 
       ${_alibabacloud_credential_BINARY_DIR}
     )
-    target_include_directories(alibabacloud_rpc PRIVATE "${_alibabacloud_credential_SOURCE_DIR}/include")
+    target_include_directories(alibabacloud_rpc INTERFACE "${_alibabacloud_credential_SOURCE_DIR}/include")
   endif()
 endif()

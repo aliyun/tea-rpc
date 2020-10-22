@@ -21,6 +21,6 @@ else()
       ${_alibabacloud_rpcutil_SOURCE_DIR} 
       ${_alibabacloud_rpcutil_BINARY_DIR}
     )
-    target_include_directories(alibabacloud_rpc PRIVATE "${_alibabacloud_rpcutil_SOURCE_DIR}/include")
+    target_include_directories(alibabacloud_rpc INTERFACE "${_alibabacloud_rpcutil_SOURCE_DIR}/include")
   endif()
 endif()

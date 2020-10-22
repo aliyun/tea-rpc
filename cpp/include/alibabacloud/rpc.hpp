@@ -15,12 +15,6 @@ using namespace std;
 
 namespace Alibabacloud_RPC {
 class Config : public Darabonba::Model {
-protected:
-  void _init(){
-    _default = {
-      {"protocol" , boost::any("http")},
-    };
-  }
 public:
   Config() {}
   explicit Config(const std::map<string, boost::any> &config) : Darabonba::Model(config) {
@@ -32,6 +26,7 @@ public:
     Darabonba::Model::validatePattern("network", network, "^[a-zA-Z0-9_-]+$");
     Darabonba::Model::validatePattern("suffix", suffix, "^[a-zA-Z0-9_-]+$");
   }
+
   map<string, boost::any> toMap() override {
     map<string, boost::any> res;
     if (accessKeyId) {
@@ -206,7 +201,7 @@ public:
   shared_ptr<string> _endpointType{};
   shared_ptr<string> _openPlatformEndpoint{};
   shared_ptr<Alibabacloud_Credential::Client> _credential{};
-  explicit Client(shared_ptr<Config> config);
+  explicit Client(const shared_ptr<Config>& config);
   map<string, boost::any> doRequest(shared_ptr<string> action,
                                     shared_ptr<string> protocol,
                                     shared_ptr<string> method,

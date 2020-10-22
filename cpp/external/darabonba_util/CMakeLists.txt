@@ -21,6 +21,6 @@ else()
       ${_darabonba_util_SOURCE_DIR} 
       ${_darabonba_util_BINARY_DIR}
     )
-    target_include_directories(alibabacloud_rpc PRIVATE "${_darabonba_util_SOURCE_DIR}/include")
+    target_include_directories(alibabacloud_rpc INTERFACE "${_darabonba_util_SOURCE_DIR}/include")
   endif()
 endif()
