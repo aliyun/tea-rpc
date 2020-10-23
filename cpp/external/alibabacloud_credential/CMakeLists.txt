@@ -2,7 +2,7 @@ find_package(alibabacloud_credential ${alibabacloud_credential_MINIMUM_REQUIRED}
 
 if(alibabacloud_credential_FOUND)
   message(STATUS "Found alibabacloud_credential version ${alibabacloud_credential_MAJOR_VERSION}.${alibabacloud_credential_MINOR_VERSION}.${alibabacloud_credential_SUBMINOR_VERSION}")
-  add_library(alibabacloud_credential_external INTERFACE)
+  add_library(alibabacloud_credential_external PRIVATE)
 else()
   message(STATUS "alibabacloud_credential ${alibabacloud_credential_MINIMUM_REQUIRED} could not be located, Building alibabacloud_credential instead.")
   include(FetchContent)
@@ -21,6 +21,9 @@ else()
       ${_alibabacloud_credential_SOURCE_DIR} 
       ${_alibabacloud_credential_BINARY_DIR}
     )
-    target_include_directories(alibabacloud_rpc INTERFACE "${_alibabacloud_credential_SOURCE_DIR}/include")
+  endif()
+  target_include_directories(alibabacloud_rpc PRIVATE "${_alibabacloud_credential_SOURCE_DIR}/include")
+  if(ENABLE_UNIT_TESTS)
+    target_include_directories(tests_alibabacloud_rpc PRIVATE "${_alibabacloud_credential_SOURCE_DIR}/include")
   endif()
 endif()
