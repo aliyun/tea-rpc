@@ -2,7 +2,7 @@ find_package(darabonba_util ${darabonba_util_MINIMUM_REQUIRED} QUIET COMPONENTS 
 
 if(darabonba_util_FOUND)
   message(STATUS "Found darabonba_util version ${darabonba_util_MAJOR_VERSION}.${darabonba_util_MINOR_VERSION}.${darabonba_util_SUBMINOR_VERSION}")
-  add_library(darabonba_util_external INTERFACE)
+  add_library(darabonba_util_external PRIVATE)
 else()
   message(STATUS "darabonba_util ${darabonba_util_MINIMUM_REQUIRED} could not be located, Building darabonba_util instead.")
   include(FetchContent)
@@ -21,6 +21,9 @@ else()
       ${_darabonba_util_SOURCE_DIR} 
       ${_darabonba_util_BINARY_DIR}
     )
-    target_include_directories(alibabacloud_rpc INTERFACE "${_darabonba_util_SOURCE_DIR}/include")
+  endif()
+  target_include_directories(alibabacloud_rpc PRIVATE "${_darabonba_util_SOURCE_DIR}/include")
+  if(ENABLE_UNIT_TESTS)
+    target_include_directories(tests_alibabacloud_rpc PRIVATE "${_darabonba_util_SOURCE_DIR}/include")
   endif()
 endif()
