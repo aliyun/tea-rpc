@@ -177,7 +177,7 @@ public:
   shared_ptr<string> openPlatformEndpoint{};
   shared_ptr<string> type{};
 
-  ~Config() {};
+  ~Config() = default;
 };
 class Client {
 public:
@@ -217,7 +217,7 @@ public:
   void checkConfig(shared_ptr<Config> config);
   static boost::any defaultAny(shared_ptr<boost::any> inputValue, shared_ptr<boost::any> defaultValue);
 
-  ~Client() {};
+  ~Client() = default;
 };
 } // namespace Alibabacloud_RPC
 

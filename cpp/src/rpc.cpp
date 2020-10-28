@@ -138,7 +138,7 @@ map<string, boost::any> Alibabacloud_RPC::Client::doRequest(shared_ptr<string> a
         request_.query.insert(pair<string, string>("SignatureMethod", "HMAC-SHA1"));
         request_.query.insert(pair<string, string>("SignatureVersion", "1.0"));
         request_.query.insert(pair<string, string>("AccessKeyId", accessKeyId));
-        map<string, string> signedParam = Darabonba::Converter::merge(map<string, string>(request_.query), map<string, string>(Alibabacloud_RPCUtil::Client::query(body)));
+        map<string, string> signedParam = Darabonba::Converter::merge(map<string, string>(), request_.query, Alibabacloud_RPCUtil::Client::query(body));
         request_.query.insert(pair<string, string>("Signature", Alibabacloud_RPCUtil::Client::getSignatureV1(make_shared<map<string, string>>(signedParam), make_shared<string>(request_.method), make_shared<string>(accessKeySecret))));
       }
       _lastRequest = request_;
