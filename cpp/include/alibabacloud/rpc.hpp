@@ -17,7 +17,8 @@ namespace Alibabacloud_RPC {
 class Config : public Darabonba::Model {
 public:
   Config() {}
-  explicit Config(const std::map<string, boost::any> &config) : Darabonba::Model(config) {
+  explicit Config(const std::map<string, boost::any> &config)
+      : Darabonba::Model(config) {
     fromMap(config);
   };
 
@@ -93,64 +94,74 @@ public:
   }
 
   void fromMap(map<string, boost::any> m) override {
-    if (m.find("accessKeyId") != m.end()) {
-      accessKeyId = make_shared<string>(boost::any_cast<string>(m["accessKeyId"]));
+    if (m.find("accessKeyId") != m.end() && !m["accessKeyId"].empty()) {
+      accessKeyId =
+          make_shared<string>(boost::any_cast<string>(m["accessKeyId"]));
     }
-    if (m.find("accessKeySecret") != m.end()) {
-      accessKeySecret = make_shared<string>(boost::any_cast<string>(m["accessKeySecret"]));
+    if (m.find("accessKeySecret") != m.end() && !m["accessKeySecret"].empty()) {
+      accessKeySecret =
+          make_shared<string>(boost::any_cast<string>(m["accessKeySecret"]));
     }
-    if (m.find("securityToken") != m.end()) {
-      securityToken = make_shared<string>(boost::any_cast<string>(m["securityToken"]));
+    if (m.find("securityToken") != m.end() && !m["securityToken"].empty()) {
+      securityToken =
+          make_shared<string>(boost::any_cast<string>(m["securityToken"]));
     }
-    if (m.find("protocol") != m.end()) {
+    if (m.find("protocol") != m.end() && !m["protocol"].empty()) {
       protocol = make_shared<string>(boost::any_cast<string>(m["protocol"]));
     }
-    if (m.find("regionId") != m.end()) {
+    if (m.find("regionId") != m.end() && !m["regionId"].empty()) {
       regionId = make_shared<string>(boost::any_cast<string>(m["regionId"]));
     }
-    if (m.find("readTimeout") != m.end()) {
+    if (m.find("readTimeout") != m.end() && !m["readTimeout"].empty()) {
       readTimeout = make_shared<int>(boost::any_cast<int>(m["readTimeout"]));
     }
-    if (m.find("connectTimeout") != m.end()) {
-      connectTimeout = make_shared<int>(boost::any_cast<int>(m["connectTimeout"]));
+    if (m.find("connectTimeout") != m.end() && !m["connectTimeout"].empty()) {
+      connectTimeout =
+          make_shared<int>(boost::any_cast<int>(m["connectTimeout"]));
     }
-    if (m.find("httpProxy") != m.end()) {
+    if (m.find("httpProxy") != m.end() && !m["httpProxy"].empty()) {
       httpProxy = make_shared<string>(boost::any_cast<string>(m["httpProxy"]));
     }
-    if (m.find("httpsProxy") != m.end()) {
-      httpsProxy = make_shared<string>(boost::any_cast<string>(m["httpsProxy"]));
+    if (m.find("httpsProxy") != m.end() && !m["httpsProxy"].empty()) {
+      httpsProxy =
+          make_shared<string>(boost::any_cast<string>(m["httpsProxy"]));
     }
-    if (m.find("endpoint") != m.end()) {
+    if (m.find("endpoint") != m.end() && !m["endpoint"].empty()) {
       endpoint = make_shared<string>(boost::any_cast<string>(m["endpoint"]));
     }
-    if (m.find("noProxy") != m.end()) {
+    if (m.find("noProxy") != m.end() && !m["noProxy"].empty()) {
       noProxy = make_shared<string>(boost::any_cast<string>(m["noProxy"]));
     }
-    if (m.find("maxIdleConns") != m.end()) {
+    if (m.find("maxIdleConns") != m.end() && !m["maxIdleConns"].empty()) {
       maxIdleConns = make_shared<int>(boost::any_cast<int>(m["maxIdleConns"]));
     }
-    if (m.find("network") != m.end()) {
+    if (m.find("network") != m.end() && !m["network"].empty()) {
       network = make_shared<string>(boost::any_cast<string>(m["network"]));
     }
-    if (m.find("userAgent") != m.end()) {
+    if (m.find("userAgent") != m.end() && !m["userAgent"].empty()) {
       userAgent = make_shared<string>(boost::any_cast<string>(m["userAgent"]));
     }
-    if (m.find("suffix") != m.end()) {
+    if (m.find("suffix") != m.end() && !m["suffix"].empty()) {
       suffix = make_shared<string>(boost::any_cast<string>(m["suffix"]));
     }
-    if (m.find("socks5Proxy") != m.end()) {
-      socks5Proxy = make_shared<string>(boost::any_cast<string>(m["socks5Proxy"]));
+    if (m.find("socks5Proxy") != m.end() && !m["socks5Proxy"].empty()) {
+      socks5Proxy =
+          make_shared<string>(boost::any_cast<string>(m["socks5Proxy"]));
     }
-    if (m.find("socks5NetWork") != m.end()) {
-      socks5NetWork = make_shared<string>(boost::any_cast<string>(m["socks5NetWork"]));
+    if (m.find("socks5NetWork") != m.end() && !m["socks5NetWork"].empty()) {
+      socks5NetWork =
+          make_shared<string>(boost::any_cast<string>(m["socks5NetWork"]));
     }
-    if (m.find("endpointType") != m.end()) {
-      endpointType = make_shared<string>(boost::any_cast<string>(m["endpointType"]));
+    if (m.find("endpointType") != m.end() && !m["endpointType"].empty()) {
+      endpointType =
+          make_shared<string>(boost::any_cast<string>(m["endpointType"]));
     }
-    if (m.find("openPlatformEndpoint") != m.end()) {
-      openPlatformEndpoint = make_shared<string>(boost::any_cast<string>(m["openPlatformEndpoint"]));
+    if (m.find("openPlatformEndpoint") != m.end() &&
+        !m["openPlatformEndpoint"].empty()) {
+      openPlatformEndpoint = make_shared<string>(
+          boost::any_cast<string>(m["openPlatformEndpoint"]));
     }
-    if (m.find("type") != m.end()) {
+    if (m.find("type") != m.end() && !m["type"].empty()) {
       type = make_shared<string>(boost::any_cast<string>(m["type"]));
     }
   }
@@ -201,21 +212,21 @@ public:
   shared_ptr<string> _endpointType{};
   shared_ptr<string> _openPlatformEndpoint{};
   shared_ptr<Alibabacloud_Credential::Client> _credential{};
-  explicit Client(const shared_ptr<Config>& config);
-  map<string, boost::any> doRequest(shared_ptr<string> action,
-                                    shared_ptr<string> protocol,
-                                    shared_ptr<string> method,
-                                    shared_ptr<string> version,
-                                    shared_ptr<string> authType,
-                                    shared_ptr<map<string, boost::any>> query,
-                                    shared_ptr<map<string, boost::any>> body,
-                                    shared_ptr<Darabonba_Util::RuntimeOptions> runtime);
+  explicit Client(const shared_ptr<Config> &config);
+  map<string, boost::any>
+  doRequest(shared_ptr<string> action, shared_ptr<string> protocol,
+            shared_ptr<string> method, shared_ptr<string> version,
+            shared_ptr<string> authType,
+            shared_ptr<map<string, boost::any>> query,
+            shared_ptr<map<string, boost::any>> body,
+            shared_ptr<Darabonba_Util::RuntimeOptions> runtime);
   string getUserAgent();
   string getAccessKeyId();
   string getAccessKeySecret();
   string getSecurityToken();
   void checkConfig(shared_ptr<Config> config);
-  static boost::any defaultAny(shared_ptr<boost::any> inputValue, shared_ptr<boost::any> defaultValue);
+  static boost::any defaultAny(const boost::any &inputValue,
+                               const boost::any &defaultValue);
 
   ~Client() = default;
 };
