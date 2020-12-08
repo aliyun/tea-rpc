@@ -1,10 +1,9 @@
+import asyncio
 from unittest import TestCase
 
 from alibabacloud_tea_rpc.client import Client
 from alibabacloud_tea_rpc.models import Config
-
 from alibabacloud_tea_util.models import RuntimeOptions
-
 from Tea.exceptions import TeaException, UnretryableException
 
 import threading
@@ -114,6 +113,7 @@ class TestClient(TestCase):
                 body={},
                 runtime=runtime
             )
+            assert False
         except Exception as e:
             self.assertIsInstance(e, UnretryableException)
 
@@ -122,10 +122,7 @@ class TestClient(TestCase):
             access_key_id='access_key_id',
             access_key_secret='access_key_secret',
             protocol='http',
-            region_id='',
-            endpoint='127.0.0.1:8888',
-            network='',
-            suffix=''
+            endpoint='127.0.0.1:8888'
         )
         conf.validate()
         conf = Config(
@@ -141,6 +138,46 @@ class TestClient(TestCase):
         conf.validate()
         conf.to_map()
         conf.from_map({})
+
+    def test_do_request_async(self):
+        async def request(method):
+            conf = Config(
+                access_key_id='access_key_id',
+                security_token='security_token',
+                protocol='http',
+                region_id='region_id',
+                read_timeout=1000,
+                connect_timeout=5000,
+                endpoint='127.0.0.1:8888',
+                max_idle_conns=1
+            )
+            conf.access_key_secret = 'access_key_secret'
+            runtime = RuntimeOptions(
+                autoretry=False,
+                max_attempts=2
+            )
+            client = Client(conf)
+            return await client.do_request_async(
+                action='action',
+                protocol='http',
+                method=method,
+                version='version',
+                auth_type='auth_type',
+                query={},
+                body={},
+                runtime=runtime
+            )
+
+        loop = asyncio.get_event_loop()
+        task1 = asyncio.ensure_future(request('GET'))
+        loop.run_until_complete(task1)
+        self.assertEqual({'result': 'server test'}, task1.result())
+        task2 = request('POST')
+        try:
+            loop.run_until_complete(task2)
+            assert False
+        except Exception as e:
+            self.assertIsInstance(e, UnretryableException)
 
     def test_default_any(self):
         self.assertEqual('test', Client.default_any('test', 'test1'))
