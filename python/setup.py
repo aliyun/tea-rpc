@@ -1,4 +1,4 @@
-#!/usr/bin/python
+# -*- coding: utf-8 -*-
 """
  Licensed to the Apache Software Foundation (ASF) under one
  or more contributor license agreements.  See the NOTICE file
@@ -18,60 +18,61 @@
  under the License.
 """
 
-from setuptools import setup, find_packages
 import os
+from setuptools import setup, find_packages
 
 """
 setup module for alibabacloud_tea_rpc.
 
-Created on 27/05/2020
+Created on 10/12/2020
 
 @author: Alibaba Cloud
 """
 
 PACKAGE = "alibabacloud_tea_rpc"
-NAME = "alibabacloud_tea_rpc"
+NAME = "alibabacloud_tea_rpc" or "alibabacloud-package"
 DESCRIPTION = "Aliyun Tea RPC SDK Library for Python"
 AUTHOR = "Alibaba Cloud"
 AUTHOR_EMAIL = "alibaba-cloud-sdk-dev-team@list.alibaba-inc.com"
 URL = "https://github.com/aliyun/tea-rpc"
-
-TOPDIR = os.path.dirname(__file__) or "."
 VERSION = __import__(PACKAGE).__version__
-REQUIRES = ["alibabacloud_tea_util>=0.0.2", "alibabacloud_credentials>=0.0.1", "alibabacloud_rpc_util>=0.0.2"]
+REQUIRES = [
+    "alibabacloud_tea_util>=0.2.0, <1.0.0",
+    "alibabacloud_credentials>=0.0.5, <1.0.0",
+    "alibabacloud_rpc_util>=0.0.3, <1.0.0"
+]
 
-desc_file = open("README.md", encoding='utf-8')
-try:
-    LONG_DESCRIPTION = desc_file.read()
-finally:
-    desc_file.close()
+LONG_DESCRIPTION = ''
+if os.path.exists('./README.md'):
+    with open("README.md", encoding='utf-8') as fp:
+        LONG_DESCRIPTION = fp.read()
 
 setup(
     name=NAME,
     version=VERSION,
     description=DESCRIPTION,
     long_description=LONG_DESCRIPTION,
+    long_description_content_type='text/markdown',
     author=AUTHOR,
     author_email=AUTHOR_EMAIL,
     license="Apache License 2.0",
     url=URL,
-    keywords=["alibabacloud_tea_rpc"],
+    keywords=["alibabacloud","tea","rpc"],
     packages=find_packages(exclude=["tests*"]),
     include_package_data=True,
     platforms="any",
     install_requires=REQUIRES,
+    python_requires=">=3.6",
     classifiers=(
         "Development Status :: 4 - Beta",
         "Intended Audience :: Developers",
         "License :: OSI Approved :: Apache Software License",
         "Programming Language :: Python",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.3",
-        "Programming Language :: Python :: 3.4",
-        "Programming Language :: Python :: 3.5",
         "Programming Language :: Python :: 3.6",
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
         "Topic :: Software Development"
     )
 )
