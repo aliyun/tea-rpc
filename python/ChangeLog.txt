@@ -1,3 +1,10 @@
+2020-12-11 Version 0.1.0
+- Drop support for python3.4.
+- Drop support for python3.5.
+- Added support for python3.9.
+- Support type annotations.
+- Support async method.
+
 2020-09-07 Version 0.0.6
 - Improve throw exception.
 
