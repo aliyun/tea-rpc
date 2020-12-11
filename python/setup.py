@@ -37,8 +37,8 @@ AUTHOR_EMAIL = "alibaba-cloud-sdk-dev-team@list.alibaba-inc.com"
 URL = "https://github.com/aliyun/tea-rpc"
 VERSION = __import__(PACKAGE).__version__
 REQUIRES = [
-    "alibabacloud_tea_util>=0.2.0, <1.0.0",
-    "alibabacloud_credentials>=0.0.5, <1.0.0",
+    "alibabacloud_tea_util>=0.3.1, <1.0.0",
+    "alibabacloud_credentials>=0.1.2, <1.0.0",
     "alibabacloud_rpc_util>=0.0.3, <1.0.0"
 ]
 
