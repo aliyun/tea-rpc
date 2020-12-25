@@ -1,0 +1,4 @@
+alibabacloud-rpc-util-py2
+alibabacloud-credentials-py2
+alibabacloud-tea-util-py2
+alibabacloud-tea-py2
