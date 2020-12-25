@@ -20,7 +20,8 @@
     "csharp": "AlibabaCloud.RPCClient:1.0.1",
     "java": "com.aliyun:tea-rpc:0.1.2",
     "php": "alibabacloud/tea-rpc:^0.1.5",
-    "python": "alibabacloud_tea_rpc:0.1.0"
+    "python": "alibabacloud_tea_rpc:0.1.0",
+    "python2": "alibabacloud_tea_rpc_py2:0.0.1"
   },
   "csharp": {
     "namespace": "AlibabaCloud.RPCClient",
@@ -47,6 +48,17 @@
     "packageInfo": {
       "name": "alibabacloud_tea_rpc",
       "desc": "Aliyun Tea RPC SDK Library for Python",
+      "github": "https://github.com/aliyun/tea-rpc",
+      "author": "Alibaba Cloud",
+      "email": "alibaba-cloud-sdk-dev-team@list.alibaba-inc.com"
+    }
+  },
+  "python2": {
+    "package": "alibabacloud_tea_rpc",
+    "clientName": "client",
+    "packageInfo": {
+      "name": "alibabacloud_tea_rpc_py2",
+      "desc": "Aliyun Tea RPC SDK Library for Python2",
       "github": "https://github.com/aliyun/tea-rpc",
       "author": "Alibaba Cloud",
       "email": "alibaba-cloud-sdk-dev-team@list.alibaba-inc.com"
