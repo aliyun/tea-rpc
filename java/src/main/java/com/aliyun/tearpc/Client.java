@@ -3,6 +3,11 @@ package com.aliyun.tearpc;
 
 import com.aliyun.tea.*;
 import com.aliyun.tearpc.models.*;
+import com.aliyun.teautil.*;
+import com.aliyun.teautil.models.*;
+import com.aliyun.credentials.*;
+import com.aliyun.credentials.models.*;
+import com.aliyun.common.*;
 
 public class Client {
 
@@ -26,45 +31,44 @@ public class Client {
     public String _endpointType;
     public String _openPlatformEndpoint;
     public com.aliyun.credentials.Client _credential;
+
     /**
      * Init client with Config
+     *
      * @param config config contains the necessary information to create a client
      */
-    public Client(Config config) {
-        try {
-            if (com.aliyun.teautil.Common.isUnset(TeaModel.buildMap(config))) {
-                throw new TeaException(TeaConverter.buildMap(
-                        new TeaPair("code", "ParameterMissing"),
-                        new TeaPair("message", "'config' can not be unset")
-                ));
-            }
-
-            com.aliyun.teautil.Common.validateModel(config);
-            if (!com.aliyun.teautil.Common.empty(config.accessKeyId) && !com.aliyun.teautil.Common.empty(config.accessKeySecret)) {
-                if (!com.aliyun.teautil.Common.empty(config.securityToken)) {
-                    config.type = "sts";
-                } else {
-                    config.type = "access_key";
-                }
-
-                com.aliyun.credentials.models.Config credentialConfig = com.aliyun.credentials.models.Config.build(TeaConverter.buildMap(
-                        new TeaPair("accessKeyId", config.accessKeyId),
-                        new TeaPair("type", config.type),
-                        new TeaPair("accessKeySecret", config.accessKeySecret),
-                        new TeaPair("securityToken", config.securityToken)
-                ));
-                this._credential = new com.aliyun.credentials.Client(credentialConfig);
-            } else if (!com.aliyun.teautil.Common.isUnset(config.credential)) {
-                this._credential = config.credential;
-            } else {
-                throw new TeaException(TeaConverter.buildMap(
-                        new TeaPair("code", "ParameterMissing"),
-                        new TeaPair("message", "'accessKeyId' and 'accessKeySecret' or 'credential' can not be unset")
-                ));
-            }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+    public Client(com.aliyun.tearpc.models.Config config) throws Exception {
+        if (com.aliyun.teautil.Common.isUnset(TeaModel.buildMap(config))) {
+            throw new TeaException(TeaConverter.buildMap(
+                    new TeaPair("code", "ParameterMissing"),
+                    new TeaPair("message", "'config' can not be unset")
+            ));
         }
+
+        com.aliyun.teautil.Common.validateModel(config);
+        if (!com.aliyun.teautil.Common.empty(config.accessKeyId) && !com.aliyun.teautil.Common.empty(config.accessKeySecret)) {
+            if (!com.aliyun.teautil.Common.empty(config.securityToken)) {
+                config.type = "sts";
+            } else {
+                config.type = "access_key";
+            }
+
+            com.aliyun.credentials.models.Config credentialConfig = com.aliyun.credentials.models.Config.build(TeaConverter.buildMap(
+                    new TeaPair("accessKeyId", config.accessKeyId),
+                    new TeaPair("type", config.type),
+                    new TeaPair("accessKeySecret", config.accessKeySecret),
+                    new TeaPair("securityToken", config.securityToken)
+            ));
+            this._credential = new com.aliyun.credentials.Client(credentialConfig);
+        } else if (!com.aliyun.teautil.Common.isUnset(config.credential)) {
+            this._credential = config.credential;
+        } else {
+            throw new TeaException(TeaConverter.buildMap(
+                    new TeaPair("code", "ParameterMissing"),
+                    new TeaPair("message", "'accessKeyId' and 'accessKeySecret' or 'credential' can not be unset")
+            ));
+        }
+
         this._network = config.network;
         this._suffix = config.suffix;
         this._endpoint = config.endpoint;
@@ -83,7 +87,7 @@ public class Client {
         this._openPlatformEndpoint = config.openPlatformEndpoint;
     }
 
-    public java.util.Map<String, ?> doRequest(String action, String protocol, String method, String version, String authType, java.util.Map<String, ?> query, java.util.Map<String, ?> body, com.aliyun.teautil.models.RuntimeOptions runtime) {
+    public java.util.Map<String, ?> doRequest(String action, String protocol, String method, String version, String authType, java.util.Map<String, ?> query, java.util.Map<String, ?> body, RuntimeOptions runtime) throws Exception {
         java.util.Map<String, Object> runtime_ = TeaConverter.buildMap(
                 new TeaPair("timeouted", "retry"),
                 new TeaPair("readTimeout", com.aliyun.teautil.Common.defaultNumber(runtime.readTimeout, _readTimeout)),
@@ -104,17 +108,14 @@ public class Client {
         );
 
         TeaRequest _lastRequest = null;
+        Exception _lastException = null;
         long _now = System.currentTimeMillis();
         int _retryTimes = 0;
         while (Tea.allowRetry((java.util.Map<String, Object>) runtime_.get("retry"), _retryTimes, _now)) {
             if (_retryTimes > 0) {
                 int backoffTime = Tea.getBackoffTime(runtime_.get("backoff"), _retryTimes);
                 if (backoffTime > 0) {
-                    try {
-                        Tea.sleep(backoffTime);
-                    } catch (Exception e) {
-                        throw new RuntimeException(e);
-                    }
+                    Tea.sleep(backoffTime);
                 }
             }
             _retryTimes = _retryTimes + 1;
@@ -171,8 +172,8 @@ public class Client {
                 java.util.Map<String, Object> res = com.aliyun.teautil.Common.assertAsMap(obj);
                 if (com.aliyun.teautil.Common.is4xx(response_.statusCode) || com.aliyun.teautil.Common.is5xx(response_.statusCode)) {
                     throw new TeaException(TeaConverter.buildMap(
-                            new TeaPair("code", "" + Client.defaultAny(res.get("Code"), res.get("code")) + "Error"),
-                            new TeaPair("message", "code: " + response_.statusCode + ", " + Client.defaultAny(res.get("Message"), res.get("message")) + " requestid: " + Client.defaultAny(res.get("RequestId"), res.get("requestId")) + ""),
+                            new TeaPair("code", "" + Client.defaultAny(res.get("Code"), res.get("code")) + ""),
+                            new TeaPair("message", "code: " + response_.statusCode + ", " + Client.defaultAny(res.get("Message"), res.get("message")) + " request id: " + Client.defaultAny(res.get("RequestId"), res.get("requestId")) + ""),
                             new TeaPair("data", res)
                     ));
                 }
@@ -180,34 +181,32 @@ public class Client {
                 return res;
             } catch (Exception e) {
                 if (Tea.isRetryable(e)) {
+                    _lastException = e;
                     continue;
                 }
-                throw new RuntimeException(e);
+                throw e;
             }
         }
 
-        throw new RuntimeException(new TeaUnretryableException(_lastRequest));
+        throw new TeaUnretryableException(_lastRequest, _lastException);
     }
 
     /**
      * Get user agent
+     *
      * @return user agent
      */
-    public String getUserAgent() {
-        String userAgent = null;
-        try {
-            userAgent = com.aliyun.teautil.Common.getUserAgent(_userAgent);
-        } catch (Exception exception) {
-            throw new RuntimeException(exception);
-        }
+    public String getUserAgent() throws Exception {
+        String userAgent = com.aliyun.teautil.Common.getUserAgent(_userAgent);
         return userAgent;
     }
 
     /**
      * Get accesskey id by using credential
+     *
      * @return accesskey id
      */
-    public String getAccessKeyId() {
+    public String getAccessKeyId() throws Exception {
         if (com.aliyun.teautil.Common.isUnset(_credential)) {
             return "";
         }
@@ -218,9 +217,10 @@ public class Client {
 
     /**
      * Get accesskey secret by using credential
+     *
      * @return accesskey secret
      */
-    public String getAccessKeySecret() {
+    public String getAccessKeySecret() throws Exception {
         if (com.aliyun.teautil.Common.isUnset(_credential)) {
             return "";
         }
@@ -231,9 +231,10 @@ public class Client {
 
     /**
      * Get security token by using credential
+     *
      * @return security token
      */
-    public String getSecurityToken() {
+    public String getSecurityToken() throws Exception {
         if (com.aliyun.teautil.Common.isUnset(_credential)) {
             return "";
         }
@@ -244,22 +245,27 @@ public class Client {
 
     /**
      * If the endpointRule and config.endpoint are empty, throw error
+     *
      * @param config config contains the necessary information to create a client
      */
-    public void checkConfig(Config config) {
+    public void checkConfig(com.aliyun.tearpc.models.Config config) throws Exception {
         if (com.aliyun.teautil.Common.empty(_endpointRule) && com.aliyun.teautil.Common.empty(config.endpoint)) {
-            throw new RuntimeException( "'config.endpoint' can not be empty");
+            throw new TeaException(TeaConverter.buildMap(
+                    new TeaPair("code", "ParameterMissing"),
+                    new TeaPair("message", "'config.endpoint' can not be empty")
+            ));
         }
 
     }
 
     /**
      * If inputValue is not null, return it or return defaultValue
-     * @param inputValue  users input value
+     *
+     * @param inputValue   users input value
      * @param defaultValue default value
      * @return the final result
      */
-    public static Object defaultAny(Object inputValue, Object defaultValue) {
+    public static Object defaultAny(Object inputValue, Object defaultValue) throws Exception {
         if (com.aliyun.teautil.Common.isUnset(inputValue)) {
             return defaultValue;
         }
