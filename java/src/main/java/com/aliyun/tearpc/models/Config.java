@@ -97,11 +97,7 @@ public class Config extends TeaModel {
 
     public static Config build(java.util.Map<String, ?> map) {
         Config self = new Config();
-        try {
-            return TeaModel.build(map, self);
-        } catch (Exception e) {
-         throw new RuntimeException(e);
-        }
+        return TeaModel.build(map, self);
     }
 
     public Config setAccessKeyId(String accessKeyId) {
