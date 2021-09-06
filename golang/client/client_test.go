@@ -75,7 +75,9 @@ func Test_DoRequest(t *testing.T) {
 		SetSocks5Proxy("proxy").
 		SetType("access_key").
 		SetEndpointType("inner").
-		SetOpenPlatformEndpoint("endpoint")
+		SetOpenPlatformEndpoint("endpoint").
+		SetSourceIp("192.168.0.1").
+		SetSecureTransport("ture")
 
 	config.SetHttpProxy("").
 		SetHttpsProxy("").
