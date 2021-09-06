@@ -25,6 +25,8 @@ type @productId = string
 type @maxIdleConns = number
 type @endpointType = string
 type @openPlatformEndpoint = string
+type @sourceIp = string
+type @secureTransport = string
 type @credential = Credential
 
 /**
@@ -51,7 +53,9 @@ model Config {
   socks5NetWork?: string(description='socks5 network',example='TCP',default=''),
   endpointType?: string(description='endpoint type',example='internal',default=''),
   openPlatformEndpoint?: string(description='OpenPlatform endpoint',example='openplatform.aliyuncs.com',default=''),
-  type?: string(description='credential type',example='access_key',default='',deprecated=true)
+  type?: string(description='credential type',example='access_key',default='',deprecated=true),
+  sourceIp?: string(description='source ip', example='192.168.0.1', default=''),
+  secureTransport?: string(description='secure transport', example='true', default='false')
 }
 
 /**
@@ -89,6 +93,8 @@ init(config: Config) {
       message = '\'accessKeyId\' and \'accessKeySecret\' or \'credential\' can not be unset'
     };
   }
+  @sourceIp = config.sourceIp;
+  @secureTransport = config.secureTransport;
   @network = config.network;
   @suffix = config.suffix;
   @endpoint = config.endpoint;
@@ -132,7 +138,12 @@ api doRequest(action: string, protocol: string, method: string, version: string,
     SignatureNonce = Util.getNonce(),
     ...query
   });
-
+  if (!Util.isUnset(@sourceIp)) {
+    __request.query.SourceIp = @sourceIp;
+  }
+  if (!Util.isUnset(@secureTransport)) {
+    __request.query.SecureTransport = @secureTransport;
+  }
   // endpoint is setted in product client
   __request.headers = {
     x-acs-version = version,
